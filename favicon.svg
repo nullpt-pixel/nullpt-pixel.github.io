@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- CRT Monitor Body -->
+  <rect x="8" y="8" width="48" height="38" rx="4" fill="#333" stroke="#666" stroke-width="2"/>
+  
+  <!-- Screen -->
+  <rect x="12" y="12" width="40" height="30" rx="2" fill="#0a0a0a"/>
+  
+  <!-- Screen Glow -->
+  <rect x="14" y="14" width="36" height="26" rx="1" fill="url(#screenGlow)"/>
+  
+  <!-- Scanlines -->
+  <g opacity="0.3">
+    <line x1="14" y1="16" x2="50" y2="16" stroke="#fff" stroke-width="0.5"/>
+    <line x1="14" y1="20" x2="50" y2="20" stroke="#fff" stroke-width="0.5"/>
+    <line x1="14" y1="24" x2="50" y2="24" stroke="#fff" stroke-width="0.5"/>
+    <line x1="14" y1="28" x2="50" y2="28" stroke="#fff" stroke-width="0.5"/>
+    <line x1="14" y1="32" x2="50" y2="32" stroke="#fff" stroke-width="0.5"/>
+    <line x1="14" y1="36" x2="50" y2="36" stroke="#fff" stroke-width="0.5"/>
+  </g>
+  
+  <!-- Monitor Stand -->
+  <rect x="26" y="46" width="12" height="4" rx="1" fill="#444"/>
+  <rect x="20" y="50" width="24" height="6" rx="2" fill="#555"/>
+  
+  <!-- Power LED -->
+  <circle cx="20" cy="44" r="1.5" fill="#0f0" opacity="0.8"/>
+  
+  <!-- Screen gradient definition -->
+  <defs>
+    <radialGradient id="screenGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#1a4d2e;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+</svg>
