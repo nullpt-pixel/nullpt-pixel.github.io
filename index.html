@@ -14,6 +14,11 @@
         --accent: #7a7a7a;
         --dim: #444;
         --effect-intensity: 1;
+        --font-family: system-ui, sans-serif;
+    }
+    
+    body[data-font="terminal"] {
+        --font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
     }
 
     [data-theme="light"] {
@@ -28,10 +33,10 @@
         padding: 0;
         background: var(--bg);
         color: var(--fg);
-        font-family: system-ui, sans-serif;
+        font-family: var(--font-family);
         height: 100%;
         overflow: hidden;
-        transition: background 0.3s, color 0.3s;
+        transition: background 0.3s, color 0.3s, font-family 0.3s;
     }
 
     body::before {
@@ -268,6 +273,18 @@
         border-radius: 4px;
         cursor: pointer;
         min-width: 110px;
+        transition: background 0.3s, border 0.3s;
+        font-family: var(--font-family);
+    }
+
+    body[data-transparent-fields="true"] .search-engine-selector {
+        background: transparent;
+        border-color: transparent;
+    }
+
+    body[data-transparent-fields="true"] .search-engine-selector:focus {
+        background: rgba(0, 0, 0, 0.2);
+        border-color: var(--accent);
     }
 
     .search-bar form {
@@ -286,6 +303,18 @@
         outline: none;
         border-radius: 4px;
         box-sizing: border-box;
+        transition: background 0.3s, border 0.3s;
+        font-family: var(--font-family);
+    }
+
+    body[data-transparent-fields="true"] .search-bar input {
+        background: transparent;
+        border-color: transparent;
+    }
+
+    body[data-transparent-fields="true"] .search-bar input:focus {
+        background: rgba(0, 0, 0, 0.2);
+        border-color: var(--accent);
     }
 
     .search-bar input::placeholder {
@@ -473,6 +502,17 @@
         outline: none;
         -webkit-appearance: none;
         appearance: none;
+        transition: background 0.3s, border 0.3s;
+    }
+
+    body[data-transparent-fields="true"] .notes-textarea {
+        background: transparent;
+        border-color: transparent;
+    }
+
+    body[data-transparent-fields="true"] .notes-textarea:focus {
+        background: rgba(0, 0, 0, 0.2);
+        border-color: var(--accent);
     }
 
     .notes-textarea:focus {
@@ -681,9 +721,62 @@
         font-size: 13px;
         min-width: 40px;
     }
+
+    /* Loading/Start Screen */
+    #startScreen {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        cursor: pointer;
+        transition: opacity 0.5s ease-out;
+    }
+
+    #startScreen.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .start-title {
+        font-size: 48px;
+        letter-spacing: 4px;
+        margin-bottom: 32px;
+        opacity: 0.9;
+        font-family: var(--font-family);
+    }
+
+    .start-prompt {
+        font-size: 20px;
+        letter-spacing: 2px;
+        opacity: 0.7;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .start-subtitle {
+        font-size: 14px;
+        letter-spacing: 1px;
+        opacity: 0.5;
+        margin-top: 16px;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 0.3; }
+    }
 </style>
 </head>
 <body data-theme="dark">
+<!-- Start Screen -->
+<div id="startScreen">
+    <div class="start-title">STANDBY</div>
+    <div class="start-prompt">▶ ENGAGE</div>
+    <div class="start-subtitle">Initializing sound drivers...</div>
+</div>
+
 <div class="container" id="mainContainer">
     <button id="settingsBtn">Settings</button>
 
@@ -691,7 +784,6 @@
         <div class="settings-tabs">
             <button class="settings-tab active" data-tab="general">General</button>
             <button class="settings-tab" data-tab="display">Display</button>
-            <button class="settings-tab" data-tab="colors">Colors</button>
             <button class="settings-tab" data-tab="links">Links</button>
             <button class="settings-tab" data-tab="advanced">Advanced</button>
         </div>
@@ -702,7 +794,6 @@
                 <label>Device Name: <input type="text" id="deviceName" placeholder="Game Console"></label>
                 <label>Page Title: <input type="text" id="pageTitleInput" placeholder="System Home"></label>
                 <label>Status Message: <input type="text" id="statusMessageText" placeholder="Ready"></label>
-                <label>Background Image URL: <input type="text" id="bgImageUrl" placeholder="https://example.com/image.jpg"></label>
                 <label>Default Search Engine: 
                     <select id="searchEngine">
                         <option value="google">Google</option>
@@ -713,25 +804,6 @@
                         <option value="startpage">Startpage</option>
                     </select>
                 </label>
-            </div>
-
-            <!-- DISPLAY TAB -->
-            <div class="settings-page" data-page="display">
-                <label>Screen Effect: 
-                    <select id="screenEffect">
-                        <option value="none">None (Clean)</option>
-                        <option value="crt">CRT Monitor</option>
-                        <option value="arcade">Arcade CRT</option>
-                        <option value="scanlines">Scanlines Only</option>
-                        <option value="vhs">VHS Tape</option>
-                        <option value="gameboy">Game Boy LCD</option>
-                        <option value="phosphor">Phosphor Glow</option>
-                    </select>
-                </label>
-                <label>Effect Intensity: <input type="range" id="effectIntensity" min="0" max="200" value="100" step="10"></label>
-                <div style="font-size: 11px; opacity: 0.6; margin-top: -8px; text-align: right;">
-                    <span id="effectIntensityValue">100%</span>
-                </div>
                 
                 <div class="settings-section">
                     <div class="section-title">Audio</div>
@@ -745,17 +817,54 @@
                         </select>
                     </label>
                     <label>Ambience Volume: <input type="range" id="ambienceVolume" min="0" max="100" value="30"></label>
-                    <label>Music URL: <input type="text" id="musicUrl" placeholder="https://example.com/song.mp3"></label>
-                    <label>Music Volume: <input type="range" id="musicVolume" min="0" max="100" value="50"></label>
-                    <label><input type="checkbox" id="musicLoop" checked> Loop Music</label>
+                </div>
+            </div>
+
+            <!-- DISPLAY TAB -->
+            <div class="settings-page" data-page="display">
+                <div class="section-title">Themes</div>
+                <div id="themesList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+                <button id="saveThemeBtn" style="margin-bottom: 16px;">💾 Save Current as Theme</button>
+                
+                <div class="settings-section">
+                    <div class="section-title">Visual Settings</div>
+                    <label>Font Style: 
+                        <select id="fontStyle">
+                            <option value="standard">Standard</option>
+                            <option value="terminal">Terminal/Monospace</option>
+                        </select>
+                    </label>
+                    <label>Background Image URL: <input type="text" id="bgImageUrl" placeholder="https://example.com/image.jpg"></label>
+                    <label><input type="checkbox" id="themeToggle"> Light Mode</label>
+                    <label><input type="checkbox" id="showStats" checked> Show All Status Indicators</label>
+                    <label><input type="checkbox" id="showSearch" checked> Show Search Bar</label>
+                    <label><input type="checkbox" id="showLinks" checked> Show Links Menu</label>
+                    <label><input type="checkbox" id="showNotes" checked> Show Notes</label>
+                    <label><input type="checkbox" id="toggleLinkBorders"> Show Link Borders</label>
+                    <label><input type="checkbox" id="toggleTransparentFields"> Transparent Text Fields</label>
+                    <label><input type="checkbox" id="showStartScreen" checked> Show Start Screen</label>
                 </div>
                 
-                <label><input type="checkbox" id="themeToggle"> Light Mode</label>
-                <label><input type="checkbox" id="showStats" checked> Show All Status Indicators</label>
-                <label><input type="checkbox" id="showSearch" checked> Show Search Bar</label>
-                <label><input type="checkbox" id="showLinks" checked> Show Links Menu</label>
-                <label><input type="checkbox" id="showNotes" checked> Show Notes</label>
-                <label><input type="checkbox" id="toggleLinkBorders"> Show Link Borders</label>
+                <div class="settings-section">
+                    <div class="section-title">Screen Effects (Stack Multiple)</div>
+                    <div id="activeEffectsList" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;"></div>
+                    <label>Add Effect: 
+                        <select id="effectToAdd">
+                            <option value="">-- Select Effect --</option>
+                            <option value="crt">CRT Monitor</option>
+                            <option value="arcade">Arcade CRT</option>
+                            <option value="scanlines">Scanlines</option>
+                            <option value="vhs">VHS Tape</option>
+                            <option value="gameboy">Game Boy LCD</option>
+                            <option value="phosphor">Phosphor Glow</option>
+                        </select>
+                    </label>
+                    <button id="addEffectBtn" style="margin-top: 4px;">+ Add Effect</button>
+                    <label>Effect Intensity: <input type="range" id="effectIntensity" min="0" max="200" value="100" step="10"></label>
+                    <div style="font-size: 11px; opacity: 0.6; margin-top: -8px; text-align: right;">
+                        <span id="effectIntensityValue">100%</span>
+                    </div>
+                </div>
                 
                 <div class="settings-section">
                     <div class="section-title">Individual Stats</div>
@@ -767,15 +876,14 @@
                     <label><input type="checkbox" id="statWeather"> Weather</label>
                     <label><input type="checkbox" id="statPing" checked> Ping</label>
                 </div>
-            </div>
-
-            <!-- COLORS TAB -->
-            <div class="settings-page" data-page="colors">
-                <div class="section-title">Dark Theme Colors</div>
-                <label>Background: <span class="color-input-group"><input type="color" id="colorDarkBg" value="#070707"><input type="text" id="colorDarkBgText" class="color-text-input" maxlength="7" placeholder="#070707"></span></label>
-                <label>Text: <span class="color-input-group"><input type="color" id="colorDarkFg" value="#cfcfcf"><input type="text" id="colorDarkFgText" class="color-text-input" maxlength="7" placeholder="#cfcfcf"></span></label>
-                <label>Accent: <span class="color-input-group"><input type="color" id="colorDarkAccent" value="#7a7a7a"><input type="text" id="colorDarkAccentText" class="color-text-input" maxlength="7" placeholder="#7a7a7a"></span></label>
-                <label>Dim: <span class="color-input-group"><input type="color" id="colorDarkDim" value="#444444"><input type="text" id="colorDarkDimText" class="color-text-input" maxlength="7" placeholder="#444444"></span></label>
+                
+                <div class="settings-section">
+                    <div class="section-title">Dark Theme Colors</div>
+                    <label>Background: <span class="color-input-group"><input type="color" id="colorDarkBg" value="#070707"><input type="text" id="colorDarkBgText" class="color-text-input" maxlength="7" placeholder="#070707"></span></label>
+                    <label>Text: <span class="color-input-group"><input type="color" id="colorDarkFg" value="#cfcfcf"><input type="text" id="colorDarkFgText" class="color-text-input" maxlength="7" placeholder="#cfcfcf"></span></label>
+                    <label>Accent: <span class="color-input-group"><input type="color" id="colorDarkAccent" value="#7a7a7a"><input type="text" id="colorDarkAccentText" class="color-text-input" maxlength="7" placeholder="#7a7a7a"></span></label>
+                    <label>Dim: <span class="color-input-group"><input type="color" id="colorDarkDim" value="#444444"><input type="text" id="colorDarkDimText" class="color-text-input" maxlength="7" placeholder="#444444"></span></label>
+                </div>
                 
                 <div class="settings-section">
                     <div class="section-title">Light Theme Colors</div>
@@ -783,9 +891,8 @@
                     <label>Text: <span class="color-input-group"><input type="color" id="colorLightFg" value="#111111"><input type="text" id="colorLightFgText" class="color-text-input" maxlength="7" placeholder="#111111"></span></label>
                     <label>Accent: <span class="color-input-group"><input type="color" id="colorLightAccent" value="#666666"><input type="text" id="colorLightAccentText" class="color-text-input" maxlength="7" placeholder="#666666"></span></label>
                     <label>Dim: <span class="color-input-group"><input type="color" id="colorLightDim" value="#bbbbbb"><input type="text" id="colorLightDimText" class="color-text-input" maxlength="7" placeholder="#bbbbbb"></span></label>
+                    <button id="resetColors" style="font-size: 11px; padding: 4px 8px; opacity: 0.7; margin-top: 8px;">Reset Colors to Default</button>
                 </div>
-                
-                <button id="resetColors" style="font-size: 11px; padding: 4px 8px; opacity: 0.7;">Reset Colors to Default</button>
             </div>
 
             <!-- LINKS TAB -->
@@ -815,8 +922,14 @@
                     <label>Weather: <input type="number" id="refreshWeather" value="600" min="60" max="3600"></label>
                 </div>
                 
-                <div class="settings-section">
-                    <button id="resetSettings">Reset All Settings to Default</button>
+                <div class="settings-section" style="display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <button id="resetSettings" style="width: 100%;">Reset Settings to Default</button>
+                    </div>
+                    <div style="flex: 1; border: 2px solid #d32f2f; border-radius: 4px; padding: 8px;">
+                        <div style="font-size: 11px; color: #d32f2f; font-weight: bold; margin-bottom: 4px;">⚠️ DANGER ZONE</div>
+                        <button id="eraseDataBtn" style="background: #d32f2f; font-weight: bold; width: 100%; font-size: 12px;">🗑️ Erase All Data</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -869,6 +982,33 @@
     </div>
 
     <div class="status-message" id="statusMessage">Ready</div>
+</div>
+
+<!-- Erase Data Confirmation Modal -->
+<div id="eraseModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center;">
+    <div style="background: var(--bg); border: 2px solid #d32f2f; border-radius: 8px; padding: 24px; max-width: 400px; text-align: center;">
+        <div style="font-size: 20px; color: #d32f2f; margin-bottom: 16px;">⚠️ CONFIRM DATA ERASURE</div>
+        <audio id="alarmSiren" loop>
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf4GAgYGCgoKDg4SEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+QkJCRkZGSkpKTk5OUlJSVlZWWlpaXl5eYmJiZmZmampqbm5ucnJydnZ2enp6fn5+goKChoaGioqKjo6OkpKSlpaWmpqanp6eoqKipqamqqqqrq6usrKytra2urq6vr6+wsLCxsbGysrKzs7O0tLS1tbW2tra3t7e4uLi5ubm6urq7u7u8vLy9vb2+vr6/v7/AwMDBwcHCwsLDw8PExMTFxcXGxsbHx8fIyMjJycnKysrLy8vMzMzNzc3Ozs7Pz8/Q0NDR0dHS0tLT09PU1NTV1dXW1tbX19fY2NjZ2dna2trb29vc3Nzd3d3e3t7f39/g4ODh4eHi4uLj4+Pk5OTl5eXm5ubn5+fo6Ojp6enq6urr6+vs7Ozt7e3u7u7v7+/w8PDx8fHy8vLz8/P09PT19fX29vb39/f4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7///8AAP//AAH/AQEC/wICA/8DAwT/BAQF/wUFBv8GBgf/BwcI/wgICP8JCQn/CgoK/wsLC/8MDAz/DQ0N/w4ODv8PDw//EBAQ/xEREf8SEhL/ExMT/xQUFP8VFRX/FhYW/xcXF/8YGBj/GRkZ/xoaGv8bGxv/HBwc/x0dHf8eHh7/Hx8f/yAgIP8hISH/IiIi/yMjI/8kJCT/JSUl/yYmJv8nJyf/KCgo/ykpKf8qKir/Kysr/ywsLP8tLS3/Li4u/y8vL/8wMDD/MTEx/zIyMv8zMzP/NDQ0/zU1Nf82Njb/Nzc3/zg4OP85OTn/Ojo6/zs7O/88PDz/PT09/z4+Pv8/Pz//QEBA/0FBQf9CQkL/Q0ND/0RERP9FRUX/RkZG/0dHR/9ISEj/SUlJ/0pKSv9LS0v/TExM/01NTf9OTk7/T09P/1BQUP9RUVH/UlJS/1NTU/9UVFT/VVVV/1ZWVv9XV1f/WFhY/1lZWf9aWlr/W1tb/1xcXP9dXV3/Xl5e/19fX/9gYGD/YWFh/2JiYv9jY2P/ZGRk/2VlZf9mZmb/Z2dn/2hoaP9paWn/ampq/2tra/9sbGz/bW1t/25ubv9vb2//cHBw/3Fxcf9ycnL/c3Nz/3R0dP91dXX/dnZ2/3d3d/94eHj/eXl5/3p6ev97e3v/fHx8/319ff9+fn7/f39//4CAgP+BgYH/goKC" type="audio/wav">
+        </audio>
+        <div style="font-size: 13px; margin-bottom: 16px; text-align: left;">
+            This will <strong style="color: #d32f2f;">permanently delete</strong>:
+            <ul style="margin: 8px 0; text-align: left;">
+                <li>All settings and preferences</li>
+                <li>All saved themes</li>
+                <li>All notes content</li>
+                <li>All custom links</li>
+                <li>Category collapse states</li>
+            </ul>
+            <strong>This action cannot be undone.</strong>
+        </div>
+        <div style="font-size: 12px; margin-bottom: 12px; opacity: 0.8;">Type <code style="background: var(--dim); padding: 2px 6px; border-radius: 2px;">ERASE</code> to confirm:</div>
+        <input type="text" id="eraseConfirmInput" style="width: 100%; padding: 8px; margin-bottom: 16px; background: var(--bg); color: var(--fg); border: 1px solid var(--dim); border-radius: 4px; text-align: center; font-size: 14px;" placeholder="Type ERASE">
+        <div style="display: flex; gap: 8px;">
+            <button id="eraseCancelBtn" style="flex: 1; padding: 8px; background: var(--dim); border: none; border-radius: 4px; cursor: pointer; color: var(--fg);">Cancel</button>
+            <button id="eraseConfirmBtn" style="flex: 1; padding: 8px; background: #d32f2f; border: none; border-radius: 4px; cursor: pointer; color: #fff; font-weight: bold;" disabled>Erase All Data</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -1035,16 +1175,18 @@ const showLinks = document.getElementById('showLinks');
 const showNotes = document.getElementById('showNotes');
 const themeToggle = document.getElementById('themeToggle');
 const toggleLinkBorders = document.getElementById('toggleLinkBorders');
-const screenEffect = document.getElementById('screenEffect');
+const toggleTransparentFields = document.getElementById('toggleTransparentFields');
+const showStartScreen = document.getElementById('showStartScreen');
+const fontStyle = document.getElementById('fontStyle');
+const effectToAdd = document.getElementById('effectToAdd');
+const addEffectBtn = document.getElementById('addEffectBtn');
+const activeEffectsList = document.getElementById('activeEffectsList');
 const effectIntensity = document.getElementById('effectIntensity');
 const effectIntensityValue = document.getElementById('effectIntensityValue');
 
 // Audio elements
 const ambienceType = document.getElementById('ambienceType');
 const ambienceVolume = document.getElementById('ambienceVolume');
-const musicUrl = document.getElementById('musicUrl');
-const musicVolume = document.getElementById('musicVolume');
-const musicLoop = document.getElementById('musicLoop');
 const statToggles = {
     time: document.getElementById('statTime'),
     battery: document.getElementById('statBattery'),
@@ -1057,7 +1199,6 @@ const statToggles = {
 const linksList = document.getElementById('linksList');
 const addLinkBtn = document.getElementById('addLinkBtn');
 const resetSettingsBtn = document.getElementById('resetSettings');
-console.log('Reset button element:', resetSettingsBtn); // Debug log
 const linksMenu = document.getElementById('linksMenu');
 const mainContainer = document.getElementById('mainContainer');
 const weatherTestBtn = document.getElementById('weatherTestBtn');
@@ -1132,44 +1273,483 @@ function applyEffectIntensity() {
 
 effectIntensity.oninput = applyEffectIntensity;
 
-// Screen effect handler
-function applyScreenEffect() {
-    const effect = screenEffect.value;
-    document.body.dataset.effect = effect;
-    saveSetting('screenEffect', effect);
+// Multi-effect system
+let activeEffects = loadSetting('activeEffects', []);
+
+function applyEffects() {
+    // Build a combined data-effect attribute
+    const effectString = activeEffects.join(' ');
+    document.body.dataset.effect = effectString;
+    saveSetting('activeEffects', activeEffects);
 }
 
-screenEffect.onchange = applyScreenEffect;
+function renderActiveEffects() {
+    activeEffectsList.innerHTML = '';
+    
+    if (activeEffects.length === 0) {
+        const emptyMsg = document.createElement('div');
+        emptyMsg.style.fontSize = '12px';
+        emptyMsg.style.opacity = '0.6';
+        emptyMsg.textContent = 'No effects active';
+        activeEffectsList.appendChild(emptyMsg);
+        return;
+    }
+    
+    activeEffects.forEach((effect, index) => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between';
+        row.style.alignItems = 'center';
+        row.style.padding = '4px 8px';
+        row.style.background = 'rgba(255,255,255,0.05)';
+        row.style.borderRadius = '3px';
+        
+        const effectNames = {
+            'crt': 'CRT Monitor',
+            'arcade': 'Arcade CRT',
+            'scanlines': 'Scanlines',
+            'vhs': 'VHS Tape',
+            'gameboy': 'Game Boy LCD',
+            'phosphor': 'Phosphor Glow'
+        };
+        
+        const label = document.createElement('span');
+        label.textContent = effectNames[effect] || effect;
+        label.style.fontSize = '13px';
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '−';
+        removeBtn.style.padding = '2px 8px';
+        removeBtn.style.fontSize = '16px';
+        removeBtn.style.background = '#933';
+        removeBtn.style.border = 'none';
+        removeBtn.style.color = '#fff';
+        removeBtn.style.cursor = 'pointer';
+        removeBtn.style.borderRadius = '3px';
+        removeBtn.onclick = () => {
+            activeEffects.splice(index, 1);
+            applyEffects();
+            renderActiveEffects();
+        };
+        
+        row.appendChild(label);
+        row.appendChild(removeBtn);
+        activeEffectsList.appendChild(row);
+    });
+}
 
-// Audio System
+addEffectBtn.onclick = () => {
+    const effect = effectToAdd.value;
+    if (!effect) {
+        alert('Please select an effect to add');
+        return;
+    }
+    
+    if (activeEffects.includes(effect)) {
+        alert('This effect is already active');
+        return;
+    }
+    
+    activeEffects.push(effect);
+    applyEffects();
+    renderActiveEffects();
+    effectToAdd.value = '';
+};
+
+// Font style handler
+function applyFontStyle() {
+    document.body.dataset.font = fontStyle.value;
+    saveSetting('fontStyle', fontStyle.value);
+}
+
+fontStyle.onchange = applyFontStyle;
+
+// Themes System (renamed from Presets)
+const builtinThemes = {
+    'Silent Dark': {
+        theme: 'dark',
+        fontStyle: 'standard',
+        bgImageUrl: '',
+        toggleLinkBorders: false,
+        toggleTransparentFields: false,
+        showStartScreen: false,
+        activeEffects: [],
+        effectIntensity: 100,
+        showStats: true,
+        showSearch: true,
+        showLinks: true,
+        showNotes: true,
+        statTime: true,
+        statBattery: true,
+        statNetwork: true,
+        statIP: true,
+        statDL: true,
+        statWeather: false,
+        statPing: true,
+        colorDarkBg: '#070707',
+        colorDarkFg: '#cfcfcf',
+        colorDarkAccent: '#7a7a7a',
+        colorDarkDim: '#444444',
+        colorLightBg: '#f5f5f5',
+        colorLightFg: '#111111',
+        colorLightAccent: '#666666',
+        colorLightDim: '#bbbbbb'
+    },
+    'CRT Terminal': {
+        theme: 'dark',
+        fontStyle: 'terminal',
+        bgImageUrl: '',
+        toggleLinkBorders: true,
+        toggleTransparentFields: false,
+        showStartScreen: true,
+        activeEffects: ['scanlines'],
+        effectIntensity: 150,
+        showStats: true,
+        showSearch: true,
+        showLinks: true,
+        showNotes: true,
+        statTime: true,
+        statBattery: true,
+        statNetwork: true,
+        statIP: true,
+        statDL: true,
+        statWeather: false,
+        statPing: true,
+        colorDarkBg: '#0a0a0a',
+        colorDarkFg: '#00ff00',
+        colorDarkAccent: '#00aa00',
+        colorDarkDim: '#003300',
+        colorLightBg: '#f5f5f5',
+        colorLightFg: '#111111',
+        colorLightAccent: '#666666',
+        colorLightDim: '#bbbbbb'
+    },
+    'VHS Lounge': {
+        theme: 'dark',
+        fontStyle: 'standard',
+        bgImageUrl: '',
+        toggleLinkBorders: false,
+        toggleTransparentFields: true,
+        showStartScreen: true,
+        activeEffects: ['vhs'],
+        effectIntensity: 120,
+        showStats: true,
+        showSearch: true,
+        showLinks: true,
+        showNotes: true,
+        statTime: true,
+        statBattery: true,
+        statNetwork: true,
+        statIP: true,
+        statDL: true,
+        statWeather: false,
+        statPing: true,
+        colorDarkBg: '#070707',
+        colorDarkFg: '#cfcfcf',
+        colorDarkAccent: '#7a7a7a',
+        colorDarkDim: '#444444',
+        colorLightBg: '#f5f5f5',
+        colorLightFg: '#111111',
+        colorLightAccent: '#666666',
+        colorLightDim: '#bbbbbb'
+    },
+    'Arcade Night': {
+        theme: 'dark',
+        fontStyle: 'standard',
+        bgImageUrl: '',
+        toggleLinkBorders: true,
+        toggleTransparentFields: false,
+        showStartScreen: true,
+        activeEffects: ['arcade'],
+        effectIntensity: 130,
+        showStats: true,
+        showSearch: true,
+        showLinks: true,
+        showNotes: true,
+        statTime: true,
+        statBattery: true,
+        statNetwork: true,
+        statIP: true,
+        statDL: true,
+        statWeather: false,
+        statPing: true,
+        colorDarkBg: '#0f0520',
+        colorDarkFg: '#ff00ff',
+        colorDarkAccent: '#00ffff',
+        colorDarkDim: '#4a0f5f',
+        colorLightBg: '#f5f5f5',
+        colorLightFg: '#111111',
+        colorLightAccent: '#666666',
+        colorLightDim: '#bbbbbb'
+    },
+    'Clean Light': {
+        theme: 'light',
+        fontStyle: 'standard',
+        bgImageUrl: '',
+        toggleLinkBorders: false,
+        toggleTransparentFields: false,
+        showStartScreen: false,
+        activeEffects: [],
+        effectIntensity: 100,
+        showStats: true,
+        showSearch: true,
+        showLinks: true,
+        showNotes: true,
+        statTime: true,
+        statBattery: true,
+        statNetwork: true,
+        statIP: true,
+        statDL: true,
+        statWeather: false,
+        statPing: true,
+        colorDarkBg: '#070707',
+        colorDarkFg: '#cfcfcf',
+        colorDarkAccent: '#7a7a7a',
+        colorDarkDim: '#444444',
+        colorLightBg: '#f5f5f5',
+        colorLightFg: '#111111',
+        colorLightAccent: '#666666',
+        colorLightDim: '#bbbbbb'
+    }
+};
+
+function getDisplaySettings() {
+    return {
+        theme: themeToggle.checked ? 'light' : 'dark',
+        fontStyle: fontStyle.value,
+        bgImageUrl: bgImageUrl.value,
+        toggleLinkBorders: toggleLinkBorders.checked,
+        toggleTransparentFields: toggleTransparentFields.checked,
+        showStartScreen: showStartScreen.checked,
+        activeEffects: activeEffects,
+        effectIntensity: effectIntensity.value,
+        showStats: showStats.checked,
+        showSearch: showSearch.checked,
+        showLinks: showLinks.checked,
+        showNotes: showNotes.checked,
+        statTime: statToggles.time.checked,
+        statBattery: statToggles.battery.checked,
+        statNetwork: statToggles.network.checked,
+        statIP: statToggles.ip.checked,
+        statDL: statToggles.dl.checked,
+        statWeather: statToggles.weather.checked,
+        statPing: statToggles.ping.checked,
+        colorDarkBg: colorDarkBg.value,
+        colorDarkFg: colorDarkFg.value,
+        colorDarkAccent: colorDarkAccent.value,
+        colorDarkDim: colorDarkDim.value,
+        colorLightBg: colorLightBg.value,
+        colorLightFg: colorLightFg.value,
+        colorLightAccent: colorLightAccent.value,
+        colorLightDim: colorLightDim.value
+    };
+}
+
+function applyTheme(theme) {
+    // Apply all display settings from theme
+    if (theme.theme !== undefined) themeToggle.checked = theme.theme === 'light';
+    if (theme.fontStyle !== undefined) fontStyle.value = theme.fontStyle;
+    if (theme.bgImageUrl !== undefined) bgImageUrl.value = theme.bgImageUrl;
+    if (theme.toggleLinkBorders !== undefined) toggleLinkBorders.checked = theme.toggleLinkBorders;
+    if (theme.toggleTransparentFields !== undefined) toggleTransparentFields.checked = theme.toggleTransparentFields;
+    if (theme.showStartScreen !== undefined) showStartScreen.checked = theme.showStartScreen;
+    if (theme.activeEffects !== undefined) activeEffects = theme.activeEffects;
+    if (theme.effectIntensity !== undefined) effectIntensity.value = theme.effectIntensity;
+    if (theme.showStats !== undefined) showStats.checked = theme.showStats;
+    if (theme.showSearch !== undefined) showSearch.checked = theme.showSearch;
+    if (theme.showLinks !== undefined) showLinks.checked = theme.showLinks;
+    if (theme.showNotes !== undefined) showNotes.checked = theme.showNotes;
+    if (theme.statTime !== undefined) statToggles.time.checked = theme.statTime;
+    if (theme.statBattery !== undefined) statToggles.battery.checked = theme.statBattery;
+    if (theme.statNetwork !== undefined) statToggles.network.checked = theme.statNetwork;
+    if (theme.statIP !== undefined) statToggles.ip.checked = theme.statIP;
+    if (theme.statDL !== undefined) statToggles.dl.checked = theme.statDL;
+    if (theme.statWeather !== undefined) statToggles.weather.checked = theme.statWeather;
+    if (theme.statPing !== undefined) statToggles.ping.checked = theme.statPing;
+    if (theme.colorDarkBg !== undefined) {
+        colorDarkBg.value = theme.colorDarkBg;
+        colorDarkBgText.value = theme.colorDarkBg;
+    }
+    if (theme.colorDarkFg !== undefined) {
+        colorDarkFg.value = theme.colorDarkFg;
+        colorDarkFgText.value = theme.colorDarkFg;
+    }
+    if (theme.colorDarkAccent !== undefined) {
+        colorDarkAccent.value = theme.colorDarkAccent;
+        colorDarkAccentText.value = theme.colorDarkAccent;
+    }
+    if (theme.colorDarkDim !== undefined) {
+        colorDarkDim.value = theme.colorDarkDim;
+        colorDarkDimText.value = theme.colorDarkDim;
+    }
+    if (theme.colorLightBg !== undefined) {
+        colorLightBg.value = theme.colorLightBg;
+        colorLightBgText.value = theme.colorLightBg;
+    }
+    if (theme.colorLightFg !== undefined) {
+        colorLightFg.value = theme.colorLightFg;
+        colorLightFgText.value = theme.colorLightFg;
+    }
+    if (theme.colorLightAccent !== undefined) {
+        colorLightAccent.value = theme.colorLightAccent;
+        colorLightAccentText.value = theme.colorLightAccent;
+    }
+    if (theme.colorLightDim !== undefined) {
+        colorLightDim.value = theme.colorLightDim;
+        colorLightDimText.value = theme.colorLightDim;
+    }
+    
+    // Apply effects and settings
+    applyEffects();
+    renderActiveEffects();
+    applyEffectIntensity();
+    applySettings();
+    document.body.dataset.font = fontStyle.value;
+}
+
+function renderThemes() {
+    const container = document.getElementById('themesList');
+    const userThemes = loadSetting('userThemes', {});
+    container.innerHTML = '';
+    
+    // Built-in themes
+    Object.keys(builtinThemes).forEach(name => {
+        const btn = document.createElement('button');
+        btn.textContent = name;
+        btn.style.padding = '8px 12px';
+        btn.style.background = 'var(--dim)';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '4px';
+        btn.style.cursor = 'pointer';
+        btn.style.color = 'var(--fg)';
+        btn.style.fontSize = '13px';
+        btn.onclick = () => applyTheme(builtinThemes[name]);
+        container.appendChild(btn);
+    });
+    
+    // User themes
+    Object.keys(userThemes).forEach(name => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.gap = '8px';
+        
+        const btn = document.createElement('button');
+        btn.textContent = name;
+        btn.style.flex = '1';
+        btn.style.padding = '8px 12px';
+        btn.style.background = 'var(--accent)';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '4px';
+        btn.style.cursor = 'pointer';
+        btn.style.color = 'var(--fg)';
+        btn.style.fontSize = '13px';
+        btn.onclick = () => applyTheme(userThemes[name]);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.style.padding = '8px 12px';
+        deleteBtn.style.background = '#933';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.borderRadius = '4px';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.fontSize = '13px';
+        deleteBtn.onclick = () => {
+            delete userThemes[name];
+            saveSetting('userThemes', userThemes);
+            renderThemes();
+        };
+        
+        row.appendChild(btn);
+        row.appendChild(deleteBtn);
+        container.appendChild(row);
+    });
+}
+
+document.getElementById('saveThemeBtn').onclick = () => {
+    const name = prompt('Enter theme name:');
+    if (!name || !name.trim()) return;
+    
+    const userThemes = loadSetting('userThemes', {});
+    userThemes[name.trim()] = getDisplaySettings();
+    saveSetting('userThemes', userThemes);
+    renderThemes();
+};
+
+// Erase Data System with alarm
+const eraseModal = document.getElementById('eraseModal');
+const eraseConfirmInput = document.getElementById('eraseConfirmInput');
+const eraseConfirmBtn = document.getElementById('eraseConfirmBtn');
+const eraseCancelBtn = document.getElementById('eraseCancelBtn');
+const eraseDataBtn = document.getElementById('eraseDataBtn');
+const alarmSiren = document.getElementById('alarmSiren');
+
+eraseConfirmInput.oninput = () => {
+    eraseConfirmBtn.disabled = eraseConfirmInput.value !== 'ERASE';
+};
+
+eraseCancelBtn.onclick = () => {
+    eraseModal.style.display = 'none';
+    eraseConfirmInput.value = '';
+    eraseConfirmBtn.disabled = true;
+    alarmSiren.pause();
+    alarmSiren.currentTime = 0;
+};
+
+eraseConfirmBtn.onclick = () => {
+    alarmSiren.pause();
+    localStorage.clear();
+    window.location.replace(window.location.href.split('?')[0]);
+};
+
+// Erase button with Ctrl+Shift+Click bypass for sandbox
+eraseDataBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    
+    // Ctrl+Shift+Click bypasses modal (for sandbox)
+    if (e.ctrlKey && e.shiftKey) {
+        localStorage.clear();
+        window.location.replace(window.location.href.split('?')[0]);
+        return;
+    }
+    
+    // Show modal and play alarm
+    eraseModal.style.display = 'flex';
+    eraseConfirmInput.value = '';
+    eraseConfirmBtn.disabled = true;
+    alarmSiren.play().catch(() => {});
+    setTimeout(() => eraseConfirmInput.focus(), 100);
+});
+
+// Close modal on outside click
+eraseModal.onclick = (e) => {
+    if (e.target === eraseModal) {
+        eraseCancelBtn.click();
+    }
+};
 let audioContext = null;
 let ambienceNode = null;
 let ambienceGain = null;
-let musicElement = null;
-let musicGainNode = null;
 
 function initAudio() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        ambienceGain = audioContext.createGain();
-        ambienceGain.connect(audioContext.destination);
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
     }
+    return audioContext;
 }
 
 function stopAmbience() {
     if (ambienceNode) {
         try {
             if (ambienceNode.osc1) {
-                // Arcade mode has multiple oscillators
                 ambienceNode.osc1.stop();
                 ambienceNode.osc2.stop();
             } else if (ambienceNode.stop) {
-                // Standard audio nodes
                 ambienceNode.stop();
             }
-        } catch (e) {
-            console.log('Error stopping ambience:', e);
-        }
+        } catch (e) {}
         ambienceNode = null;
     }
 }
@@ -1178,17 +1758,21 @@ function startAmbience(type) {
     stopAmbience();
     if (type === 'none' || !type) return;
     
-    initAudio();
+    const ctx = initAudio();
+    
+    if (!ambienceGain) {
+        ambienceGain = ctx.createGain();
+        ambienceGain.connect(ctx.destination);
+    }
     
     const volume = parseFloat(ambienceVolume.value) / 100;
     ambienceGain.gain.value = volume;
     
     if (type === 'crt') {
-        // CRT electrical hum - low frequency oscillator
-        const osc = audioContext.createOscillator();
-        const filter = audioContext.createBiquadFilter();
+        const osc = ctx.createOscillator();
+        const filter = ctx.createBiquadFilter();
         osc.type = 'sine';
-        osc.frequency.value = 60; // 60Hz hum
+        osc.frequency.value = 60;
         filter.type = 'lowpass';
         filter.frequency.value = 200;
         osc.connect(filter);
@@ -1197,17 +1781,16 @@ function startAmbience(type) {
         ambienceNode = osc;
         
     } else if (type === 'tape') {
-        // Tape hiss - filtered white noise
-        const bufferSize = 2 * audioContext.sampleRate;
-        const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const bufferSize = 2 * ctx.sampleRate;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const output = noiseBuffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
             output[i] = Math.random() * 2 - 1;
         }
-        const whiteNoise = audioContext.createBufferSource();
+        const whiteNoise = ctx.createBufferSource();
         whiteNoise.buffer = noiseBuffer;
         whiteNoise.loop = true;
-        const filter = audioContext.createBiquadFilter();
+        const filter = ctx.createBiquadFilter();
         filter.type = 'bandpass';
         filter.frequency.value = 3000;
         whiteNoise.connect(filter);
@@ -1216,15 +1799,14 @@ function startAmbience(type) {
         ambienceNode = whiteNoise;
         
     } else if (type === 'arcade') {
-        // Arcade ambience - mix of tones and noise
-        const osc1 = audioContext.createOscillator();
-        const osc2 = audioContext.createOscillator();
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
         osc1.type = 'sine';
         osc2.type = 'square';
         osc1.frequency.value = 120;
         osc2.frequency.value = 240;
-        const gain1 = audioContext.createGain();
-        const gain2 = audioContext.createGain();
+        const gain1 = ctx.createGain();
+        const gain2 = ctx.createGain();
         gain1.gain.value = 0.3;
         gain2.gain.value = 0.1;
         osc1.connect(gain1);
@@ -1233,12 +1815,11 @@ function startAmbience(type) {
         gain2.connect(ambienceGain);
         osc1.start();
         osc2.start();
-        ambienceNode = { osc1, osc2 }; // Store both for cleanup
+        ambienceNode = { osc1, osc2 };
         
     } else if (type === 'rain') {
-        // Rain/static - pink noise
-        const bufferSize = 2 * audioContext.sampleRate;
-        const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const bufferSize = 2 * ctx.sampleRate;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const output = noiseBuffer.getChannelData(0);
         let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
         for (let i = 0; i < bufferSize; i++) {
@@ -1253,7 +1834,7 @@ function startAmbience(type) {
             output[i] *= 0.11;
             b6 = white * 0.115926;
         }
-        const pinkNoise = audioContext.createBufferSource();
+        const pinkNoise = ctx.createBufferSource();
         pinkNoise.buffer = noiseBuffer;
         pinkNoise.loop = true;
         pinkNoise.connect(ambienceGain);
@@ -1278,74 +1859,13 @@ function updateAmbienceVolume() {
 ambienceType.onchange = updateAmbience;
 ambienceVolume.oninput = updateAmbienceVolume;
 
-// Background Music
-function stopMusic() {
-    if (musicElement) {
-        musicElement.pause();
-        musicElement.src = '';
-    }
-}
-
-function startMusic() {
-    const url = musicUrl.value.trim();
-    if (!url) {
-        stopMusic();
-        return;
-    }
-    
-    initAudio();
-    
-    if (!musicElement) {
-        musicElement = new Audio();
-        const source = audioContext.createMediaElementSource(musicElement);
-        musicGainNode = audioContext.createGain();
-        source.connect(musicGainNode);
-        musicGainNode.connect(audioContext.destination);
-    }
-    
-    musicElement.src = url;
-    musicElement.loop = musicLoop.checked;
-    musicGainNode.gain.value = parseFloat(musicVolume.value) / 100;
-    
-    musicElement.play().catch(e => {
-        console.error('Music playback failed:', e);
-    });
-    
-    saveSetting('musicUrl', url);
-}
-
-function updateMusicSettings() {
-    if (musicElement) {
-        musicElement.loop = musicLoop.checked;
-        if (musicGainNode) {
-            musicGainNode.gain.value = parseFloat(musicVolume.value) / 100;
-        }
-    }
-    saveSetting('musicLoop', musicLoop.checked);
-    saveSetting('musicVolume', musicVolume.value);
-}
-
-musicUrl.onchange = startMusic;
-musicVolume.oninput = updateMusicSettings;
-musicLoop.onchange = updateMusicSettings;
-
 // Pause audio when tab becomes inactive
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        // Tab is hidden - pause everything
-        if (ambienceNode) {
-            if (ambienceGain) ambienceGain.gain.value = 0;
-        }
-        if (musicElement && !musicElement.paused) {
-            musicElement.pause();
-        }
+        if (ambienceGain) ambienceGain.gain.value = 0;
     } else {
-        // Tab is visible again - resume
-        if (ambienceNode && ambienceGain) {
+        if (ambienceGain) {
             ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100;
-        }
-        if (musicElement && musicElement.src && musicUrl.value.trim()) {
-            musicElement.play().catch(() => {});
         }
     }
 });
@@ -1713,6 +2233,7 @@ function applySettings() {
     
     linksMenu.classList.toggle('bordered', toggleLinkBorders.checked);
     document.body.dataset.theme = themeToggle.checked ? 'light' : 'dark';
+    document.body.dataset.transparentFields = toggleTransparentFields.checked ? 'true' : 'false';
     mainContainer.style.backgroundImage = bgUrl ? `url('${bgUrl}')` : '';
 
     // Update colors when theme changes
@@ -1726,6 +2247,8 @@ function applySettings() {
     saveSetting('weatherLocation', weatherLocation.value);
     saveSetting('theme', document.body.dataset.theme);
     saveSetting('toggleLinkBorders', toggleLinkBorders.checked);
+    saveSetting('toggleTransparentFields', toggleTransparentFields.checked);
+    saveSetting('showStartScreen', showStartScreen.checked);
     saveSetting('bgImageUrl', bgUrl);
     saveSetting('linksPerRow', parseInt(linksPerRowInput.value));
     saveSetting('showStats', showStats.checked);
@@ -1761,10 +2284,17 @@ function loadSettings() {
     showNotes.checked = loadSetting('showNotes', true);
     themeToggle.checked = loadSetting('theme', 'dark') === 'light';
     toggleLinkBorders.checked = loadSetting('toggleLinkBorders', false);
+    toggleTransparentFields.checked = loadSetting('toggleTransparentFields', false);
+    showStartScreen.checked = loadSetting('showStartScreen', true);
     
-    // Load screen effect
-    screenEffect.value = loadSetting('screenEffect', 'none');
-    document.body.dataset.effect = screenEffect.value;
+    // Load font style
+    fontStyle.value = loadSetting('fontStyle', 'standard');
+    document.body.dataset.font = fontStyle.value;
+    
+    // Load active effects
+    activeEffects = loadSetting('activeEffects', []);
+    applyEffects();
+    renderActiveEffects();
     
     // Load effect intensity
     effectIntensity.value = loadSetting('effectIntensity', 100);
@@ -1773,9 +2303,6 @@ function loadSettings() {
     // Load audio settings
     ambienceType.value = loadSetting('ambienceType', 'none');
     ambienceVolume.value = loadSetting('ambienceVolume', 30);
-    musicUrl.value = loadSetting('musicUrl', '');
-    musicVolume.value = loadSetting('musicVolume', 50);
-    musicLoop.checked = loadSetting('musicLoop', true);
     
     // Load notes
     notesTextarea.value = loadSetting('notesContent', '');
@@ -1830,7 +2357,7 @@ function loadSettings() {
 // Attach event listeners
 [deviceNameInput, pageTitleInput, statusMessageText, weatherApiKey, weatherLocation, 
  bgImageUrl, linksPerRowInput, showStats, showSearch, showLinks, showNotes, themeToggle, 
- toggleLinkBorders, ...Object.values(statToggles),
+ toggleLinkBorders, toggleTransparentFields, showStartScreen, ...Object.values(statToggles),
  refreshClock, refreshBattery, refreshNetwork, refreshIP, refreshDownlink, refreshPing, refreshWeather].forEach(el => {
     el.oninput = applySettings;
     if (el.type === 'checkbox') {
@@ -1838,49 +2365,73 @@ function loadSettings() {
     }
 });
 
-// Reset button handler
+// Reset button handler (with shift+click bypass for sandbox)
 if (resetSettingsBtn) {
-    console.log('Attaching reset handler...');
     resetSettingsBtn.addEventListener('click', (e) => {
-        console.log('Reset button clicked!');
         e.stopPropagation();
+        
+        // Shift+click bypasses confirmation (for sandbox/testing)
+        if (e.shiftKey) {
+            localStorage.clear();
+            window.location.replace(window.location.href.split('?')[0]);
+            return;
+        }
+        
+        // Normal confirmation
         const confirmReset = confirm('⚠️ This will reset ALL settings to default and reload the page. Continue?');
         if (confirmReset) {
             try {
                 localStorage.clear();
-                console.log('LocalStorage cleared, reloading page...');
-                // Use location.replace to force full page reload
                 window.location.replace(window.location.href.split('?')[0]);
             } catch (err) {
-                console.error('Error clearing localStorage:', err);
                 alert('Failed to reset settings. Please try again.');
             }
         }
     });
-} else {
-    console.error('Reset button not found!');
 }
 
 // Initialize
 loadSettings();
 renderLinks();
 applySettings();
+renderThemes();
 
 // Set current search engine to default on load
 currentSearchEngine.value = searchEngine.value;
 updateSearchEngine(searchEngine.value);
 
-// Start audio if configured (user interaction required for autoplay)
-// Audio will start on first user click anywhere on page
-document.body.addEventListener('click', function initAudioOnClick() {
-    if (ambienceType.value !== 'none') {
+// Start Screen Handler
+const startScreen = document.getElementById('startScreen');
+
+function enterSystem() {
+    // Start ambience if configured
+    if (ambienceType.value && ambienceType.value !== 'none') {
         startAmbience(ambienceType.value);
     }
-    if (musicUrl.value.trim()) {
-        startMusic();
+    
+    // Hide start screen
+    startScreen.classList.add('hidden');
+}
+
+// Listen for any interaction on start screen
+startScreen.addEventListener('click', enterSystem);
+startScreen.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') {
+        enterSystem();
     }
-    document.body.removeEventListener('click', initAudioOnClick);
-}, { once: true });
+});
+startScreen.addEventListener('touchstart', enterSystem);
+
+// Check if start screen should be shown based on setting
+if (!showStartScreen.checked) {
+    startScreen.classList.add('hidden');
+    // Still start ambience if configured
+    if (ambienceType.value && ambienceType.value !== 'none') {
+        setTimeout(() => {
+            startAmbience(ambienceType.value);
+        }, 300);
+    }
+}
 
 // Start status updates
 updateClock();
