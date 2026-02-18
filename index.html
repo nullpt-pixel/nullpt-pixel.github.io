@@ -40,16 +40,21 @@ body[data-effect~="phosphor"] .container::before{content:"";position:fixed;inset
 .stat-refresh-btn:hover{opacity:1}
 .stat-refresh-btn:active{transform:rotate(180deg)}
 .search-bar{display:flex;justify-content:center;align-items:center;margin-bottom:16px;width:100%;gap:8px;flex-shrink:0}
-.search-bar-wrapper{display:flex;width:100%;max-width:500px;gap:8px;align-items:center}
+.search-bar-wrapper{display:flex;gap:8px;align-items:center}
 .search-engine-selector,.search-bar input{padding:4px 8px;font-size:14px;height:32px;background:var(--bg);color:var(--fg);border:1px solid var(--dim);outline:none;border-radius:4px;transition:background .3s,border .3s;font-family:var(--font-family)}
-.search-engine-selector{cursor:pointer;min-width:110px}
-.search-bar form{flex:1;display:flex}
-.search-bar input{width:100%;font-size:16px;box-sizing:border-box}
+.search-engine-wrapper{position:relative;display:flex;align-items:center;min-width:110px}
+.search-engine-wrapper .search-engine-favicon{position:absolute;left:7px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.search-engine-wrapper .search-engine-favicon[style*="display: inline"]{display:inline-block}
+.search-engine-wrapper .search-engine-favicon[style*="display:inline"]{display:inline-block}
+.search-engine-wrapper.has-favicon .search-engine-selector{padding-left:28px}
+.search-engine-selector{cursor:pointer;width:100%}
+.search-bar form{display:flex}
+.search-bar input{width:190px;font-size:16px;box-sizing:border-box}
 body[data-transparent-fields="true"] .search-engine-selector,body[data-transparent-fields="true"] .search-bar input,body[data-transparent-fields="true"] .notes-textarea{background:transparent;border-color:transparent}
 body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-transparent-fields="true"] .search-bar input:focus,body[data-transparent-fields="true"] .notes-textarea:focus{background:rgba(0,0,0,.2);border-color:var(--accent)}
 .search-bar input::placeholder,.notes-textarea::placeholder{color:var(--accent);opacity:.7}
 .menu{display:flex;flex-direction:column;gap:16px;font-size:16px;width:100%}
-.content-columns{display:flex;gap:16px;flex:1;min-height:0;max-height:calc(100% - 40px);align-items:stretch;overflow:hidden;margin-bottom:40px}
+.content-columns{display:flex;gap:16px;flex:1;min-height:0;max-height:calc(100% - 40px);align-items:stretch;overflow:hidden}
 .links-column{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:16px}
 .notes-column{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}
 .link-category{display:flex;flex-direction:column;gap:12px}
@@ -60,7 +65,8 @@ body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-tra
 .category-title,.notes-title{font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
 .category-links{display:grid;gap:12px}
 .category-links.collapsed,.notes-content.collapsed{display:none}
-.menu a{color:var(--fg);text-decoration:none;font-size:inherit;padding:6px 8px;display:block;text-align:center;border-radius:4px;border:1px solid transparent;width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu a{color:var(--fg);text-decoration:none;font-size:inherit;padding:6px 8px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:4px;border:1px solid transparent;width:100%;box-sizing:border-box;overflow:hidden}
+.menu a .link-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;text-align:center}
 .menu.bordered a{border-color:var(--dim)}
 .status-message{font-size:12px;text-align:left;opacity:.7;position:fixed;z-index:100;pointer-events:auto;cursor:pointer;font-family:var(--font-family);user-select:none;padding:4px 8px;background:rgba(0,0,0,.01);-webkit-tap-highlight-color:transparent;touch-action:manipulation;line-height:1.4}
 /* Expand touch target without changing visual position — pointer-events:none so it doesn't eat clicks */
@@ -75,14 +81,20 @@ body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-tra
 .notes-textarea:focus{border-color:var(--accent)}
 
 /* Settings Menu */
-#settingsMenu{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:1px solid var(--dim);padding:0;display:none;flex-direction:column;width:400px;max-height:80vh;z-index:500;border-radius:4px}
+#settingsMenu{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:1px solid var(--dim);padding:0;display:none;flex-direction:column;width:400px;max-height:80vh;z-index:10001;border-radius:4px}
 .settings-tabs{display:flex;background:var(--dim);border-bottom:1px solid var(--dim)}
-.settings-tab{flex:1;padding:8px 4px;text-align:center;cursor:pointer;font-size:12px;border:none;background:transparent;color:var(--fg);opacity:.6;transition:opacity .2s}
+.settings-tab{flex:1;padding:8px 4px;text-align:center;cursor:pointer;font-size:12px;border:none;background:transparent;color:var(--fg);opacity:.6;transition:opacity .2s;font-family:var(--font-family)}
 .settings-tab.active{opacity:1;background:var(--bg)}
+.settings-apply-btn{padding:6px 10px;background:var(--accent);color:var(--fg);border:none;cursor:pointer;font-size:16px;font-family:var(--font-family);opacity:1;flex-shrink:0;border-left:1px solid var(--dim);transition:filter .15s;line-height:1}
+.settings-apply-btn:hover{filter:brightness(1.25)}
+.settings-apply-btn:active{filter:brightness(.85)}
+.settings-close-btn{padding:6px 10px;background:transparent;color:var(--fg);border:none;cursor:pointer;font-size:15px;font-family:var(--font-family);opacity:.5;flex-shrink:0;border-left:1px solid var(--dim);transition:opacity .15s,color .15s;line-height:1}
+.settings-close-btn:hover{opacity:1;color:#c66}
+.settings-close-btn:active{opacity:.7}
 .settings-content{padding:16px;overflow-y:auto;max-height:calc(75vh - 40px)}
 .settings-page{display:none;flex-direction:column;gap:12px}
 .settings-page.active{display:flex}
-#settingsMenu label{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:8px}
+#settingsMenu label{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:8px;font-family:var(--font-family)}
 #settingsMenu input[type=text],#settingsMenu input[type=number],#settingsMenu select{width:55%;padding:4px 6px;background:var(--dim);color:var(--fg);border:1px solid var(--accent);border-radius:3px;font-size:13px;font-family:var(--font-family)}
 #settingsMenu input[type=number]::-webkit-inner-spin-button,#settingsMenu input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 #settingsMenu input[type=number]{-moz-appearance:textfield}
@@ -92,18 +104,18 @@ body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-tra
 .number-spinner-btn{width:20px;height:24px;padding:0;background:var(--dim);border:none;border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--fg);line-height:1;user-select:none}
 .number-spinner-btn:active{background:var(--accent)}
 #settingsMenu input[type=range]{width:55%}
-#settingsMenu input[type=color]{width:40px;height:28px;padding:2px;background:var(--dim);border:1px solid var(--accent);border-radius:3px;cursor:pointer}
+#settingsMenu input[type=color]{width:40px!important;min-width:40px!important;height:28px!important;padding:2px;background:var(--dim);border:1px solid var(--accent);border-radius:3px;cursor:pointer;flex-shrink:0}
 .color-input-group{display:flex;gap:6px;width:55%;align-items:center}
-.color-text-input{flex:1;padding:4px 6px!important;background:var(--dim)!important;color:var(--fg)!important;border:1px solid var(--accent)!important;border-radius:3px;font-size:12px!important;font-family:monospace;width:auto!important}
-#settingsMenu button{padding:6px 10px;background:var(--dim);color:var(--fg);border:none;cursor:pointer;border-radius:4px;font-size:13px}
+.color-text-input{flex:1;padding:4px 6px!important;background:var(--dim)!important;color:var(--fg)!important;border:1px solid var(--accent)!important;border-radius:3px;font-size:12px!important;font-family:monospace!important;width:auto!important;min-width:0}
+#settingsMenu button{padding:6px 10px;background:var(--dim);color:var(--fg);border:none;cursor:pointer;border-radius:4px;font-size:13px;font-family:var(--font-family)}
 .settings-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--dim)}
 .settings-section:first-child{margin-top:0;padding-top:0;border-top:none}
-.section-title{font-size:11px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.section-title{font-size:11px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--font-family)}
 .link-editor-row{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--dim)}
 .link-editor-fields{display:flex;gap:4px;align-items:stretch}
 .link-editor-row input{flex:1;padding:6px 8px;background:var(--dim)!important;color:var(--fg)!important;border:1px solid var(--accent)!important;border-radius:3px;font-size:14px!important;min-height:32px;-webkit-appearance:none;appearance:none;box-sizing:border-box}
 .link-editor-row input.category-input{font-size:12px!important;opacity:.8}
-.link-editor-row button{padding:6px 10px;background:#933;color:#fff;border:none;cursor:pointer;border-radius:3px;font-size:13px;min-width:40px}
+.link-editor-row button{padding:6px 10px;background:#933;color:#fff;border:none;cursor:pointer;border-radius:3px;font-size:13px;min-width:40px;font-family:var(--font-family)}
 
 .menu a .favicon{width:14px;height:14px;vertical-align:middle;margin-right:5px;border-radius:2px;object-fit:contain;flex-shrink:0;display:inline-block}
 .menu a{display:flex;align-items:center;justify-content:center}
@@ -139,11 +151,26 @@ body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-tra
 @keyframes colorDistort{0%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(180deg)}100%{filter:hue-rotate(360deg)}}
 @keyframes textCorrupt{0%{text-shadow:0 0 0 transparent}25%{text-shadow:2px 0 0 #f00,-2px 0 0 #0ff}50%{text-shadow:-2px 0 0 #f00,2px 0 0 #0ff}75%{text-shadow:0 2px 0 #f00,0 -2px 0 #0ff}100%{text-shadow:0 0 0 transparent}}
 
+/* ── Escher Penrose staircase for "loop" variant ── */
+.escher-staircase{position:relative;width:120px;height:120px;margin:0 auto 10px;flex-shrink:0}
+.escher-staircase svg{width:100%;height:100%;overflow:visible}
+@keyframes escherRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes escherCounterRotate{0%{transform:rotate(360deg)}100%{transform:rotate(0deg)}}
+@keyframes escherPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.escher-staircase .stair-outer{animation:escherRotate 12s linear infinite;transform-origin:60px 60px}
+.escher-staircase .stair-inner{animation:escherCounterRotate 8s linear infinite;transform-origin:60px 60px}
+.escher-staircase .stair-dot{animation:escherPulse 2s ease-in-out infinite}
+
 /* Debug active state */
 body[data-debug-active="true"]{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">👁️</text></svg>') 16 16,auto}
 body[data-debug-active="true"] input,body[data-debug-active="true"] textarea,body[data-debug-active="true"] button,body[data-debug-active="true"] select{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">👁️</text></svg>') 16 16,auto}
 body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 0%,rgba(255,0,0,.05) 100%);pointer-events:none;z-index:1;animation:redPulse 3s ease-in-out infinite}
 @keyframes redPulse{0%,100%{opacity:.3}50%{opacity:.6}}
+:root{--bg-dim:0}
+/* Danger zone & reset: always system font/colors, immune to theme */
+#dangerZone,#dangerZoneLabel,#eraseDataBtn,#resetSettings{font-family:system-ui,sans-serif!important}
+#resetSettings{color:var(--fg)!important;background:var(--dim)!important}
+#eraseDataBtn{color:#fff!important}
 </style>
 </head>
 <body data-theme="dark">
@@ -163,6 +190,8 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
             <button class="settings-tab" data-tab="display">Display</button>
             <button class="settings-tab" data-tab="links">Links</button>
             <button class="settings-tab" data-tab="advanced">Advanced</button>
+            <button id="applySettingsBtn" class="settings-apply-btn" title="Save &amp; apply settings">💾</button>
+            <button id="closeSettingsBtn" class="settings-close-btn" title="Discard changes &amp; close">✕</button>
         </div>
         <div class="settings-content">
             <!-- GENERAL TAB -->
@@ -230,20 +259,26 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
                                 <option value="press-start">Press Start 2P</option>
                                 <option value="vt323">VT323</option>
                                 <option value="silkscreen">Silkscreen</option>
-                                <option value="dotgothic">DotGothic16</option>
+                                <option value="special-elite">Special Elite</option>
+                                <option value="courier-prime">Courier Prime</option>
                             </optgroup>
                             <optgroup label="── Sci-Fi / Tech ──">
                                 <option value="orbitron">Orbitron</option>
-                                <option value="exo2">Exo 2</option>
-                                <option value="rajdhani">Rajdhani</option>
+                                <option value="oxanium">Oxanium</option>
                                 <option value="audiowide">Audiowide</option>
                                 <option value="michroma">Michroma</option>
+                                <option value="aldrich">Aldrich</option>
+                                <option value="exo2">Exo 2</option>
+                                <option value="rajdhani">Rajdhani</option>
+                                <option value="teko">Teko</option>
                             </optgroup>
                             <optgroup label="── Clean / UI ──">
                                 <option value="inter">Inter</option>
                                 <option value="ibm-plex-mono">IBM Plex Mono</option>
                                 <option value="space-mono">Space Mono</option>
                                 <option value="share-tech">Share Tech Mono</option>
+                                <option value="nova-mono">Nova Mono</option>
+                                <option value="cutive-mono">Cutive Mono</option>
                             </optgroup>
                         </select>
                     </label>
@@ -265,6 +300,8 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
                             <option value="auto auto">Tile</option>
                         </select>
                     </label>
+                    <label>Background Dim: <input type="range" id="bgDimAmount" min="0" max="95" value="0" step="5"></label>
+                    <div style="font-size:11px;opacity:.6;margin-top:-8px;text-align:right"><span id="bgDimValue">0%</span></div>
                     <label><input type="checkbox" id="themeToggle"> Light Mode</label>
                     <label><input type="checkbox" id="showStats" checked> Show All Status Indicators</label>
                     <label><input type="checkbox" id="showSearch" checked> Show Search Bar</label>
@@ -347,7 +384,6 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
                         <option value="quad9">Quad9 DNS (9.9.9.9)</option>
                         <option value="opendns">OpenDNS (208.67.222.222)</option>
                     </select>
-                    <span style="cursor:help;opacity:.7;margin-left:4px" title="Network latency test: Measures round-trip time to a public DNS server.">ⓘ</span>
                 </label>
                 <div class="section-title">Weather API</div>
                 <label>API Key: <input type="text" id="weatherApiKey" placeholder="openweathermap.org key"></label>
@@ -443,14 +479,16 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
 
     <div class="search-bar">
         <div class="search-bar-wrapper">
-            <select class="search-engine-selector" id="currentSearchEngine">
-                <option value="google">Google</option>
-                <option value="duckduckgo">DuckDuckGo</option>
-                <option value="bing">Bing</option>
-                <option value="brave">Brave</option>
-                <option value="yandex">Yandex</option>
-                <option value="startpage">Startpage</option>
-            </select>
+            <div class="search-engine-wrapper">
+                <select class="search-engine-selector" id="currentSearchEngine">
+                    <option value="google">Google</option>
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="bing">Bing</option>
+                    <option value="brave">Brave</option>
+                    <option value="yandex">Yandex</option>
+                    <option value="startpage">Startpage</option>
+                </select>
+            </div>
             <form action="https://www.google.com/search" method="get" target="_blank">
                 <input type="text" name="q" placeholder="Search..."/>
             </form>
@@ -528,7 +566,11 @@ body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;backgrou
 
 <!-- Debug Menu -->
 <div id="debugMenu">
-    <div class="debug-header">◢◣ UNAUTHORIZED ACCESS ◢◣</div>
+    <div class="debug-header" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px">
+        <span style="flex:1;text-align:center;letter-spacing:3px">◢◣ UNAUTHORIZED ACCESS ◢◣</span>
+        <button id="debugApplyBtn" title="Save debug settings" style="padding:3px 8px;background:transparent;color:#f00;border:1px solid #f00;cursor:pointer;font-size:15px;line-height:1;margin-left:8px;flex-shrink:0;font-family:'Courier New',monospace">💾</button>
+        <button id="debugCloseBtn" title="Discard &amp; close" style="padding:3px 8px;background:transparent;color:#f00;border:1px solid #f00;cursor:pointer;font-size:13px;line-height:1;margin-left:4px;flex-shrink:0;font-family:'Courier New',monospace;opacity:.7">✕</button>
+    </div>
     <div class="debug-content">
         <div class="debug-section">
             <div class="debug-section-title">⚠ Erase Modal Variants</div>
@@ -620,8 +662,7 @@ function initDebugUnlock() {
             statusMsg.style.textShadow = '0 0 10px #f00';
             statusMsg.textContent = '◢◣ ACCESS GRANTED ◢◣';
             setTimeout(() => {
-                debugMenu.classList.add('active');
-                document.body.dataset.debugActive = 'true';
+                openDebugMenu();
                 playCorruptedTone();
             }, 666);
         }, UNLOCK_HOLD_TIME);
@@ -645,25 +686,22 @@ function initDebugUnlock() {
                 statusMsg.style.color = '#f00';
                 statusMsg.style.textShadow = '0 0 10px #f00';
                 statusMsg.textContent = '◢◣ ACCESS GRANTED ◢◣';
-                debugMenu.classList.add('active');
-                document.body.dataset.debugActive = 'true';
+                openDebugMenu();
             } else {
-                debugMenu.classList.remove('active');
-                document.body.dataset.debugActive = 'false';
                 statusMsg.style.color = '';
                 statusMsg.style.textShadow = '';
                 statusMsg.textContent = originalStatusText;
+                closeDebugDiscard();
             }
         }
     });
 
     window.addEventListener('click', (e) => {
         if (debugMenu.classList.contains('active') && !debugMenu.contains(e.target) && e.target.id !== 'statusMessage') {
-            debugMenu.classList.remove('active');
-            document.body.dataset.debugActive = 'false';
             statusMsg.style.color = '';
             statusMsg.style.textShadow = '';
             statusMsg.textContent = originalStatusText || statusMessageText.value || 'Ready';
+            closeDebugDiscard();
         }
     });
 }
@@ -696,7 +734,7 @@ function getDangerStyle(template) {
 
 function applyDangerColor(color) {
     dangerColor = color;
-    saveSetting('debugDangerColor', color);
+    // NOTE: no saveSetting here — saving only happens on debug commit (💾)
     const eraseBtn = document.getElementById('eraseDataBtn');
     const dangerZone = document.getElementById('dangerZone');
     const dangerLabel = document.getElementById('dangerZoneLabel');
@@ -728,12 +766,13 @@ const eraseVariants = {
         backdropStyle: 'background:#000'
     },
     loop: {
-        title: '⚠️ NUCLEAR DATA ERASURE',
-        message: "This will delete all your data. Are you sure? Wait, you've done this before. No, you haven't. Yes, you have. This is the first time. This is the last time. This is always happening. This has never happened.",
-        confirmText: 'Type ERASE (again?) (for the first time?)',
-        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';animation:loopGlitch 0.2s infinite'; },
-        get titleStyle() { return `font-size:20px;color:${dangerColor};margin-bottom:16px`; },
-        messageStyle: 'font-size:13px;margin-bottom:16px;text-align:left'
+        title: '∞ INFINITE LOOP DETECTED ∞',
+        message: "You are about to erase your data. But you've been here before. You will be here again. The stairs descend forever. The stairs ascend forever. They are the same stairs.",
+        confirmText: 'Type ERASE to exit the loop (you cannot exit the loop)',
+        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';overflow:hidden'; },
+        get titleStyle() { return `font-size:18px;color:${dangerColor};margin-bottom:8px;animation:textCorrupt 2s infinite`; },
+        messageStyle: 'font-size:12px;margin-bottom:8px;text-align:left;opacity:.8',
+        escher: true
     },
     aware: {
         get title() { return `⚠️ I SEE YOU, ${navigator.userAgent.split(' ')[0]}`; },
@@ -760,6 +799,10 @@ function applyEraseVariant(variant) {
     const messageDiv = document.getElementById('eraseMessage');
     const confirmTextDiv = document.getElementById('eraseConfirmText');
     if (!innerDiv || !titleDiv || !messageDiv || !confirmTextDiv) return;
+
+    // Remove any previous Escher element
+    const prevEscher = innerDiv.querySelector('.escher-staircase');
+    if (prevEscher) prevEscher.remove();
 
     modal.style.background = 'rgba(0,0,0,.85)';
 
@@ -790,6 +833,44 @@ function applyEraseVariant(variant) {
     messageDiv.textContent = config.message;
     confirmTextDiv.setAttribute('style', 'font-size:12px;margin-bottom:12px;color:#aaa');
     confirmTextDiv.textContent = config.confirmText;
+
+    // Inject Escher Penrose staircase for loop variant
+    if (config.escher) {
+        const dc = dangerColor;
+        const escherEl = document.createElement('div');
+        escherEl.className = 'escher-staircase';
+        escherEl.innerHTML = `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="escherGlow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- Outer Penrose triangle — impossible object -->
+  <g class="stair-outer" filter="url(#escherGlow)">
+    <!-- Top face -->
+    <polygon points="60,8 100,38 60,38" fill="${dc}" opacity="0.9"/>
+    <!-- Right face -->
+    <polygon points="100,38 100,78 60,78" fill="${dc}" opacity="0.55"/>
+    <!-- Left face -->
+    <polygon points="60,8 20,78 60,78" fill="${dc}" opacity="0.7"/>
+    <!-- Inner cutout — creates impossible depth -->
+    <polygon points="60,22 88,44 60,44" fill="#1a1a1a"/>
+    <polygon points="88,44 88,66 60,66" fill="#1a1a1a"/>
+    <polygon points="60,22 32,66 60,66" fill="#1a1a1a"/>
+  </g>
+  <!-- Inner rotating counter element for infinite feel -->
+  <g class="stair-inner" opacity="0.4">
+    <polygon points="60,32 80,52 60,52 40,52" fill="none" stroke="${dc}" stroke-width="1"/>
+    <polygon points="60,40 74,52 60,58 46,52" fill="none" stroke="${dc}" stroke-width="0.5" opacity="0.5"/>
+  </g>
+  <!-- Animated "climbing" dots — suggest infinite staircase -->
+  <circle class="stair-dot" cx="60" cy="8" r="3" fill="${dc}" style="animation-delay:0s"/>
+  <circle class="stair-dot" cx="100" cy="38" r="3" fill="${dc}" style="animation-delay:.66s"/>
+  <circle class="stair-dot" cx="20" cy="78" r="3" fill="${dc}" style="animation-delay:1.33s"/>
+  <!-- Label -->
+  <text x="60" y="100" text-anchor="middle" font-size="8" fill="${dc}" opacity="0.7" font-family="monospace">∞ PENROSE ∞</text>
+</svg>`;
+        // Insert after titleDiv
+        titleDiv.insertAdjacentElement('afterend', escherEl);
+    }
 }
 
 // ═══ ALTERNATIVE ALARM SOUNDS ═══
@@ -926,11 +1007,174 @@ async function updateWeather() {
 const settingsMenu = document.getElementById('settingsMenu');
 const debugMenu = document.getElementById('debugMenu');
 
+// ── All localStorage keys managed by settings (used for snapshot) ──
+const ALL_SETTINGS_KEYS = [
+    'deviceName','pageTitle','statusMessage','statusPosition','clockFormat','searchEngine',
+    'startTitle','startPrompt','startSubtitle',
+    'weatherApiKey','weatherLocation','pingServer',
+    'theme','toggleLinkBorders','toggleTransparentFields','showStartScreen',
+    'bgImageUrl','bgImageFit','bgDimAmount','linksPerRow','faviconMode',
+    'showStats','showSearch','showLinks','showNotes',
+    'stat_time','stat_battery','stat_network','stat_ip','stat_dl','stat_weather','stat_ping',
+    'colorDarkBg','colorDarkFg','colorDarkAccent','colorDarkDim',
+    'colorLightBg','colorLightFg','colorLightAccent','colorLightDim',
+    'activeEffects','effectIntensity','fontStyle',
+    'ambienceType','ambienceVolume',
+    'refreshClock','refreshBattery','refreshNetwork','refreshIP','refreshDownlink','refreshPing','refreshWeather',
+    'links'
+];
+
+// ── Snapshot = a copy of localStorage keys captured before the menu opens ──
+let settingsSnapshot = null;
+
+function captureSettingsSnapshot() {
+    const snap = {};
+    ALL_SETTINGS_KEYS.forEach(k => { snap[k] = localStorage.getItem(k); }); // raw JSON strings
+    return snap;
+}
+
+function restoreSettingsSnapshot(snap) {
+    if (!snap) return;
+    // Write snapshot back to localStorage
+    ALL_SETTINGS_KEYS.forEach(k => {
+        if (snap[k] === null) localStorage.removeItem(k);
+        else localStorage.setItem(k, snap[k]);
+    });
+    // Reload links variable from restored localStorage before loadSettings()
+    links = loadSetting('links', defaultLinks);
+    // Reload all UI state from localStorage (same as startup)
+    loadSettings();
+    applySettings();
+    applyFontStyle(fontStyle.value);
+    applyEffects();
+    renderActiveEffects();
+    applyEffectIntensity();
+    currentSearchEngine.value = searchEngine.value;
+    updateSearchEngine(searchEngine.value);
+    applyFavicons();
+    startAmbience(ambienceType.value);
+    renderLinksDisplay();
+    renderLinksEditor();
+}
+
+function openSettingsMenu() {
+    settingsSnapshot = captureSettingsSnapshot();
+    settingsMenu.style.display = 'flex';
+}
+
+function closeSettingsDiscard() {
+    restoreSettingsSnapshot(settingsSnapshot);
+    settingsSnapshot = null;
+    effectToAdd.value = '';
+    settingsMenu.style.display = 'none';
+}
+
+function closeSettingsCommit() {
+    settingsSnapshot = null;
+    effectToAdd.value = '';
+    settingsMenu.style.display = 'none';
+    // Commit all current UI state to localStorage
+    commitAllSettings();
+    // Apply side-effects
+    applyFontStyle(fontStyle.value);
+    applyEffects();
+    renderActiveEffects();
+    applyEffectIntensity();
+    currentSearchEngine.value = searchEngine.value;
+    updateSearchEngine(searchEngine.value);
+    applyFavicons();
+    startAmbience(ambienceType.value);
+    updatePing();
+    setupIntervals();
+    renderLinksDisplay();
+}
+
+// Preview all changes live as the user tweaks settings
+function previewSettings() {
+    const deviceName = deviceNameInput.value || 'Game Console';
+    const pageTitle = pageTitleInput.value || 'System Home';
+    const statusMsg = statusMessageText.value || 'Ready';
+    const bgUrl = bgImageUrl.value.trim();
+
+    headerTitle.textContent = `${pageTitle} :: ${deviceName}`;
+    statusMessage.textContent = statusMsg;
+    statusMessage.dataset.position = statusPosition.value;
+    pagetitle.textContent = pageTitle;
+    document.getElementById('startTitle').textContent = startTitleInput.value || 'STANDBY';
+    document.getElementById('startPrompt').textContent = startPromptInput.value || '▶ ENGAGE';
+    document.getElementById('startSubtitle').textContent = startSubtitleInput.value || 'System check in progress...';
+    document.querySelector('.stats').style.display = showStats.checked ? 'grid' : 'none';
+    document.querySelector('.search-bar').style.display = showSearch.checked ? 'flex' : 'none';
+    linksMenu.style.display = showLinks.checked ? 'flex' : 'none';
+    const notesCol = document.querySelector('.notes-column');
+    if (notesCol) notesCol.style.display = showNotes.checked ? 'block' : 'none';
+    Object.entries(statToggles).forEach(([k,el]) => {
+        const s = document.querySelector(`[data-stat="${k}"]`);
+        if (s) s.style.display = el.checked ? 'block' : 'none';
+    });
+    linksMenu.classList.toggle('bordered', toggleLinkBorders.checked);
+    document.body.dataset.theme = themeToggle.checked ? 'light' : 'dark';
+    document.body.dataset.transparentFields = toggleTransparentFields.checked ? 'true' : 'false';
+    const dimPct = parseInt(bgDimAmount.value) || 0;
+    bgDimValue.textContent = dimPct + '%';
+    if (bgUrl) {
+        const sizeVal = bgImageFit.value === 'auto auto' ? 'auto' : bgImageFit.value;
+        const repeatVal = bgImageFit.value === 'auto auto' ? 'repeat' : 'no-repeat';
+        mainContainer.style.backgroundImage = `${dimPct > 0 ? `linear-gradient(rgba(0,0,0,${(dimPct/100).toFixed(2)}),rgba(0,0,0,${(dimPct/100).toFixed(2)})),` : ''}url('${bgUrl}')`;
+        mainContainer.style.backgroundSize = dimPct > 0 ? `cover,${sizeVal}` : sizeVal;
+        mainContainer.style.backgroundRepeat = dimPct > 0 ? `no-repeat,${repeatVal}` : repeatVal;
+    } else {
+        mainContainer.style.backgroundImage = '';
+        mainContainer.style.backgroundSize = '';
+        mainContainer.style.backgroundRepeat = '';
+    }
+    updateColors();
+    // Live preview font
+    applyFontStyle(fontStyle.value);
+    // Live preview effect intensity
+    document.documentElement.style.setProperty('--effect-intensity', parseInt(effectIntensity.value) / 100);
+    effectIntensityValue.textContent = effectIntensity.value + '%';
+    // Live preview effects
+    document.body.dataset.effect = activeEffects.join(' ');
+    // Live preview search engine placeholder
+    updateSearchEngine(searchEngine.value);
+    applySearchFavicon();
+    // Live preview links per row
+    const perRow = parseInt(linksPerRowInput.value) || numberDefaults.linksPerRowInput;
+    document.querySelectorAll('.category-links').forEach(g => { g.style.gridTemplateColumns = `repeat(${perRow},1fr)`; });
+    // Live preview ambience
+    startAmbience(ambienceType.value);
+}
+
+// Wire up all settings inputs to previewSettings
+function wireSettingsPreviews() {
+    const inputs = [
+        deviceNameInput, pageTitleInput, statusMessageText, statusPosition,
+        startTitleInput, startPromptInput, startSubtitleInput,
+        bgImageUrl, bgImageFit, bgDimAmount,
+        showStats, showSearch, showLinks, showNotes, themeToggle,
+        toggleLinkBorders, toggleTransparentFields, showStartScreen,
+        ...Object.values(statToggles),
+        fontStyle, faviconMode, effectIntensity, ambienceType,
+        linksPerRowInput, searchEngine,
+        refreshClock, refreshBattery, refreshNetwork, refreshIP, refreshDownlink, refreshPing, refreshWeather,
+        clockFormat, pingServer
+    ];
+    inputs.forEach(el => {
+        if (!el) return;
+        el.addEventListener('input', previewSettings);
+        if (el.type === 'checkbox' || el.tagName === 'SELECT') el.addEventListener('change', previewSettings);
+    });
+    // Color pickers already wired via syncColorInputs → updateColors (preview-only, no save)
+}
+
+// Close on click outside (discard)
 window.addEventListener('click', (e) => {
+    if (!settingsMenu.style.display || settingsMenu.style.display === 'none') return;
     if (settingsMenu.contains(e.target)) return;
     if (document.getElementById('resetModal').contains(e.target)) return;
     if (document.getElementById('eraseModal').contains(e.target)) return;
-    settingsMenu.style.display = 'none';
+    closeSettingsDiscard();
 });
 settingsMenu.onclick = e => e.stopPropagation();
 document.getElementById('resetModal').addEventListener('click', e => e.stopPropagation());
@@ -962,6 +1206,8 @@ const startPromptInput = document.getElementById('startPromptInput');
 const startSubtitleInput = document.getElementById('startSubtitleInput');
 const bgImageUrl = document.getElementById('bgImageUrl');
 const bgImageFit = document.getElementById('bgImageFit');
+const bgDimAmount = document.getElementById('bgDimAmount');
+const bgDimValue = document.getElementById('bgDimValue');
 const linksPerRowInput = document.getElementById('linksPerRowInput');
 const showStats = document.getElementById('showStats');
 const showSearch = document.getElementById('showSearch');
@@ -1027,7 +1273,11 @@ function handleStatusTap() {
     if (tapCount >= 3) {
         tapCount = 0;
         if (tapTimer) { clearTimeout(tapTimer); tapTimer = null; }
-        settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
+        if (settingsMenu.style.display === 'flex') {
+            closeSettingsDiscard();
+        } else {
+            openSettingsMenu();
+        }
     } else {
         tapTimer = setTimeout(() => { tapCount = 0; }, 600);
     }
@@ -1070,16 +1320,16 @@ document.getElementById('weatherTestBtn').onclick = () => updateWeather();
 function applyEffectIntensity() {
     document.documentElement.style.setProperty('--effect-intensity', parseInt(effectIntensity.value) / 100);
     effectIntensityValue.textContent = effectIntensity.value + '%';
-    saveSetting('effectIntensity', effectIntensity.value);
+    // NOTE: no saveSetting here — saving only happens on commit (💾)
 }
-effectIntensity.oninput = applyEffectIntensity;
+// effectIntensity and fontStyle apply via the Apply button
 
 // ═══ MULTI-EFFECT SYSTEM ═══
 let activeEffects = loadSetting('activeEffects', []);
 
 function applyEffects() {
     document.body.dataset.effect = activeEffects.join(' ');
-    saveSetting('activeEffects', activeEffects);
+    // NOTE: no saveSetting here — saving only happens on commit (💾)
 }
 
 function renderActiveEffects() {
@@ -1111,37 +1361,43 @@ addEffectBtn.onclick = () => {
 
 // ═══ FONT SYSTEM ═══
 const FONTS = {
-    'system':       { family: 'system-ui,sans-serif',                    url: null },
-    'terminal':     { family: "'Courier New','Consolas','Monaco',monospace", url: null },
-    'press-start':  { family: "'Press Start 2P',monospace",              url: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' },
-    'vt323':        { family: "'VT323',monospace",                        url: 'https://fonts.googleapis.com/css2?family=VT323&display=swap' },
-    'silkscreen':   { family: "'Silkscreen',monospace",                   url: 'https://fonts.googleapis.com/css2?family=Silkscreen&display=swap' },
-    'dotgothic':    { family: "'DotGothic16',monospace",                  url: 'https://fonts.googleapis.com/css2?family=DotGothic16&display=swap' },
-    'orbitron':     { family: "'Orbitron',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap' },
-    'exo2':         { family: "'Exo 2',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap' },
-    'rajdhani':     { family: "'Rajdhani',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap' },
-    'audiowide':    { family: "'Audiowide',sans-serif",                   url: 'https://fonts.googleapis.com/css2?family=Audiowide&display=swap' },
-    'michroma':     { family: "'Michroma',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Michroma&display=swap' },
-    'inter':        { family: "'Inter',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap' },
-    'ibm-plex-mono':{ family: "'IBM Plex Mono',monospace",               url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap' },
-    'space-mono':   { family: "'Space Mono',monospace",                   url: 'https://fonts.googleapis.com/css2?family=Space+Mono&display=swap' },
-    'share-tech':   { family: "'Share Tech Mono',monospace",              url: 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap' },
+    'system':        { family: 'system-ui,sans-serif',                       url: null },
+    'terminal':      { family: "'Courier New','Consolas','Monaco',monospace", url: null },
+    'press-start':   { family: "'Press Start 2P',monospace",                 url: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' },
+    'vt323':         { family: "'VT323',monospace",                          url: 'https://fonts.googleapis.com/css2?family=VT323&display=swap' },
+    'silkscreen':    { family: "'Silkscreen',monospace",                     url: 'https://fonts.googleapis.com/css2?family=Silkscreen&display=swap' },
+    'special-elite': { family: "'Special Elite',cursive",                    url: 'https://fonts.googleapis.com/css2?family=Special+Elite&display=swap' },
+    'courier-prime': { family: "'Courier Prime',monospace",                  url: 'https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap' },
+    'orbitron':      { family: "'Orbitron',sans-serif",                      url: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap' },
+    'oxanium':       { family: "'Oxanium',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap' },
+    'audiowide':     { family: "'Audiowide',sans-serif",                     url: 'https://fonts.googleapis.com/css2?family=Audiowide&display=swap' },
+    'michroma':      { family: "'Michroma',sans-serif",                      url: 'https://fonts.googleapis.com/css2?family=Michroma&display=swap' },
+    'aldrich':       { family: "'Aldrich',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Aldrich&display=swap' },
+    'exo2':          { family: "'Exo 2',sans-serif",                         url: 'https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap' },
+    'rajdhani':      { family: "'Rajdhani',sans-serif",                      url: 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap' },
+    'teko':          { family: "'Teko',sans-serif",                          url: 'https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap' },
+    'inter':         { family: "'Inter',sans-serif",                         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap' },
+    'ibm-plex-mono': { family: "'IBM Plex Mono',monospace",                  url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap' },
+    'space-mono':    { family: "'Space Mono',monospace",                     url: 'https://fonts.googleapis.com/css2?family=Space+Mono&display=swap' },
+    'share-tech':    { family: "'Share Tech Mono',monospace",                url: 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap' },
+    'nova-mono':     { family: "'Nova Mono',monospace",                      url: 'https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap' },
+    'cutive-mono':   { family: "'Cutive Mono',monospace",                    url: 'https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap' },
 };
 
 const customFontLink = document.getElementById('customFontLink');
-const loadedFontUrls = new Set();
 
 function applyFontStyle(val) {
     const font = FONTS[val] || FONTS['system'];
-    if (font.url && !loadedFontUrls.has(font.url)) {
-        customFontLink.href = font.url;
-        loadedFontUrls.add(font.url);
+    if (font.url) {
+        if (customFontLink.href !== font.url) customFontLink.href = font.url;
+    } else {
+        customFontLink.href = '';
     }
     document.documentElement.style.setProperty('--font-family', font.family);
     document.body.dataset.font = val;
-    saveSetting('fontStyle', val);
+    // NOTE: no saveSetting here — saving only happens on commit (💾)
 }
-fontStyle.onchange = () => applyFontStyle(fontStyle.value);
+// fontStyle applies via the Apply button
 
 // ═══ FAVICON SYSTEM ═══
 const GFAVICON = 'https://www.google.com/s2/favicons?sz=32&domain=';
@@ -1175,9 +1431,10 @@ const searchFaviconEl = document.createElement('img');
 searchFaviconEl.className = 'search-engine-favicon';
 searchFaviconEl.style.display = 'none';
 searchFaviconEl.loading = 'lazy';
-searchFaviconEl.onerror = () => { searchFaviconEl.style.display = 'none'; };
-const searchEngineSelector = document.getElementById('currentSearchEngine');
-searchEngineSelector.parentNode.insertBefore(searchFaviconEl, searchEngineSelector);
+const searchEngineSelector = currentSearchEngine;
+searchFaviconEl.onerror = () => { searchFaviconEl.style.display = 'none'; searchEngineSelector.parentElement.classList.remove('has-favicon'); };
+const searchEngineWrapper = searchEngineSelector.parentElement;
+searchEngineWrapper.insertBefore(searchFaviconEl, searchEngineSelector);
 
 const SEARCH_DOMAINS = {
     google:'google.com', duckduckgo:'duckduckgo.com', bing:'bing.com',
@@ -1191,28 +1448,30 @@ function applySearchFavicon() {
         const engine = searchEngineSelector.value;
         const domain = SEARCH_DOMAINS[engine] || engine;
         searchFaviconEl.src = GFAVICON + domain;
-        searchFaviconEl.style.display = 'inline-block';
+        searchFaviconEl.style.display = 'block';
+        searchEngineWrapper.classList.add('has-favicon');
     } else {
         searchFaviconEl.style.display = 'none';
+        searchEngineWrapper.classList.remove('has-favicon');
     }
 }
 
 function applyFavicons() {
     applyLinkFavicons();
     applySearchFavicon();
-    if (faviconMode) saveSetting('faviconMode', faviconMode.value);
+    // NOTE: no saveSetting here — saving only happens on commit (💾)
 }
 
-if (faviconMode) faviconMode.onchange = applyFavicons;
+if (faviconMode) faviconMode.addEventListener('change', applyFavicons);
 searchEngineSelector.addEventListener('change', applySearchFavicon);
 
 // ═══ THEMES SYSTEM ═══
 const builtinThemes = {
-    'Silent Dark': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:false,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'Silent Dark': {theme:'dark',fontStyle:'system',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:true,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
     'CRT Terminal': {theme:'dark',fontStyle:'terminal',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:true,toggleTransparentFields:false,showStartScreen:true,activeEffects:['scanlines'],effectIntensity:150,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#0a0a0a',colorDarkFg:'#00ff00',colorDarkAccent:'#00aa00',colorDarkDim:'#003300',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
-    'VHS Lounge': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:true,showStartScreen:true,activeEffects:['vhs'],effectIntensity:120,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
-    'Arcade Night': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:true,toggleTransparentFields:false,showStartScreen:true,activeEffects:['arcade'],effectIntensity:130,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#0f0520',colorDarkFg:'#ff00ff',colorDarkAccent:'#00ffff',colorDarkDim:'#4a0f5f',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
-    'Clean Light': {theme:'light',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:false,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'}
+    'VHS Lounge': {theme:'dark',fontStyle:'system',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:true,showStartScreen:true,activeEffects:['vhs'],effectIntensity:120,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'Arcade Night': {theme:'dark',fontStyle:'system',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:true,toggleTransparentFields:false,showStartScreen:true,activeEffects:['arcade'],effectIntensity:130,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#0f0520',colorDarkFg:'#ff00ff',colorDarkAccent:'#00ffff',colorDarkDim:'#4a0f5f',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'Clean Light': {theme:'light',fontStyle:'system',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:true,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'}
 };
 
 function getDisplaySettings() {
@@ -1265,7 +1524,7 @@ function renderThemes() {
     Object.keys(builtinThemes).forEach(name => {
         const btn = document.createElement('button');
         btn.textContent = name;
-        btn.style.cssText = 'padding:8px 12px;background:var(--dim);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px';
+        btn.style.cssText = 'padding:8px 12px;background:var(--dim);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px;font-family:var(--font-family)';
         btn.onclick = () => applyTheme(JSON.parse(JSON.stringify(builtinThemes[name])));
         container.appendChild(btn);
     });
@@ -1273,7 +1532,7 @@ function renderThemes() {
         const row = document.createElement('div'); row.style.display = 'flex'; row.style.gap = '8px';
         const btn = document.createElement('button');
         btn.textContent = name;
-        btn.style.cssText = 'flex:1;padding:8px 12px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px';
+        btn.style.cssText = 'flex:1;padding:8px 12px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px;font-family:var(--font-family)';
         btn.onclick = () => applyTheme(JSON.parse(JSON.stringify(userThemes[name])));
         const del = document.createElement('button');
         del.textContent = '🗑️'; del.style.cssText = 'padding:8px 12px;background:#933;border:none;border-radius:4px;cursor:pointer;font-size:13px';
@@ -1417,8 +1676,9 @@ function startAmbience(type) {
     }
 }
 
-ambienceType.onchange = () => { startAmbience(ambienceType.value); saveSetting('ambienceType', ambienceType.value); saveSetting('ambienceVolume', ambienceVolume.value); };
-ambienceVolume.oninput = () => { if (ambienceGain) ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100; saveSetting('ambienceVolume', ambienceVolume.value); };
+// ambienceType is previewed via wireSettingsPreviews → previewSettings → startAmbience
+// ambienceVolume stays live for real-time audio feedback
+ambienceVolume.oninput = () => { if (ambienceGain) ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100; };
 
 // ═══ SEARCH ENGINE ═══
 const searchEngines = {
@@ -1435,9 +1695,8 @@ function updateSearchEngine(key) {
     searchForm.action = e.url; searchInput.name = e.param; searchInput.placeholder = e.placeholder;
 }
 
-searchEngine.onchange = () => { saveSetting('searchEngine', searchEngine.value); currentSearchEngine.value = searchEngine.value; updateSearchEngine(searchEngine.value); };
-pingServer.onchange = () => { saveSetting('pingServer', pingServer.value); updatePing(); };
-currentSearchEngine.onchange = () => updateSearchEngine(currentSearchEngine.value);
+// currentSearchEngine (on-page bar) stays live
+currentSearchEngine.onchange = () => { updateSearchEngine(currentSearchEngine.value); applySearchFavicon(); };
 
 // ═══ COLOR PICKERS ═══
 function updateColors() {
@@ -1447,9 +1706,7 @@ function updateColors() {
         ? [['--bg',colorDarkBg.value],['--fg',colorDarkFg.value],['--accent',colorDarkAccent.value],['--dim',colorDarkDim.value]]
         : [['--bg',colorLightBg.value],['--fg',colorLightFg.value],['--accent',colorLightAccent.value],['--dim',colorLightDim.value]];
     colors.forEach(([k,v]) => root.style.setProperty(k, v));
-    ['colorDarkBg','colorDarkFg','colorDarkAccent','colorDarkDim','colorLightBg','colorLightFg','colorLightAccent','colorLightDim'].forEach(k => {
-        saveSetting(k, document.getElementById(k).value);
-    });
+    // Saving happens only on commit via 💾 (commitAllSettings)
 }
 
 function syncColorInputs(picker, text) {
@@ -1525,7 +1782,7 @@ function renderLinksDisplay() {
     function makeLinksGrid(items) {
         const grid = document.createElement('div');
         grid.className = 'category-links'; grid.style.gridTemplateColumns = `repeat(${perRow},1fr)`;
-        items.forEach(link => { const a = document.createElement('a'); a.href=link.url; a.textContent=link.name; a.target='_blank'; grid.appendChild(a); });
+        items.forEach(link => { const a = document.createElement('a'); a.href=link.url; a.target='_blank'; const span=document.createElement('span'); span.className='link-text'; span.textContent=link.name; a.appendChild(span); grid.appendChild(a); });
         return grid;
     }
 
@@ -1570,29 +1827,21 @@ function renderLinksEditor() {
         const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.value=link.name; nameInput.placeholder='Link Name';
         const urlInput = document.createElement('input'); urlInput.type='text'; urlInput.value=link.url; urlInput.placeholder='URL';
         const delBtn = document.createElement('button'); delBtn.textContent='X';
-        delBtn.onclick = () => { links.splice(i,1); saveAndRenderLinks(); };
+        delBtn.onclick = () => { links.splice(i,1); renderLinksDisplay(); renderLinksEditor(); };
         const catInput = document.createElement('input'); catInput.type='text'; catInput.className='category-input'; catInput.value=link.category||''; catInput.placeholder='Category (optional)';
-        nameInput.oninput = () => { link.name=nameInput.value; saveSetting('links',links); renderLinksDisplay(); };
-        urlInput.oninput = () => { link.url=urlInput.value; saveSetting('links',links); renderLinksDisplay(); };
-        catInput.oninput = () => { link.category=catInput.value; saveSetting('links',links); renderLinksDisplay(); };
+        nameInput.oninput = () => { link.name=nameInput.value; renderLinksDisplay(); };
+        urlInput.oninput = () => { link.url=urlInput.value; renderLinksDisplay(); };
+        catInput.oninput = () => { link.category=catInput.value; renderLinksDisplay(); };
         fields.append(nameInput,urlInput,delBtn); row.append(fields,catInput); linksList.appendChild(row);
     });
 }
 
-function saveAndRenderLinks() { saveSetting('links',links); renderLinksDisplay(); renderLinksEditor(); }
+function saveAndRenderLinks() { renderLinksDisplay(); renderLinksEditor(); }
 document.getElementById('addLinkBtn').onclick = () => { links.push({name:'New Link',url:'https://',category:''}); saveAndRenderLinks(); };
 
-linksPerRowInput.addEventListener('input', () => {
-    saveSetting('linksPerRow', parseInt(linksPerRowInput.value) || numberDefaults.linksPerRowInput);
-    renderLinksDisplay();
-});
+// linksPerRow is previewed live via wireSettingsPreviews → previewSettings
 
 // ═══ APPLY / LOAD SETTINGS ═══
-
-function debounce(fn, ms) {
-    let t;
-    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
-}
 
 function applySettings() {
     const deviceName = deviceNameInput.value || 'Game Console';
@@ -1619,41 +1868,59 @@ function applySettings() {
     linksMenu.classList.toggle('bordered', toggleLinkBorders.checked);
     document.body.dataset.theme = themeToggle.checked ? 'light' : 'dark';
     document.body.dataset.transparentFields = toggleTransparentFields.checked ? 'true' : 'false';
+    const dimPct = parseInt(bgDimAmount.value) || 0;
+    const dimLayer = dimPct > 0 ? `linear-gradient(rgba(0,0,0,${(dimPct/100).toFixed(2)}),rgba(0,0,0,${(dimPct/100).toFixed(2)})),` : '';
+    bgDimValue.textContent = dimPct + '%';
     if (bgUrl) {
-        mainContainer.style.backgroundImage = `url('${bgUrl}')`;
-        if (bgImageFit.value === 'auto auto') { mainContainer.style.backgroundSize='auto'; mainContainer.style.backgroundRepeat='repeat'; }
-        else { mainContainer.style.backgroundSize=bgImageFit.value; mainContainer.style.backgroundRepeat='no-repeat'; }
+        const sizeVal = bgImageFit.value === 'auto auto' ? 'auto' : bgImageFit.value;
+        const repeatVal = bgImageFit.value === 'auto auto' ? 'repeat' : 'no-repeat';
+        mainContainer.style.backgroundImage = `${dimLayer}url('${bgUrl}')`;
+        mainContainer.style.backgroundSize = dimPct > 0 ? `cover,${sizeVal}` : sizeVal;
+        mainContainer.style.backgroundRepeat = dimPct > 0 ? `no-repeat,${repeatVal}` : repeatVal;
     } else {
-        mainContainer.style.backgroundImage = mainContainer.style.backgroundSize = mainContainer.style.backgroundRepeat = '';
+        mainContainer.style.backgroundImage = '';
+        mainContainer.style.backgroundSize = '';
+        mainContainer.style.backgroundRepeat = '';
     }
     updateColors();
-
-    saveSettingsDebounced(deviceName, pageTitle, statusMsg, bgUrl);
+    // NOTE: no saveSettingsDebounced here — saving only happens on commit (💾)
 }
 
-const saveSettingsDebounced = debounce((deviceName, pageTitle, statusMsg, bgUrl) => {
+function commitAllSettings() {
+    // ── Core settings ──
     const saves = {
-        deviceName, pageTitle, statusMessage:statusMsg, statusPosition:statusPosition.value,
+        deviceName:deviceNameInput.value, pageTitle:pageTitleInput.value, statusMessage:statusMessageText.value,
+        statusPosition:statusPosition.value,
         startTitle:startTitleInput.value, startPrompt:startPromptInput.value, startSubtitle:startSubtitleInput.value,
         weatherApiKey:weatherApiKey.value, weatherLocation:weatherLocation.value, pingServer:pingServer.value,
         theme:document.body.dataset.theme, toggleLinkBorders:toggleLinkBorders.checked,
         toggleTransparentFields:toggleTransparentFields.checked, showStartScreen:showStartScreen.checked,
-        bgImageUrl:bgUrl, bgImageFit:bgImageFit.value,
+        bgImageUrl:bgImageUrl.value.trim(), bgImageFit:bgImageFit.value, bgDimAmount:parseInt(bgDimAmount.value)||0,
         linksPerRow:parseInt(linksPerRowInput.value)||numberDefaults.linksPerRowInput,
         faviconMode:faviconMode ? faviconMode.value : 'none',
         showStats:showStats.checked, showSearch:showSearch.checked, showLinks:showLinks.checked, showNotes:showNotes.checked,
-        clockFormat:clockFormat.value,
+        clockFormat:clockFormat.value, searchEngine:searchEngine.value, ambienceType:ambienceType.value,
+        ambienceVolume:ambienceVolume.value,
         refreshClock:parseInt(refreshClock.value)||numberDefaults.refreshClock,
         refreshBattery:parseInt(refreshBattery.value)||numberDefaults.refreshBattery,
         refreshNetwork:parseInt(refreshNetwork.value)||numberDefaults.refreshNetwork,
         refreshIP:parseInt(refreshIP.value)||numberDefaults.refreshIP,
         refreshDownlink:parseInt(refreshDownlink.value)||numberDefaults.refreshDownlink,
         refreshPing:parseInt(refreshPing.value)||numberDefaults.refreshPing,
-        refreshWeather:parseInt(refreshWeather.value)||numberDefaults.refreshWeather
+        refreshWeather:parseInt(refreshWeather.value)||numberDefaults.refreshWeather,
+        // effects & font
+        activeEffects: activeEffects,
+        effectIntensity: effectIntensity.value,
+        fontStyle: fontStyle.value,
+        // links
+        links: links
     };
     Object.entries(saves).forEach(([k,v]) => saveSetting(k,v));
     Object.entries(statToggles).forEach(([k,el]) => saveSetting(`stat_${k}`,el.checked));
-}, 300);
+    ['colorDarkBg','colorDarkFg','colorDarkAccent','colorDarkDim','colorLightBg','colorLightFg','colorLightAccent','colorLightDim'].forEach(k => {
+        saveSetting(k, document.getElementById(k).value);
+    });
+}
 
 function loadSettings() {
     const g = (k,d) => loadSetting(k,d);
@@ -1669,15 +1936,17 @@ function loadSettings() {
     pingServer.value = g('pingServer','google');
     bgImageUrl.value = g('bgImageUrl','');
     bgImageFit.value = g('bgImageFit','cover');
+    bgDimAmount.value = g('bgDimAmount', 0);
     const savedPerRow = g('linksPerRow',null);
     if (savedPerRow !== null) linksPerRowInput.value = savedPerRow;
     showStats.checked = g('showStats',true); showSearch.checked = g('showSearch',true);
     showLinks.checked = g('showLinks',true); showNotes.checked = g('showNotes',true);
     themeToggle.checked = g('theme','dark') === 'light';
     toggleLinkBorders.checked = g('toggleLinkBorders',false);
-    toggleTransparentFields.checked = g('toggleTransparentFields',false);
+    toggleTransparentFields.checked = g('toggleTransparentFields',true);
     showStartScreen.checked = g('showStartScreen',false);
-    fontStyle.value = g('fontStyle','system');
+    const savedFont = g('fontStyle', 'system');
+    fontStyle.value = FONTS[savedFont] ? savedFont : 'system';
     applyFontStyle(fontStyle.value);
     if (faviconMode) faviconMode.value = g('faviconMode','none');
     activeEffects = g('activeEffects',[]); applyEffects(); renderActiveEffects();
@@ -1702,15 +1971,15 @@ function loadSettings() {
     Object.entries(statToggles).forEach(([k,el]) => { el.checked = g(`stat_${k}`, k !== 'weather'); });
 }
 
-// Event listeners for settings
-[deviceNameInput,pageTitleInput,statusMessageText,statusPosition,startTitleInput,startPromptInput,startSubtitleInput,
- weatherApiKey,weatherLocation,pingServer,bgImageUrl,bgImageFit,showStats,showSearch,showLinks,showNotes,themeToggle,
- toggleLinkBorders,toggleTransparentFields,showStartScreen,...Object.values(statToggles),
- clockFormat,faviconMode,refreshClock,refreshBattery,refreshNetwork,refreshIP,refreshDownlink,refreshPing,refreshWeather
-].forEach(el => {
-    if (!el) return;
-    el.addEventListener('input', applySettings);
-    if (el.type === 'checkbox' || el.tagName === 'SELECT') el.addEventListener('change', applySettings);
+// ═══ SETTINGS APPLY (💾) AND CLOSE (✕) BUTTONS ═══
+document.getElementById('applySettingsBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeSettingsCommit();
+});
+
+document.getElementById('closeSettingsBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeSettingsDiscard();
 });
 
 // ═══ RESET SETTINGS MODAL ═══
@@ -1718,7 +1987,7 @@ const RESET_KEYS = {
     general: ['deviceName','pageTitle','statusMessage','statusPosition','clockFormat',
               'searchEngine','ambienceType','ambienceVolume',
               'startTitle','startPrompt','startSubtitle'],
-    display:  ['fontStyle','faviconMode','bgImageUrl','bgImageFit','theme','toggleLinkBorders','toggleTransparentFields',
+    display:  ['fontStyle','faviconMode','bgImageUrl','bgImageFit','bgDimAmount','theme','toggleLinkBorders','toggleTransparentFields',
                'showStartScreen','activeEffects','effectIntensity',
                'showStats','showSearch','showLinks','showNotes',
                'stat_time','stat_battery','stat_network','stat_ip','stat_dl','stat_weather','stat_ping',
@@ -1770,52 +2039,120 @@ applyFavicons();
 renderThemes();
 currentSearchEngine.value = searchEngine.value;
 updateSearchEngine(searchEngine.value);
+wireSettingsPreviews();
 initDebugUnlock();
 
 // Debug → open settings shortcut
 document.getElementById('debugOpenSettings').addEventListener('click', (e) => {
     e.stopPropagation();
-    debugMenu.classList.remove('active');
-    document.body.dataset.debugActive = 'false';
+    closeDebugDiscard();
     const statusMsg = document.getElementById('statusMessage');
     statusMsg.style.color = '';
     statusMsg.style.textShadow = '';
     statusMsg.textContent = statusMessageText.value || 'Ready';
-    settingsMenu.style.display = 'flex';
+    openSettingsMenu();
 });
 
+// ═══ DEBUG MENU — snapshot/discard/commit ═══
 const debugEraseStyle = document.getElementById('debugEraseStyle');
 const debugAlarmType = document.getElementById('debugAlarmType');
-if (debugEraseStyle) { debugEraseStyle.value = loadSetting('debugEraseStyle','normal'); debugEraseStyle.onchange = () => saveSetting('debugEraseStyle', debugEraseStyle.value); }
-if (debugAlarmType) { debugAlarmType.value = loadSetting('debugAlarmType','normal'); debugAlarmType.onchange = () => saveSetting('debugAlarmType', debugAlarmType.value); }
-
-// Danger color picker
 const debugDangerColorPicker = document.getElementById('debugDangerColor');
 const debugDangerColorText = document.getElementById('debugDangerColorText');
 const debugDangerColorReset = document.getElementById('debugDangerColorReset');
-if (debugDangerColorPicker) {
-    const savedDanger = loadSetting('debugDangerColor', '#d32f2f');
-    debugDangerColorPicker.value = savedDanger;
-    debugDangerColorText.value = savedDanger;
-    applyDangerColor(savedDanger);
+const DEBUG_KEYS = ['debugEraseStyle','debugAlarmType','debugDangerColor'];
 
+let debugSnapshot = null;
+
+function captureDebugSnapshot() {
+    const snap = {};
+    DEBUG_KEYS.forEach(k => { snap[k] = localStorage.getItem(k); });
+    return snap;
+}
+
+function loadDebugUI() {
+    if (debugEraseStyle) debugEraseStyle.value = loadSetting('debugEraseStyle','normal');
+    if (debugAlarmType) debugAlarmType.value = loadSetting('debugAlarmType','normal');
+    const savedDanger = loadSetting('debugDangerColor','#d32f2f');
+    if (debugDangerColorPicker) debugDangerColorPicker.value = savedDanger;
+    if (debugDangerColorText) debugDangerColorText.value = savedDanger;
+    applyDangerColor(savedDanger);
+}
+
+function openDebugMenu() {
+    debugSnapshot = captureDebugSnapshot();
+    loadDebugUI();
+    debugMenu.classList.add('active');
+    document.body.dataset.debugActive = 'true';
+}
+
+function closeDebugDiscard() {
+    if (debugSnapshot) {
+        // Restore debug settings in localStorage
+        DEBUG_KEYS.forEach(k => {
+            if (debugSnapshot[k] === null) localStorage.removeItem(k);
+            else localStorage.setItem(k, debugSnapshot[k]);
+        });
+        // Reload debug UI to reflect restored values
+        loadDebugUI();
+        debugSnapshot = null;
+    }
+    debugMenu.classList.remove('active');
+    document.body.dataset.debugActive = 'false';
+}
+
+function closeDebugCommit() {
+    if (debugEraseStyle) saveSetting('debugEraseStyle', debugEraseStyle.value);
+    if (debugAlarmType) saveSetting('debugAlarmType', debugAlarmType.value);
+    saveSetting('debugDangerColor', dangerColor);
+    debugSnapshot = null;
+    debugMenu.classList.remove('active');
+    document.body.dataset.debugActive = 'false';
+}
+
+// Initial load of saved debug values on startup
+loadDebugUI();
+
+// Wire debug controls — preview only (live DOM update, no localStorage write)
+if (debugDangerColorPicker) {
     debugDangerColorPicker.oninput = () => {
         debugDangerColorText.value = debugDangerColorPicker.value;
         applyDangerColor(debugDangerColorPicker.value);
     };
+}
+if (debugDangerColorText) {
     debugDangerColorText.oninput = () => {
         if (/^#[0-9A-Fa-f]{6}$/.test(debugDangerColorText.value)) {
             debugDangerColorPicker.value = debugDangerColorText.value;
             applyDangerColor(debugDangerColorText.value);
         }
     };
+}
+if (debugDangerColorReset) {
     debugDangerColorReset.onclick = (e) => {
         e.stopPropagation();
-        debugDangerColorPicker.value = '#d32f2f';
-        debugDangerColorText.value = '#d32f2f';
+        if (debugDangerColorPicker) debugDangerColorPicker.value = '#d32f2f';
+        if (debugDangerColorText) debugDangerColorText.value = '#d32f2f';
         applyDangerColor('#d32f2f');
     };
 }
+
+document.getElementById('debugApplyBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeDebugCommit();
+    const statusMsg = document.getElementById('statusMessage');
+    statusMsg.style.color = '';
+    statusMsg.style.textShadow = '';
+    statusMsg.textContent = statusMessageText.value || 'Ready';
+});
+
+document.getElementById('debugCloseBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeDebugDiscard();
+    const statusMsg = document.getElementById('statusMessage');
+    statusMsg.style.color = '';
+    statusMsg.style.textShadow = '';
+    statusMsg.textContent = statusMessageText.value || 'Ready';
+});
 
 // ═══ START SCREEN ═══
 const startScreen = document.getElementById('startScreen');
@@ -1840,7 +2177,7 @@ function setupIntervals() {
     intervals.weather  = setInterval(updateWeather,  gi(refreshWeather,  numberDefaults.refreshWeather));
 }
 
-[refreshClock,refreshBattery,refreshNetwork,refreshIP,refreshDownlink,refreshPing,refreshWeather].forEach(el => el.addEventListener('change', setupIntervals));
+// Refresh intervals saved on commit via 💾 (commitAllSettings)
 setupIntervals();
 </script>
 </body>
