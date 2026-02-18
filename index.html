@@ -1,784 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="description" content="Retro gaming homepage for Anbernic RG Slide" />
-<meta name="theme-color" content="#070707" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="description" content="Retro gaming homepage for Anbernic RG Slide"/>
+<meta name="theme-color" content="#070707"/>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="customFontLink" rel="stylesheet" href="">
 <title id="pagetitle">System Home</title>
 <style>
-    :root {
-        --fg: #cfcfcf;
-        --bg: #070707;
-        --accent: #7a7a7a;
-        --dim: #444;
-        --effect-intensity: 1;
-        --font-family: system-ui, sans-serif;
-    }
-    
-    body[data-font="terminal"] {
-        --font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
-    }
-
-    [data-theme="light"] {
-        --fg: #111;
-        --bg: #f5f5f5;
-        --accent: #666;
-        --dim: #bbb;
-    }
-
-    html, body {
-        margin: 0;
-        padding: 0;
-        background: var(--bg);
-        color: var(--fg);
-        font-family: var(--font-family);
-        height: 100%;
-        overflow: hidden;
-        transition: background 0.3s, color 0.3s, font-family 0.3s;
-    }
-
-    body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 2px, transparent 4px);
-        mix-blend-mode: overlay;
-        opacity: calc(0.35 * var(--effect-intensity));
-        z-index: 9999;
-    }
-
-    /* Screen Effects */
-    body[data-effect="crt"] .container::before,
-    body[data-effect="arcade"] .container::before,
-    body[data-effect="scanlines"] .container::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: repeating-linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 0px,
-            rgba(0, 0, 0, 0) 2px,
-            rgba(0, 0, 0, calc(0.3 * var(--effect-intensity))) 2px,
-            rgba(0, 0, 0, calc(0.3 * var(--effect-intensity))) 3px
-        );
-        z-index: 9998;
-    }
-
-    body[data-effect="arcade"] .container::before {
-        background: repeating-linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 0px,
-            rgba(0, 0, 0, 0) 1px,
-            rgba(0, 0, 0, calc(0.5 * var(--effect-intensity))) 1px,
-            rgba(0, 0, 0, calc(0.5 * var(--effect-intensity))) 2px
-        );
-    }
-
-    body[data-effect="crt"] .container::after,
-    body[data-effect="arcade"] .container::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        border-radius: 8px;
-        box-shadow: inset 0 0 calc(100px * var(--effect-intensity)) rgba(0, 0, 0, calc(0.3 * var(--effect-intensity)));
-        z-index: 9997;
-    }
-
-    body[data-effect="arcade"] .container::after {
-        border-radius: 12px;
-        box-shadow: inset 0 0 calc(150px * var(--effect-intensity)) rgba(0, 0, 0, calc(0.5 * var(--effect-intensity)));
-    }
-
-    /* VHS Effect */
-    body[data-effect="vhs"] .container::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: 
-            repeating-linear-gradient(
-                to bottom,
-                transparent 0px,
-                transparent 2px,
-                rgba(255, 0, 0, calc(0.08 * var(--effect-intensity))) 2px,
-                rgba(255, 0, 0, calc(0.08 * var(--effect-intensity))) 3px,
-                transparent 3px,
-                transparent 5px,
-                rgba(0, 255, 0, calc(0.08 * var(--effect-intensity))) 5px,
-                rgba(0, 255, 0, calc(0.08 * var(--effect-intensity))) 6px
-            );
-        z-index: 9998;
-        animation: vhsTracking 0.1s infinite;
-        opacity: var(--effect-intensity);
-    }
-
-    @keyframes vhsTracking {
-        0% { transform: translateY(0px); }
-        100% { transform: translateY(calc(3px * var(--effect-intensity))); }
-    }
-
-    body[data-effect="vhs"] .container::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, calc(0.2 * var(--effect-intensity))) 50%, transparent 100%);
-        z-index: 9997;
-        animation: vhsRoll 8s linear infinite;
-        opacity: var(--effect-intensity);
-    }
-
-    @keyframes vhsRoll {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-    }
-
-    /* Game Boy LCD Effect */
-    body[data-effect="gameboy"] .container::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: 
-            repeating-linear-gradient(
-                to right,
-                rgba(0, 0, 0, calc(0.1 * var(--effect-intensity))) 0px,
-                rgba(0, 0, 0, calc(0.1 * var(--effect-intensity))) 1px,
-                transparent 1px,
-                transparent 2px
-            ),
-            repeating-linear-gradient(
-                to bottom,
-                rgba(0, 0, 0, calc(0.1 * var(--effect-intensity))) 0px,
-                rgba(0, 0, 0, calc(0.1 * var(--effect-intensity))) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-        z-index: 9998;
-    }
-
-    body[data-effect="gameboy"] .container::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: 
-            radial-gradient(ellipse at center, transparent 0%, rgba(50, 80, 50, calc(0.15 * var(--effect-intensity))) 100%),
-            linear-gradient(to bottom, rgba(150, 200, 100, calc(0.05 * var(--effect-intensity))) 0%, rgba(100, 150, 80, calc(0.05 * var(--effect-intensity))) 100%);
-        z-index: 9997;
-    }
-
-    /* Phosphor Glow Effect */
-    body[data-effect="phosphor"] .container::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 255, 100, calc(0.1 * var(--effect-intensity))) 100%);
-        z-index: 9998;
-        animation: phosphorPulse 2s ease-in-out infinite;
-        opacity: var(--effect-intensity);
-    }
-
-    @keyframes phosphorPulse {
-        0%, 100% { opacity: calc(0.8 * var(--effect-intensity)); }
-        50% { opacity: var(--effect-intensity); }
-    }
-
-    .container {
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        box-sizing: border-box;
-        position: relative;
-        background-size: cover;
-        background-position: center;
-        transition: background 0.3s;
-        overflow: hidden;
-    }
-
-    .header {
-        font-size: 16px;
-        letter-spacing: 1px;
-        opacity: 0.9;
-        text-align: center;
-        margin-bottom: 12px;
-        flex-shrink: 0;
-    }
-
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px 20px;
-        font-size: 14px;
-        flex-shrink: 0;
-        margin-bottom: 16px;
-    }
-
-    .stat { opacity: 0.95; }
-    .label { color: var(--accent); }
-
-    .stat-refresh-btn {
-        background: none;
-        border: none;
-        color: var(--accent);
-        font-size: 14px;
-        cursor: pointer;
-        padding: 0 4px;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-        margin-left: 4px;
-    }
-
-    .stat-refresh-btn:hover {
-        opacity: 1;
-    }
-
-    .stat-refresh-btn:active {
-        transform: rotate(180deg);
-    }
-
-    .search-bar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 16px;
-        width: 100%;
-        gap: 8px;
-        flex-shrink: 0;
-    }
-
-    .search-bar-wrapper {
-        display: flex;
-        width: 100%;
-        max-width: 500px;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .search-engine-selector {
-        padding: 4px 8px;
-        font-size: 14px;
-        height: 32px;
-        background: var(--bg);
-        color: var(--fg);
-        border: 1px solid var(--dim);
-        outline: none;
-        border-radius: 4px;
-        cursor: pointer;
-        min-width: 110px;
-        transition: background 0.3s, border 0.3s;
-        font-family: var(--font-family);
-    }
-
-    body[data-transparent-fields="true"] .search-engine-selector {
-        background: transparent;
-        border-color: transparent;
-    }
-
-    body[data-transparent-fields="true"] .search-engine-selector:focus {
-        background: rgba(0, 0, 0, 0.2);
-        border-color: var(--accent);
-    }
-
-    .search-bar form {
-        flex: 1;
-        display: flex;
-    }
-
-    .search-bar input {
-        width: 100%;
-        padding: 4px 8px;
-        font-size: 16px;
-        height: 32px;
-        background: var(--bg);
-        color: var(--fg);
-        border: 1px solid var(--dim);
-        outline: none;
-        border-radius: 4px;
-        box-sizing: border-box;
-        transition: background 0.3s, border 0.3s;
-        font-family: var(--font-family);
-    }
-
-    body[data-transparent-fields="true"] .search-bar input {
-        background: transparent;
-        border-color: transparent;
-    }
-
-    body[data-transparent-fields="true"] .search-bar input:focus {
-        background: rgba(0, 0, 0, 0.2);
-        border-color: var(--accent);
-    }
-
-    .search-bar input::placeholder {
-        color: var(--accent);
-        opacity: 0.7;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        font-size: 16px;
-        width: 100%;
-    }
-
-    .content-columns {
-        display: flex;
-        gap: 16px;
-        flex: 1;
-        min-height: 0;
-        max-height: calc(100% - 40px);
-        align-items: stretch;
-        overflow: hidden;
-        margin-bottom: 40px;
-    }
-
-    .links-column {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .notes-column {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .link-category {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 0;
-    }
-
-    /* When links are in flat grid mode (no header), align with notes textarea */
-    .link-category:only-child .category-links:only-child {
-        margin-top: 33px; /* Height of notes header to align with textarea */
-    }
-
-    .category-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        padding: 4px 0;
-        user-select: none;
-        opacity: 0.9;
-    }
-
-    .category-header:hover {
-        opacity: 1;
-    }
-
-    .category-arrow {
-        font-size: 12px;
-        transition: transform 0.2s;
-        color: var(--accent);
-    }
-
-    .category-header.collapsed .category-arrow {
-        transform: rotate(-90deg);
-    }
-
-    .category-title {
-        font-size: 13px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        color: var(--accent);
-    }
-
-    .category-links {
-        display: grid;
-        gap: 12px;
-    }
-
-    .category-links.collapsed {
-        display: none;
-    }
-
-    .menu a {
-        color: var(--fg);
-        text-decoration: none;
-        font-size: inherit;
-        padding: 6px 8px;
-        white-space: nowrap;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 4px;
-        border: 1px solid transparent;
-    }
-
-    .menu.bordered a { border-color: var(--dim); }
-
-    .status-message {
-        font-size: 12px;
-        text-align: left;
-        opacity: 0.7;
-        position: absolute;
-        top: 8px;
-        left: 16px;
-        z-index: 100;
-        pointer-events: none;
-    }
-
-    .notes-section {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        height: 100%;
-    }
-
-    .notes-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        padding: 4px 0;
-        user-select: none;
-        opacity: 0.9;
-        flex-shrink: 0;
-    }
-
-    .notes-header:hover {
-        opacity: 1;
-    }
-
-    .notes-arrow {
-        font-size: 12px;
-        transition: transform 0.2s;
-        color: var(--accent);
-    }
-
-    .notes-header.collapsed .notes-arrow {
-        transform: rotate(-90deg);
-    }
-
-    .notes-title {
-        font-size: 13px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        color: var(--accent);
-    }
-
-    .notes-content {
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-    }
-
-    .notes-content.collapsed {
-        display: none;
-    }
-
-    .notes-textarea {
-        width: 100%;
-        height: auto;
-        min-height: 80px;
-        max-height: none;
-        padding: 8px;
-        background: var(--bg);
-        color: var(--fg);
-        border: 1px solid var(--dim);
-        border-radius: 4px;
-        font-family: system-ui, monospace;
-        font-size: 13px;
-        resize: none;
-        box-sizing: border-box;
-        outline: none;
-        -webkit-appearance: none;
-        appearance: none;
-        transition: background 0.3s, border 0.3s;
-    }
-
-    body[data-transparent-fields="true"] .notes-textarea {
-        background: transparent;
-        border-color: transparent;
-    }
-
-    body[data-transparent-fields="true"] .notes-textarea:focus {
-        background: rgba(0, 0, 0, 0.2);
-        border-color: var(--accent);
-    }
-
-    .notes-textarea:focus {
-        border-color: var(--accent);
-        outline: none;
-    }
-
-    .notes-textarea::placeholder {
-        color: var(--accent);
-        opacity: 0.6;
-    }
-
-    #settingsMenu {
-        position: absolute;
-        top: 40px;
-        right: 16px;
-        background: var(--bg);
-        border: 1px solid var(--dim);
-        padding: 0;
-        display: none;
-        flex-direction: column;
-        width: 400px;
-        max-height: 75vh;
-        z-index: 200;
-        border-radius: 4px;
-    }
-
-    .settings-tabs {
-        display: flex;
-        background: var(--dim);
-        border-bottom: 1px solid var(--dim);
-    }
-
-    .settings-tab {
-        flex: 1;
-        padding: 8px 4px;
-        text-align: center;
-        cursor: pointer;
-        font-size: 12px;
-        border: none;
-        background: transparent;
-        color: var(--fg);
-        opacity: 0.6;
-        transition: opacity 0.2s;
-    }
-
-    .settings-tab.active {
-        opacity: 1;
-        background: var(--bg);
-    }
-
-    .settings-content {
-        padding: 16px;
-        overflow-y: auto;
-        max-height: calc(75vh - 40px);
-    }
-
-    .settings-page {
-        display: none;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .settings-page.active {
-        display: flex;
-    }
-
-    #settingsMenu label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-        gap: 8px;
-    }
-
-    #settingsMenu input[type=text], 
-    #settingsMenu input[type=number],
-    #settingsMenu select {
-        width: 55%;
-        padding: 4px 6px;
-        background: #111;
-        color: #fff;
-        border: 1px solid var(--dim);
-        border-radius: 3px;
-        font-size: 13px;
-    }
-
-    #settingsMenu input[type=range] {
-        width: 55%;
-    }
-
-    #settingsMenu input[type=color] {
-        width: 40px;
-        height: 28px;
-        padding: 2px;
-        background: #111;
-        border: 1px solid var(--dim);
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .color-input-group {
-        display: flex;
-        gap: 6px;
-        width: 55%;
-        align-items: center;
-    }
-
-    .color-text-input {
-        flex: 1;
-        padding: 4px 6px !important;
-        background: #111 !important;
-        color: #fff !important;
-        border: 1px solid var(--dim) !important;
-        border-radius: 3px;
-        font-size: 12px !important;
-        font-family: monospace;
-        width: auto !important;
-    }
-
-    #settingsMenu button {
-        padding: 6px 10px;
-        background: var(--dim);
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 13px;
-    }
-
-    .settings-section {
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--dim);
-    }
-
-    .settings-section:first-child {
-        margin-top: 0;
-        padding-top: 0;
-        border-top: none;
-    }
-
-    .section-title {
-        font-size: 11px;
-        color: var(--accent);
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    #settingsBtn {
-        position: absolute;
-        top: 0;
-        right: 0;
-        cursor: pointer;
-        padding: 4px 8px;
-        font-size: 14px;
-        background: none;
-        border: none;
-        color: var(--fg);
-        z-index: 300;
-    }
-
-    /* Link editor styles - Android compatible */
-    .link-editor-row {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 8px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--dim);
-    }
-
-    .link-editor-fields {
-        display: flex;
-        gap: 4px;
-        align-items: stretch;
-    }
-
-    .link-editor-row input {
-        flex: 1;
-        padding: 6px 8px;
-        background: #111 !important;
-        color: #fff !important;
-        border: 1px solid var(--dim) !important;
-        border-radius: 3px;
-        font-size: 14px !important;
-        min-height: 32px;
-        -webkit-appearance: none;
-        appearance: none;
-        box-sizing: border-box;
-    }
-
-    .link-editor-row input.category-input {
-        font-size: 12px !important;
-        opacity: 0.8;
-    }
-
-    .link-editor-row button {
-        padding: 6px 10px;
-        background: #933;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        border-radius: 3px;
-        font-size: 13px;
-        min-width: 40px;
-    }
-
-    /* Loading/Start Screen */
-    #startScreen {
-        position: fixed;
-        inset: 0;
-        background: var(--bg);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        cursor: pointer;
-        transition: opacity 0.5s ease-out;
-    }
-
-    #startScreen.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .start-title {
-        font-size: 48px;
-        letter-spacing: 4px;
-        margin-bottom: 32px;
-        opacity: 0.9;
-        font-family: var(--font-family);
-    }
-
-    .start-prompt {
-        font-size: 20px;
-        letter-spacing: 2px;
-        opacity: 0.7;
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    .start-subtitle {
-        font-size: 14px;
-        letter-spacing: 1px;
-        opacity: 0.5;
-        margin-top: 16px;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 0.7; }
-        50% { opacity: 0.3; }
-    }
+:root{--fg:#cfcfcf;--bg:#070707;--accent:#7a7a7a;--dim:#444;--effect-intensity:1;--font-family:system-ui,sans-serif}
+/* font is set via --font-family on :root, managed by JS */
+[data-theme="light"]{--fg:#111;--bg:#f5f5f5;--accent:#666;--dim:#bbb}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font-family);height:100%;overflow:hidden;transition:background .3s,color .3s,font-family .3s}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0px,rgba(255,255,255,.03) 1px,transparent 2px,transparent 4px);mix-blend-mode:overlay;opacity:calc(.35 * var(--effect-intensity));z-index:9999}
+
+/* Screen Effects */
+body[data-effect~="crt"] .container::before,body[data-effect~="arcade"] .container::before,body[data-effect~="scanlines"] .container::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,calc(.3*var(--effect-intensity))) 2px,rgba(0,0,0,calc(.3*var(--effect-intensity))) 3px);z-index:9998}
+body[data-effect~="arcade"] .container::before{background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 1px,rgba(0,0,0,calc(.5*var(--effect-intensity))) 1px,rgba(0,0,0,calc(.5*var(--effect-intensity))) 2px)}
+body[data-effect~="crt"] .container::after,body[data-effect~="arcade"] .container::after{content:"";position:fixed;inset:0;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 calc(100px*var(--effect-intensity)) rgba(0,0,0,calc(.3*var(--effect-intensity)));z-index:9997}
+body[data-effect~="arcade"] .container::after{border-radius:12px;box-shadow:inset 0 0 calc(150px*var(--effect-intensity)) rgba(0,0,0,calc(.5*var(--effect-intensity)))}
+body[data-effect~="vhs"] .container::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(255,0,0,calc(.08*var(--effect-intensity))) 2px,rgba(255,0,0,calc(.08*var(--effect-intensity))) 3px,transparent 3px,transparent 5px,rgba(0,255,0,calc(.08*var(--effect-intensity))) 5px,rgba(0,255,0,calc(.08*var(--effect-intensity))) 6px);z-index:9998;animation:vhsTracking .1s infinite;opacity:var(--effect-intensity)}
+@keyframes vhsTracking{0%{transform:translateY(0)}100%{transform:translateY(calc(3px*var(--effect-intensity)))}}
+body[data-effect~="vhs"] .container::after{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,calc(.2*var(--effect-intensity))) 50%,transparent 100%);z-index:9997;animation:vhsRoll 8s linear infinite;opacity:var(--effect-intensity)}
+@keyframes vhsRoll{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+body[data-effect~="gameboy"] .container::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(to right,rgba(0,0,0,calc(.1*var(--effect-intensity))) 0px,rgba(0,0,0,calc(.1*var(--effect-intensity))) 1px,transparent 1px,transparent 2px),repeating-linear-gradient(to bottom,rgba(0,0,0,calc(.1*var(--effect-intensity))) 0px,rgba(0,0,0,calc(.1*var(--effect-intensity))) 1px,transparent 1px,transparent 2px);z-index:9998}
+body[data-effect~="gameboy"] .container::after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 0%,rgba(50,80,50,calc(.15*var(--effect-intensity))) 100%),linear-gradient(to bottom,rgba(150,200,100,calc(.05*var(--effect-intensity))) 0%,rgba(100,150,80,calc(.05*var(--effect-intensity))) 100%);z-index:9997}
+body[data-effect~="phosphor"] .container::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 0%,rgba(0,255,100,calc(.1*var(--effect-intensity))) 100%);z-index:9998;animation:phosphorPulse 2s ease-in-out infinite;opacity:var(--effect-intensity)}
+@keyframes phosphorPulse{0%,100%{opacity:calc(.8*var(--effect-intensity))}50%{opacity:var(--effect-intensity)}}
+
+.container{padding:24px;display:flex;flex-direction:column;height:100vh;box-sizing:border-box;position:relative;background-size:cover;background-position:center;transition:background .3s;overflow:hidden}
+.header{font-size:16px;letter-spacing:1px;opacity:.9;text-align:center;margin-bottom:12px;flex-shrink:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 20px;font-size:14px;flex-shrink:0;margin-bottom:16px}
+.stat{opacity:.95}
+.label{color:var(--accent)}
+.stat-refresh-btn{background:none;border:none;color:var(--accent);font-size:14px;cursor:pointer;padding:0 4px;opacity:.6;transition:opacity .2s;margin-left:4px}
+.stat-refresh-btn:hover{opacity:1}
+.stat-refresh-btn:active{transform:rotate(180deg)}
+.search-bar{display:flex;justify-content:center;align-items:center;margin-bottom:16px;width:100%;gap:8px;flex-shrink:0}
+.search-bar-wrapper{display:flex;width:100%;max-width:500px;gap:8px;align-items:center}
+.search-engine-selector,.search-bar input{padding:4px 8px;font-size:14px;height:32px;background:var(--bg);color:var(--fg);border:1px solid var(--dim);outline:none;border-radius:4px;transition:background .3s,border .3s;font-family:var(--font-family)}
+.search-engine-selector{cursor:pointer;min-width:110px}
+.search-bar form{flex:1;display:flex}
+.search-bar input{width:100%;font-size:16px;box-sizing:border-box}
+body[data-transparent-fields="true"] .search-engine-selector,body[data-transparent-fields="true"] .search-bar input,body[data-transparent-fields="true"] .notes-textarea{background:transparent;border-color:transparent}
+body[data-transparent-fields="true"] .search-engine-selector:focus,body[data-transparent-fields="true"] .search-bar input:focus,body[data-transparent-fields="true"] .notes-textarea:focus{background:rgba(0,0,0,.2);border-color:var(--accent)}
+.search-bar input::placeholder,.notes-textarea::placeholder{color:var(--accent);opacity:.7}
+.menu{display:flex;flex-direction:column;gap:16px;font-size:16px;width:100%}
+.content-columns{display:flex;gap:16px;flex:1;min-height:0;max-height:calc(100% - 40px);align-items:stretch;overflow:hidden;margin-bottom:40px}
+.links-column{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:16px}
+.notes-column{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}
+.link-category{display:flex;flex-direction:column;gap:12px}
+.category-header,.notes-header{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0;user-select:none;opacity:.9}
+.category-header:hover,.notes-header:hover{opacity:1}
+.category-arrow,.notes-arrow{font-size:12px;transition:transform .2s;color:var(--accent)}
+.category-header.collapsed .category-arrow,.notes-header.collapsed .notes-arrow{transform:rotate(-90deg)}
+.category-title,.notes-title{font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
+.category-links{display:grid;gap:12px}
+.category-links.collapsed,.notes-content.collapsed{display:none}
+.menu a{color:var(--fg);text-decoration:none;font-size:inherit;padding:6px 8px;display:block;text-align:center;border-radius:4px;border:1px solid transparent;width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu.bordered a{border-color:var(--dim)}
+.status-message{font-size:12px;text-align:left;opacity:.7;position:fixed;z-index:100;pointer-events:auto;cursor:pointer;font-family:var(--font-family);user-select:none;padding:4px 8px;background:rgba(0,0,0,.01);-webkit-tap-highlight-color:transparent;touch-action:manipulation;line-height:1.4}
+/* Expand touch target without changing visual position — pointer-events:none so it doesn't eat clicks */
+.status-message::after{content:'';position:absolute;inset:-14px -8px;display:block;pointer-events:none}
+.status-message[data-position="bottom-left"]{bottom:8px;left:16px}
+.status-message[data-position="bottom-right"]{bottom:8px;right:16px}
+.status-message[data-position="top-left"]{top:8px;left:16px}
+.status-message[data-position="top-right"]{top:8px;right:16px}
+.notes-section{display:flex;flex-direction:column;gap:8px;height:100%}
+.notes-content{display:flex;flex-direction:column;min-height:0}
+.notes-textarea{width:100%;height:auto;min-height:80px;padding:8px;background:var(--bg);color:var(--fg);border:1px solid var(--dim);border-radius:4px;font-family:system-ui,monospace;font-size:13px;resize:none;box-sizing:border-box;outline:none;-webkit-appearance:none;appearance:none;transition:background .3s,border .3s}
+.notes-textarea:focus{border-color:var(--accent)}
+
+/* Settings Menu */
+#settingsMenu{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:1px solid var(--dim);padding:0;display:none;flex-direction:column;width:400px;max-height:80vh;z-index:500;border-radius:4px}
+.settings-tabs{display:flex;background:var(--dim);border-bottom:1px solid var(--dim)}
+.settings-tab{flex:1;padding:8px 4px;text-align:center;cursor:pointer;font-size:12px;border:none;background:transparent;color:var(--fg);opacity:.6;transition:opacity .2s}
+.settings-tab.active{opacity:1;background:var(--bg)}
+.settings-content{padding:16px;overflow-y:auto;max-height:calc(75vh - 40px)}
+.settings-page{display:none;flex-direction:column;gap:12px}
+.settings-page.active{display:flex}
+#settingsMenu label{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:8px}
+#settingsMenu input[type=text],#settingsMenu input[type=number],#settingsMenu select{width:55%;padding:4px 6px;background:var(--dim);color:var(--fg);border:1px solid var(--accent);border-radius:3px;font-size:13px;font-family:var(--font-family)}
+#settingsMenu input[type=number]::-webkit-inner-spin-button,#settingsMenu input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#settingsMenu input[type=number]{-moz-appearance:textfield}
+.number-input-wrapper{display:flex;gap:4px;width:55%;align-items:stretch}
+.number-input-wrapper input[type=number]{flex:1;width:auto!important}
+.number-spinner-btns{display:flex;flex-direction:row;gap:2px}
+.number-spinner-btn{width:20px;height:24px;padding:0;background:var(--dim);border:none;border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--fg);line-height:1;user-select:none}
+.number-spinner-btn:active{background:var(--accent)}
+#settingsMenu input[type=range]{width:55%}
+#settingsMenu input[type=color]{width:40px;height:28px;padding:2px;background:var(--dim);border:1px solid var(--accent);border-radius:3px;cursor:pointer}
+.color-input-group{display:flex;gap:6px;width:55%;align-items:center}
+.color-text-input{flex:1;padding:4px 6px!important;background:var(--dim)!important;color:var(--fg)!important;border:1px solid var(--accent)!important;border-radius:3px;font-size:12px!important;font-family:monospace;width:auto!important}
+#settingsMenu button{padding:6px 10px;background:var(--dim);color:var(--fg);border:none;cursor:pointer;border-radius:4px;font-size:13px}
+.settings-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--dim)}
+.settings-section:first-child{margin-top:0;padding-top:0;border-top:none}
+.section-title{font-size:11px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.link-editor-row{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--dim)}
+.link-editor-fields{display:flex;gap:4px;align-items:stretch}
+.link-editor-row input{flex:1;padding:6px 8px;background:var(--dim)!important;color:var(--fg)!important;border:1px solid var(--accent)!important;border-radius:3px;font-size:14px!important;min-height:32px;-webkit-appearance:none;appearance:none;box-sizing:border-box}
+.link-editor-row input.category-input{font-size:12px!important;opacity:.8}
+.link-editor-row button{padding:6px 10px;background:#933;color:#fff;border:none;cursor:pointer;border-radius:3px;font-size:13px;min-width:40px}
+
+.menu a .favicon{width:14px;height:14px;vertical-align:middle;margin-right:5px;border-radius:2px;object-fit:contain;flex-shrink:0;display:inline-block}
+.menu a{display:flex;align-items:center;justify-content:center}
+.search-engine-favicon{width:16px;height:16px;vertical-align:middle;margin-right:4px;border-radius:2px;object-fit:contain;flex-shrink:0}
+.search-engine-selector option{/* can't style option favicons cross-browser, handled via JS label */}
+#startScreen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10000;cursor:pointer;transition:opacity .5s ease-out;pointer-events:all}
+#startScreen.hidden{opacity:0;pointer-events:none}
+.start-title{font-size:48px;letter-spacing:4px;margin-bottom:32px;opacity:.9;font-family:var(--font-family)}
+.start-prompt{font-size:20px;letter-spacing:2px;opacity:.7;animation:pulse 2s ease-in-out infinite}
+.start-subtitle{font-size:14px;letter-spacing:1px;opacity:.5;margin-top:16px}
+@keyframes pulse{0%,100%{opacity:.7}50%{opacity:.3}}
+
+/* Debug Menu */
+#debugMenu{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #f00;padding:0;display:none;flex-direction:column;width:420px;max-height:85vh;z-index:9999;font-family:'Courier New',monospace;box-shadow:0 0 40px rgba(255,0,0,.5),inset 0 0 20px rgba(255,0,0,.2);animation:debugGlitch .3s infinite}
+@keyframes debugGlitch{0%,90%,100%{transform:translate(-50%,-50%)}91%{transform:translate(-50.5%,-50%)}92%{transform:translate(-49.5%,-50.2%)}93%{transform:translate(-50%,-49.8%)}}
+#debugMenu.active{display:flex}
+.debug-header{background:#1a0000;border-bottom:1px solid #f00;padding:12px;color:#f00;font-size:14px;letter-spacing:3px;text-align:center;animation:headerFlicker 4s infinite}
+@keyframes headerFlicker{0%,98%,100%{opacity:1}99%{opacity:.3}}
+.debug-content{padding:16px;overflow-y:auto;max-height:calc(80vh - 50px);color:#f00;font-size:12px}
+.debug-section{margin-bottom:16px;border:1px solid #300;padding:10px;background:rgba(255,0,0,.05)}
+.debug-section-title{font-size:11px;color:#f00;margin-bottom:8px;text-transform:uppercase;letter-spacing:2px;opacity:.8}
+.debug-option{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:11px;padding:4px;cursor:pointer;transition:background .2s}
+.debug-option:hover{background:rgba(255,0,0,.1)}
+.debug-option input[type="checkbox"]{cursor:pointer;accent-color:#f00}
+.debug-option select{background:#000;color:#f00;border:1px solid #f00;padding:2px 4px;font-family:'Courier New',monospace;font-size:11px;cursor:pointer}
+.debug-warning{color:#f00;font-size:9px;opacity:.6;margin-top:16px;text-align:center;letter-spacing:1px;animation:warningPulse 2s infinite}
+@keyframes warningPulse{0%,100%{opacity:.6}50%{opacity:.3}}
+
+/* Loop variant glitch - centered */
+@keyframes loopGlitch{0%,90%,100%{transform:translate(0,0)}91%{transform:translate(-2px,0)}92%{transform:translate(2px,-1px)}93%{transform:translate(0,1px)}}
+.erase-modal-corrupted,.erase-modal-corrupted *{font-family:'Courier New',monospace!important}
+@keyframes glitchShake{0%,100%{transform:translate(0,0)}10%{transform:translate(-2px,1px)}20%{transform:translate(2px,-1px)}30%{transform:translate(-1px,2px)}40%{transform:translate(1px,-2px)}50%{transform:translate(-2px,-1px)}60%{transform:translate(2px,1px)}70%{transform:translate(-1px,-2px)}80%{transform:translate(1px,2px)}90%{transform:translate(-2px,-1px)}}
+@keyframes colorDistort{0%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(180deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes textCorrupt{0%{text-shadow:0 0 0 transparent}25%{text-shadow:2px 0 0 #f00,-2px 0 0 #0ff}50%{text-shadow:-2px 0 0 #f00,2px 0 0 #0ff}75%{text-shadow:0 2px 0 #f00,0 -2px 0 #0ff}100%{text-shadow:0 0 0 transparent}}
+
+/* Debug active state */
+body[data-debug-active="true"]{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">👁️</text></svg>') 16 16,auto}
+body[data-debug-active="true"] input,body[data-debug-active="true"] textarea,body[data-debug-active="true"] button,body[data-debug-active="true"] select{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">👁️</text></svg>') 16 16,auto}
+body[data-debug-active="true"]::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 0%,rgba(255,0,0,.05) 100%);pointer-events:none;z-index:1;animation:redPulse 3s ease-in-out infinite}
+@keyframes redPulse{0%,100%{opacity:.3}50%{opacity:.6}}
 </style>
 </head>
 <body data-theme="dark">
+
 <!-- Start Screen -->
 <div id="startScreen">
-    <div class="start-title">STANDBY</div>
-    <div class="start-prompt">▶ ENGAGE</div>
-    <div class="start-subtitle">Initializing sound drivers...</div>
+    <div class="start-title" id="startTitle">STANDBY</div>
+    <div class="start-prompt" id="startPrompt">▶ ENGAGE</div>
+    <div class="start-subtitle" id="startSubtitle">System check in progress...</div>
 </div>
 
 <div class="container" id="mainContainer">
-    <button id="settingsBtn">Settings</button>
 
     <div id="settingsMenu">
         <div class="settings-tabs">
@@ -787,14 +164,21 @@
             <button class="settings-tab" data-tab="links">Links</button>
             <button class="settings-tab" data-tab="advanced">Advanced</button>
         </div>
-        
         <div class="settings-content">
             <!-- GENERAL TAB -->
             <div class="settings-page active" data-page="general">
                 <label>Device Name: <input type="text" id="deviceName" placeholder="Game Console"></label>
                 <label>Page Title: <input type="text" id="pageTitleInput" placeholder="System Home"></label>
                 <label>Status Message: <input type="text" id="statusMessageText" placeholder="Ready"></label>
-                <label>Default Search Engine: 
+                <label>Status Position:
+                    <select id="statusPosition">
+                        <option value="bottom-left">Bottom Left</option>
+                        <option value="bottom-right">Bottom Right</option>
+                        <option value="top-left">Top Left</option>
+                        <option value="top-right">Top Right</option>
+                    </select>
+                </label>
+                <label>Default Search Engine:
                     <select id="searchEngine">
                         <option value="google">Google</option>
                         <option value="duckduckgo">DuckDuckGo</option>
@@ -804,10 +188,21 @@
                         <option value="startpage">Startpage</option>
                     </select>
                 </label>
-                
+                <label>Clock Format:
+                    <select id="clockFormat">
+                        <option value="12">12-hour (AM/PM)</option>
+                        <option value="24">24-hour</option>
+                    </select>
+                </label>
+                <div class="settings-section">
+                    <div class="section-title">Start Screen Text</div>
+                    <label>Title: <input type="text" id="startTitleInput" placeholder="STANDBY"></label>
+                    <label>Prompt: <input type="text" id="startPromptInput" placeholder="▶ ENGAGE"></label>
+                    <label>Subtitle: <input type="text" id="startSubtitleInput" placeholder="System check in progress..."></label>
+                </div>
                 <div class="settings-section">
                     <div class="section-title">Audio</div>
-                    <label>Ambience: 
+                    <label>Ambience:
                         <select id="ambienceType">
                             <option value="none">None (Silent)</option>
                             <option value="crt">CRT Hum</option>
@@ -823,18 +218,53 @@
             <!-- DISPLAY TAB -->
             <div class="settings-page" data-page="display">
                 <div class="section-title">Themes</div>
-                <div id="themesList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
-                <button id="saveThemeBtn" style="margin-bottom: 16px;">💾 Save Current as Theme</button>
-                
+                <div id="themesList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+                <button id="saveThemeBtn" style="margin-bottom:16px">💾 Save Current as Theme</button>
                 <div class="settings-section">
                     <div class="section-title">Visual Settings</div>
-                    <label>Font Style: 
+                    <label>Font:
                         <select id="fontStyle">
-                            <option value="standard">Standard</option>
-                            <option value="terminal">Terminal/Monospace</option>
+                            <option value="system">System Default</option>
+                            <option value="terminal">Terminal (Monospace)</option>
+                            <optgroup label="── Pixel / Retro ──">
+                                <option value="press-start">Press Start 2P</option>
+                                <option value="vt323">VT323</option>
+                                <option value="silkscreen">Silkscreen</option>
+                                <option value="dotgothic">DotGothic16</option>
+                            </optgroup>
+                            <optgroup label="── Sci-Fi / Tech ──">
+                                <option value="orbitron">Orbitron</option>
+                                <option value="exo2">Exo 2</option>
+                                <option value="rajdhani">Rajdhani</option>
+                                <option value="audiowide">Audiowide</option>
+                                <option value="michroma">Michroma</option>
+                            </optgroup>
+                            <optgroup label="── Clean / UI ──">
+                                <option value="inter">Inter</option>
+                                <option value="ibm-plex-mono">IBM Plex Mono</option>
+                                <option value="space-mono">Space Mono</option>
+                                <option value="share-tech">Share Tech Mono</option>
+                            </optgroup>
+                        </select>
+                    </label>
+                    <label>Favicons:
+                        <select id="faviconMode">
+                            <option value="none">No Favicons</option>
+                            <option value="links">Links Only</option>
+                            <option value="search">Search Bar Only</option>
+                            <option value="both">Links + Search Bar</option>
                         </select>
                     </label>
                     <label>Background Image URL: <input type="text" id="bgImageUrl" placeholder="https://example.com/image.jpg"></label>
+                    <label>Background Fit:
+                        <select id="bgImageFit">
+                            <option value="cover">Zoom (Cover)</option>
+                            <option value="contain">Fit (Contain)</option>
+                            <option value="100% 100%">Stretch</option>
+                            <option value="auto">Original Size</option>
+                            <option value="auto auto">Tile</option>
+                        </select>
+                    </label>
                     <label><input type="checkbox" id="themeToggle"> Light Mode</label>
                     <label><input type="checkbox" id="showStats" checked> Show All Status Indicators</label>
                     <label><input type="checkbox" id="showSearch" checked> Show Search Bar</label>
@@ -842,13 +272,12 @@
                     <label><input type="checkbox" id="showNotes" checked> Show Notes</label>
                     <label><input type="checkbox" id="toggleLinkBorders"> Show Link Borders</label>
                     <label><input type="checkbox" id="toggleTransparentFields"> Transparent Text Fields</label>
-                    <label><input type="checkbox" id="showStartScreen" checked> Show Start Screen</label>
+                    <label><input type="checkbox" id="showStartScreen"> Show Start Screen</label>
                 </div>
-                
                 <div class="settings-section">
                     <div class="section-title">Screen Effects (Stack Multiple)</div>
-                    <div id="activeEffectsList" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;"></div>
-                    <label>Add Effect: 
+                    <div id="activeEffectsList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+                    <label>Add Effect:
                         <select id="effectToAdd">
                             <option value="">-- Select Effect --</option>
                             <option value="crt">CRT Monitor</option>
@@ -859,13 +288,10 @@
                             <option value="phosphor">Phosphor Glow</option>
                         </select>
                     </label>
-                    <button id="addEffectBtn" style="margin-top: 4px;">+ Add Effect</button>
+                    <button id="addEffectBtn" style="margin-top:4px">+ Add Effect</button>
                     <label>Effect Intensity: <input type="range" id="effectIntensity" min="0" max="200" value="100" step="10"></label>
-                    <div style="font-size: 11px; opacity: 0.6; margin-top: -8px; text-align: right;">
-                        <span id="effectIntensityValue">100%</span>
-                    </div>
+                    <div style="font-size:11px;opacity:.6;margin-top:-8px;text-align:right"><span id="effectIntensityValue">100%</span></div>
                 </div>
-                
                 <div class="settings-section">
                     <div class="section-title">Individual Stats</div>
                     <label><input type="checkbox" id="statTime" checked> Time</label>
@@ -876,7 +302,6 @@
                     <label><input type="checkbox" id="statWeather"> Weather</label>
                     <label><input type="checkbox" id="statPing" checked> Ping</label>
                 </div>
-                
                 <div class="settings-section">
                     <div class="section-title">Dark Theme Colors</div>
                     <label>Background: <span class="color-input-group"><input type="color" id="colorDarkBg" value="#070707"><input type="text" id="colorDarkBgText" class="color-text-input" maxlength="7" placeholder="#070707"></span></label>
@@ -884,51 +309,120 @@
                     <label>Accent: <span class="color-input-group"><input type="color" id="colorDarkAccent" value="#7a7a7a"><input type="text" id="colorDarkAccentText" class="color-text-input" maxlength="7" placeholder="#7a7a7a"></span></label>
                     <label>Dim: <span class="color-input-group"><input type="color" id="colorDarkDim" value="#444444"><input type="text" id="colorDarkDimText" class="color-text-input" maxlength="7" placeholder="#444444"></span></label>
                 </div>
-                
                 <div class="settings-section">
                     <div class="section-title">Light Theme Colors</div>
                     <label>Background: <span class="color-input-group"><input type="color" id="colorLightBg" value="#f5f5f5"><input type="text" id="colorLightBgText" class="color-text-input" maxlength="7" placeholder="#f5f5f5"></span></label>
                     <label>Text: <span class="color-input-group"><input type="color" id="colorLightFg" value="#111111"><input type="text" id="colorLightFgText" class="color-text-input" maxlength="7" placeholder="#111111"></span></label>
                     <label>Accent: <span class="color-input-group"><input type="color" id="colorLightAccent" value="#666666"><input type="text" id="colorLightAccentText" class="color-text-input" maxlength="7" placeholder="#666666"></span></label>
                     <label>Dim: <span class="color-input-group"><input type="color" id="colorLightDim" value="#bbbbbb"><input type="text" id="colorLightDimText" class="color-text-input" maxlength="7" placeholder="#bbbbbb"></span></label>
-                    <button id="resetColors" style="font-size: 11px; padding: 4px 8px; opacity: 0.7; margin-top: 8px;">Reset Colors to Default</button>
+                    <button id="resetColors" style="font-size:11px;padding:4px 8px;opacity:.7;margin-top:8px">Reset Colors to Default</button>
                 </div>
             </div>
 
             <!-- LINKS TAB -->
             <div class="settings-page" data-page="links">
-                <label>Links per Row: <input type="number" id="linksPerRowInput" value="2" min="1" max="10"></label>
+                <label>Links per Row:
+                    <span class="number-input-wrapper">
+                        <input type="number" id="linksPerRowInput" placeholder="2" min="1" max="10">
+                        <span class="number-spinner-btns">
+                            <button type="button" class="number-spinner-btn" id="linksPerRowDown">◀</button>
+                            <button type="button" class="number-spinner-btn" id="linksPerRowUp">▶</button>
+                        </span>
+                    </span>
+                </label>
                 <div class="settings-section">
                     <div class="section-title">Manage Links</div>
-                    <div id="linksList" style="max-height: 300px; overflow-y: auto;"></div>
+                    <div id="linksList" style="max-height:300px;overflow-y:auto"></div>
                     <button id="addLinkBtn">Add Link</button>
                 </div>
             </div>
 
             <!-- ADVANCED TAB -->
             <div class="settings-page" data-page="advanced">
+                <div class="section-title">Network Ping</div>
+                <label>Ping Server:
+                    <select id="pingServer">
+                        <option value="google">Google DNS (8.8.8.8)</option>
+                        <option value="cloudflare">Cloudflare DNS (1.1.1.1)</option>
+                        <option value="quad9">Quad9 DNS (9.9.9.9)</option>
+                        <option value="opendns">OpenDNS (208.67.222.222)</option>
+                    </select>
+                    <span style="cursor:help;opacity:.7;margin-left:4px" title="Network latency test: Measures round-trip time to a public DNS server.">ⓘ</span>
+                </label>
                 <div class="section-title">Weather API</div>
                 <label>API Key: <input type="text" id="weatherApiKey" placeholder="openweathermap.org key"></label>
                 <label>Location: <span style="display:flex;gap:6px;width:55%"><input type="text" id="weatherLocation" placeholder="City or ZIP"><button type="button" id="weatherTestBtn">Test</button></span></label>
-                
                 <div class="settings-section">
                     <div class="section-title">Refresh Intervals (seconds)</div>
-                    <label>Clock: <input type="number" id="refreshClock" value="1" min="1" max="60"></label>
-                    <label>Battery: <input type="number" id="refreshBattery" value="60" min="10" max="600"></label>
-                    <label>Network: <input type="number" id="refreshNetwork" value="3" min="1" max="60"></label>
-                    <label>IP Address: <input type="number" id="refreshIP" value="300" min="60" max="3600"></label>
-                    <label>Downlink: <input type="number" id="refreshDownlink" value="3" min="1" max="60"></label>
-                    <label>Ping: <input type="number" id="refreshPing" value="30" min="5" max="300"></label>
-                    <label>Weather: <input type="number" id="refreshWeather" value="600" min="60" max="3600"></label>
+                    <label>Clock:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshClock" placeholder="1" min="1" max="60">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshClock" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshClock" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>Battery:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshBattery" placeholder="60" min="10" max="600">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshBattery" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshBattery" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>Network:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshNetwork" placeholder="3" min="1" max="60">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshNetwork" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshNetwork" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>IP Address:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshIP" placeholder="300" min="60" max="3600">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshIP" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshIP" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>Downlink:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshDownlink" placeholder="3" min="1" max="60">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshDownlink" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshDownlink" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>Ping:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshPing" placeholder="30" min="5" max="300">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshPing" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshPing" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
+                    <label>Weather:
+                        <span class="number-input-wrapper">
+                            <input type="number" id="refreshWeather" placeholder="600" min="60" max="3600">
+                            <span class="number-spinner-btns">
+                                <button type="button" class="number-spinner-btn" data-target="refreshWeather" data-dir="-1">◀</button>
+                                <button type="button" class="number-spinner-btn" data-target="refreshWeather" data-dir="1">▶</button>
+                            </span>
+                        </span>
+                    </label>
                 </div>
-                
-                <div class="settings-section" style="display: flex; gap: 12px; align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <button id="resetSettings" style="width: 100%;">Reset Settings to Default</button>
-                    </div>
-                    <div style="flex: 1; border: 2px solid #d32f2f; border-radius: 4px; padding: 8px;">
-                        <div style="font-size: 11px; color: #d32f2f; font-weight: bold; margin-bottom: 4px;">⚠️ DANGER ZONE</div>
-                        <button id="eraseDataBtn" style="background: #d32f2f; font-weight: bold; width: 100%; font-size: 12px;">🗑️ Erase All Data</button>
+                <div class="settings-section" style="display:flex;gap:12px;align-items:flex-start">
+                    <div style="flex:1"><button id="resetSettings" style="width:100%">Reset Settings to Default</button></div>
+                    <div id="dangerZone" style="flex:1;border:2px solid #d32f2f;border-radius:4px;padding:8px">
+                        <div id="dangerZoneLabel" style="font-size:11px;color:#d32f2f;font-weight:bold;margin-bottom:4px">⚠️ DANGER ZONE</div>
+                        <button id="eraseDataBtn" style="background:#d32f2f;font-weight:bold;width:100%;font-size:12px">🗑️ Erase All Data</button>
                     </div>
                 </div>
             </div>
@@ -958,7 +452,7 @@
                 <option value="startpage">Startpage</option>
             </select>
             <form action="https://www.google.com/search" method="get" target="_blank">
-                <input type="text" name="q" placeholder="Google Search..." />
+                <input type="text" name="q" placeholder="Search..."/>
             </form>
         </div>
     </div>
@@ -967,7 +461,6 @@
         <div class="links-column">
             <div class="menu" id="linksMenu"></div>
         </div>
-
         <div class="notes-column">
             <div class="notes-section" id="notesSection">
                 <div class="notes-header" id="notesHeader">
@@ -984,190 +477,491 @@
     <div class="status-message" id="statusMessage">Ready</div>
 </div>
 
+<!-- Reset Settings Modal -->
+<div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10001;align-items:center;justify-content:center">
+    <div style="background:var(--bg);border:2px solid var(--accent);border-radius:8px;padding:24px;max-width:450px;text-align:center">
+        <div style="font-size:18px;margin-bottom:16px;color:var(--fg)">Reset Settings to Default</div>
+        <div style="font-size:12px;margin-bottom:16px;opacity:.8;text-align:left">Select which settings to reset to their default values:</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;text-align:left">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetGeneral" style="cursor:pointer"><span>General (device name, page title, search engine, audio)</span></label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetDisplay" style="cursor:pointer"><span>Display (font, colors, effects, visibility options)</span></label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetLinks" style="cursor:pointer"><span>Links (custom links and categories)</span></label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetAdvanced" style="cursor:pointer"><span>Advanced (weather API, refresh intervals)</span></label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetNotes" style="cursor:pointer"><span>Notes (clear notes content)</span></label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="resetThemes" style="cursor:pointer"><span>User Themes (delete saved themes)</span></label>
+        </div>
+        <div style="display:flex;gap:8px">
+            <button id="resetCancelBtn" style="flex:1;padding:8px;background:var(--dim);border:none;border-radius:4px;cursor:pointer;color:var(--fg)">Cancel</button>
+            <button id="resetConfirmBtn" style="flex:1;padding:8px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-weight:bold">Reset Selected</button>
+        </div>
+    </div>
+</div>
+
 <!-- Erase Data Confirmation Modal -->
-<div id="eraseModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10001; align-items: center; justify-content: center;">
-    <div style="background: var(--bg); border: 2px solid #d32f2f; border-radius: 8px; padding: 24px; max-width: 400px; text-align: center;">
-        <div style="font-size: 20px; color: #d32f2f; margin-bottom: 16px;">⚠️ CONFIRM DATA ERASURE</div>
+<div id="eraseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10002;align-items:center;justify-content:center;font-family:system-ui,sans-serif">
+    <div id="eraseInnerDiv" style="background:#1a1a1a;border:2px solid #d32f2f;border-radius:8px;padding:24px;max-width:400px;text-align:center;color:#e0e0e0">
+        <div id="eraseTitle" style="font-size:20px;color:#d32f2f;margin-bottom:16px">⚠️ NUCLEAR DATA ERASURE</div>
         <audio id="alarmSiren" loop>
             <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf4GAgYGCgoKDg4SEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+QkJCRkZGSkpKTk5OUlJSVlZWWlpaXl5eYmJiZmZmampqbm5ucnJydnZ2enp6fn5+goKChoaGioqKjo6OkpKSlpaWmpqanp6eoqKipqamqqqqrq6usrKytra2urq6vr6+wsLCxsbGysrKzs7O0tLS1tbW2tra3t7e4uLi5ubm6urq7u7u8vLy9vb2+vr6/v7/AwMDBwcHCwsLDw8PExMTFxcXGxsbHx8fIyMjJycnKysrLy8vMzMzNzc3Ozs7Pz8/Q0NDR0dHS0tLT09PU1NTV1dXW1tbX19fY2NjZ2dna2trb29vc3Nzd3d3e3t7f39/g4ODh4eHi4uLj4+Pk5OTl5eXm5ubn5+fo6Ojp6enq6urr6+vs7Ozt7e3u7u7v7+/w8PDx8fHy8vLz8/P09PT19fX29vb39/f4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7///8AAP//AAH/AQEC/wICA/8DAwT/BAQF/wUFBv8GBgf/BwcI/wgICP8JCQn/CgoK/wsLC/8MDAz/DQ0N/w4ODv8PDw//EBAQ/xEREf8SEhL/ExMT/xQUFP8VFRX/FhYW/xcXF/8YGBj/GRkZ/xoaGv8bGxv/HBwc/x0dHf8eHh7/Hx8f/yAgIP8hISH/IiIi/yMjI/8kJCT/JSUl/yYmJv8nJyf/KCgo/ykpKf8qKir/Kysr/ywsLP8tLS3/Li4u/y8vL/8wMDD/MTEx/zIyMv8zMzP/NDQ0/zU1Nf82Njb/Nzc3/zg4OP85OTn/Ojo6/zs7O/88PDz/PT09/z4+Pv8/Pz//QEBA/0FBQf9CQkL/Q0ND/0RERP9FRUX/RkZG/0dHR/9ISEj/SUlJ/0pKSv9LS0v/TExM/01NTf9OTk7/T09P/1BQUP9RUVH/UlJS/1NTU/9UVFT/VVVV/1ZWVv9XV1f/WFhY/1lZWf9aWlr/W1tb/1xcXP9dXV3/Xl5e/19fX/9gYGD/YWFh/2JiYv9jY2P/ZGRk/2VlZf9mZmb/Z2dn/2hoaP9paWn/ampq/2tra/9sbGz/bW1t/25ubv9vb2//cHBw/3Fxcf9ycnL/c3Nz/3R0dP91dXX/dnZ2/3d3d/94eHj/eXl5/3p6ev97e3v/fHx8/319ff9+fn7/f39//4CAgP+BgYH/goKC" type="audio/wav">
         </audio>
-        <div style="font-size: 13px; margin-bottom: 16px; text-align: left;">
-            This will <strong style="color: #d32f2f;">permanently delete</strong>:
-            <ul style="margin: 8px 0; text-align: left;">
-                <li>All settings and preferences</li>
-                <li>All saved themes</li>
-                <li>All notes content</li>
-                <li>All custom links</li>
-                <li>Category collapse states</li>
+        <div id="eraseMessage" style="font-size:13px;margin-bottom:16px;text-align:left">
+            <strong style="color:#d32f2f">⚛️ COMPLETE SYSTEM WIPE</strong> — This will:
+            <ul style="margin:8px 0;text-align:left;color:#e0e0e0">
+                <li>Permanently delete all settings</li>
+                <li>Erase all saved themes</li>
+                <li>Clear all notes content</li>
+                <li>Remove all custom links</li>
+                <li>Wipe localStorage completely</li>
+                <li>Clear browser cache for this page</li>
+                <li>Destroy all stored data</li>
             </ul>
-            <strong>This action cannot be undone.</strong>
+            <strong style="color:#d32f2f">⚠️ THIS CANNOT BE UNDONE</strong>
         </div>
-        <div style="font-size: 12px; margin-bottom: 12px; opacity: 0.8;">Type <code style="background: var(--dim); padding: 2px 6px; border-radius: 2px;">ERASE</code> to confirm:</div>
-        <input type="text" id="eraseConfirmInput" style="width: 100%; padding: 8px; margin-bottom: 16px; background: var(--bg); color: var(--fg); border: 1px solid var(--dim); border-radius: 4px; text-align: center; font-size: 14px;" placeholder="Type ERASE">
-        <div style="display: flex; gap: 8px;">
-            <button id="eraseCancelBtn" style="flex: 1; padding: 8px; background: var(--dim); border: none; border-radius: 4px; cursor: pointer; color: var(--fg);">Cancel</button>
-            <button id="eraseConfirmBtn" style="flex: 1; padding: 8px; background: #d32f2f; border: none; border-radius: 4px; cursor: pointer; color: #fff; font-weight: bold;" disabled>Erase All Data</button>
+        <div id="eraseConfirmText" style="font-size:12px;margin-bottom:12px;color:#aaa">Type <code style="background:#333;padding:2px 6px;border-radius:2px;color:#fff">ERASE</code> to confirm:</div>
+        <input type="text" id="eraseConfirmInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="width:calc(100% - 16px);padding:8px;margin:0 0 16px 0;background:#111;color:#e0e0e0;border:1px solid #555;border-radius:4px;text-align:center;font-size:14px;box-sizing:border-box">
+        <div style="display:flex;gap:8px">
+            <button id="eraseCancelBtn" style="flex:1;padding:8px;background:#333;border:none;border-radius:4px;cursor:pointer;color:#e0e0e0">Cancel</button>
+            <button id="eraseConfirmBtn" style="flex:1;padding:8px;background:#d32f2f;border:none;border-radius:4px;cursor:pointer;color:#fff;font-weight:bold" disabled>Erase All Data</button>
+        </div>
+    </div>
+</div>
+
+<!-- Debug Menu -->
+<div id="debugMenu">
+    <div class="debug-header">◢◣ UNAUTHORIZED ACCESS ◢◣</div>
+    <div class="debug-content">
+        <div class="debug-section">
+            <div class="debug-section-title">⚠ Erase Modal Variants</div>
+            <div class="debug-option">
+                <span>Modal Style:</span>
+                <select id="debugEraseStyle">
+                    <option value="normal">Standard</option>
+                    <option value="glitch">Glitched Reality</option>
+                    <option value="void">The Void Watches</option>
+                    <option value="loop">Infinite Loop</option>
+                    <option value="aware">System Aware</option>
+                    <option value="corrupted">Data Corrupted</option>
+                </select>
+            </div>
+            <div class="debug-option">
+                <span>Danger Color:</span>
+                <span style="display:flex;gap:6px;align-items:center">
+                    <input type="color" id="debugDangerColor" value="#d32f2f" style="width:32px;height:22px;padding:1px;background:#000;border:1px solid #f00;cursor:pointer;border-radius:2px">
+                    <input type="text" id="debugDangerColorText" maxlength="7" value="#d32f2f" style="width:70px;background:#000;color:#f00;border:1px solid #f00;padding:2px 4px;font-family:'Courier New',monospace;font-size:11px;border-radius:2px">
+                    <button id="debugDangerColorReset" style="padding:1px 6px;font-size:10px;background:#1a0000;color:#f00;border:1px solid #f00;cursor:pointer;border-radius:2px">RESET</button>
+                </span>
+            </div>
+        </div>
+        <div class="debug-section">
+            <div class="debug-section-title">♪ Alternative Alarm Sounds</div>
+            <div class="debug-option">
+                <span>Alarm Type:</span>
+                <select id="debugAlarmType">
+                    <option value="normal">Standard Siren</option>
+                    <option value="distorted">Distorted Tone</option>
+                    <option value="reverse">Reversed Speech</option>
+                    <option value="whisper">Whispers</option>
+                    <option value="static">Dead Channel</option>
+                    <option value="heartbeat">Failing Heart</option>
+                    <option value="breathing">Heavy Breathing</option>
+                </select>
+            </div>
+        </div>
+        <div class="debug-warning">
+            YOU WERE NOT SUPPOSED TO FIND THIS<br>
+            ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤<br>
+            THE SYSTEM REMEMBERS
+        </div>
+        <div style="padding:8px 16px 16px">
+            <button id="debugOpenSettings" style="width:100%;padding:6px;background:#1a0000;color:#f00;border:1px solid #f00;cursor:pointer;font-family:'Courier New',monospace;font-size:11px;letter-spacing:1px">⚙ OPEN SETTINGS PANEL</button>
         </div>
     </div>
 </div>
 
 <script>
-// LocalStorage helpers
+// ═══ CONSTANTS ═══
+const UNLOCK_HOLD_TIME = 6660;
+const PING_PROBES = 3;
+
+// ═══ LOCALSTORAGE HELPERS ═══
 function saveSetting(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
 }
 
 function loadSetting(key, defaultValue) {
-    const saved = localStorage.getItem(key);
-    return saved !== null ? JSON.parse(saved) : defaultValue;
+    try {
+        const saved = localStorage.getItem(key);
+        return saved !== null ? JSON.parse(saved) : defaultValue;
+    } catch(e) { return defaultValue; }
 }
 
-// Status Updates
-function updateClock() {
-    document.getElementById('clock').textContent = new Date().toLocaleTimeString();
-}
+// ═══ DEBUG MENU ═══
+let debugUnlocked = loadSetting('debugUnlocked', false);
+let debugHoldTimer = null;
 
-function updateBattery() {
-    if (!navigator.getBattery) {
-        document.getElementById('battery').textContent = 'N/A';
-        return;
-    }
-    navigator.getBattery().then(b => {
-        document.getElementById('battery').textContent = `${Math.round(b.level * 100)}%`;
+function initDebugUnlock() {
+    const statusMsg = document.getElementById('statusMessage');
+    let originalStatusText = '';
+
+    if (debugUnlocked) document.body.dataset.debugUnlocked = 'true';
+
+    const startHold = (e) => {
+        if (e.type === 'touchstart') e.preventDefault();
+        debugHoldTimer = setTimeout(() => {
+            holdCompleted = true; // mark so the ending touchend doesn't count as a tap
+            tapCount = 0;
+            if (!debugUnlocked) {
+                debugUnlocked = true;
+                saveSetting('debugUnlocked', true);
+                document.body.dataset.debugUnlocked = 'true';
+            }
+            originalStatusText = statusMessageText.value || 'Ready';
+            statusMsg.style.color = '#f00';
+            statusMsg.style.textShadow = '0 0 10px #f00';
+            statusMsg.textContent = '◢◣ ACCESS GRANTED ◢◣';
+            setTimeout(() => {
+                debugMenu.classList.add('active');
+                document.body.dataset.debugActive = 'true';
+                playCorruptedTone();
+            }, 666);
+        }, UNLOCK_HOLD_TIME);
+    };
+
+    const endHold = () => { if (debugHoldTimer) { clearTimeout(debugHoldTimer); debugHoldTimer = null; } };
+
+    statusMsg.addEventListener('mousedown', startHold);
+    statusMsg.addEventListener('touchstart', startHold, { passive: false });
+    statusMsg.addEventListener('mouseup', endHold);
+    statusMsg.addEventListener('mouseleave', endHold);
+    statusMsg.addEventListener('touchend', endHold);
+    statusMsg.addEventListener('touchcancel', endHold);
+
+    statusMsg.addEventListener('click', (e) => {
+        if (debugUnlocked && (e.altKey || e.ctrlKey)) {
+            e.stopPropagation();
+            const isOpening = !debugMenu.classList.contains('active');
+            if (isOpening) {
+                originalStatusText = statusMessageText.value || 'Ready';
+                statusMsg.style.color = '#f00';
+                statusMsg.style.textShadow = '0 0 10px #f00';
+                statusMsg.textContent = '◢◣ ACCESS GRANTED ◢◣';
+                debugMenu.classList.add('active');
+                document.body.dataset.debugActive = 'true';
+            } else {
+                debugMenu.classList.remove('active');
+                document.body.dataset.debugActive = 'false';
+                statusMsg.style.color = '';
+                statusMsg.style.textShadow = '';
+                statusMsg.textContent = originalStatusText;
+            }
+        }
+    });
+
+    window.addEventListener('click', (e) => {
+        if (debugMenu.classList.contains('active') && !debugMenu.contains(e.target) && e.target.id !== 'statusMessage') {
+            debugMenu.classList.remove('active');
+            document.body.dataset.debugActive = 'false';
+            statusMsg.style.color = '';
+            statusMsg.style.textShadow = '';
+            statusMsg.textContent = originalStatusText || statusMessageText.value || 'Ready';
+        }
     });
 }
 
-function updateNetwork() {
-    document.getElementById('network').textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
+function playCorruptedTone() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1, ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+    } catch(e) {}
 }
 
-function updateDownlink() {
-    document.getElementById('downlink').textContent = navigator.connection?.downlink 
-        ? `${navigator.connection.downlink} Mb/s` 
-        : 'N/A';
+// ═══ CORRUPTED ERASE MODAL VARIANTS ═══
+let dangerColor = loadSetting('debugDangerColor', '#d32f2f');
+
+const ERASE_BASE_INNER_TEMPLATE = 'background:#1a1a1a;border:2px solid {D};border-radius:8px;padding:24px;max-width:400px;text-align:center;color:#e0e0e0';
+
+function getDangerStyle(template) {
+    return template.replace(/\{D\}/g, dangerColor);
 }
 
-async function updateIP() {
-    const ipElement = document.getElementById('ip');
-    // Try multiple IP services as fallbacks
-    const services = [
-        'https://api.ipify.org?format=json',
-        'https://api64.ipify.org?format=json',
-        'https://ipapi.co/json/'
-    ];
-    
-    for (const service of services) {
-        try {
-            const response = await fetch(service);
-            const data = await response.json();
-            const ip = data.ip || data.IPv4 || data.query;
-            if (ip) {
-                ipElement.textContent = ip;
-                return;
-            }
-        } catch (e) {
-            console.log(`IP service ${service} failed:`, e);
-            continue;
-        }
+function applyDangerColor(color) {
+    dangerColor = color;
+    saveSetting('debugDangerColor', color);
+    const eraseBtn = document.getElementById('eraseDataBtn');
+    const dangerZone = document.getElementById('dangerZone');
+    const dangerLabel = document.getElementById('dangerZoneLabel');
+    const confirmBtn = document.getElementById('eraseConfirmBtn');
+    if (eraseBtn) eraseBtn.style.background = color;
+    if (dangerZone) dangerZone.style.borderColor = color;
+    if (dangerLabel) dangerLabel.style.color = color;
+    if (confirmBtn) confirmBtn.style.background = color;
+}
+
+const ERASE_BASE_INNER = getDangerStyle(ERASE_BASE_INNER_TEMPLATE);
+
+const eraseVariants = {
+    glitch: {
+        title: '⚠️ N̷̢͉̈́Ű̴͓C̸̰̀L̶͙̈́E̴̼͝A̴̰̍R̸͚̈́ ̵̧̛D̸̰̀Ä̶͓T̸͚̈́Ä̶͓ ̵̧̛E̴̼͝R̸͚̈́Ä̶͓S̸̰̀Ű̴͓R̸͚̈́E̴̼͝',
+        message: 'T̷h̷i̷s̷ ̷w̷i̷l̷l̷ ̷d̷e̷l̷e̷t̷e̷.̷.̷.̷ ̷e̷v̷e̷r̷y̷t̷h̷i̷n̷g̷?̷ ̷N̷o̷t̷h̷i̷n̷g̷?̷ ̷S̷o̷m̷e̷t̷h̷i̷n̷g̷ ̷e̷l̷s̷e̷?̷',
+        confirmText: "Type ERASE or don't or maybe something else",
+        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';animation:glitchShake 0.1s infinite,colorDistort 2s infinite'; },
+        get titleStyle() { return `font-size:20px;color:${dangerColor};margin-bottom:16px`; },
+        messageStyle: 'font-size:13px;margin-bottom:16px;text-align:left'
+    },
+    void: {
+        title: '',
+        message: '',
+        confirmText: 'Type ERASE to feed the void',
+        innerStyle: 'background:#000;border:none;border-radius:0;padding:24px;max-width:400px;text-align:center;color:#111',
+        titleStyle: 'display:none',
+        messageStyle: 'display:none',
+        backdropStyle: 'background:#000'
+    },
+    loop: {
+        title: '⚠️ NUCLEAR DATA ERASURE',
+        message: "This will delete all your data. Are you sure? Wait, you've done this before. No, you haven't. Yes, you have. This is the first time. This is the last time. This is always happening. This has never happened.",
+        confirmText: 'Type ERASE (again?) (for the first time?)',
+        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';animation:loopGlitch 0.2s infinite'; },
+        get titleStyle() { return `font-size:20px;color:${dangerColor};margin-bottom:16px`; },
+        messageStyle: 'font-size:13px;margin-bottom:16px;text-align:left'
+    },
+    aware: {
+        get title() { return `⚠️ I SEE YOU, ${navigator.userAgent.split(' ')[0]}`; },
+        get message() { return `I know what you're trying to do. I've been watching. The data you want to erase... it's watching back. IP: ${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}. Time: ${new Date().toISOString()}. You've been warned.`; },
+        confirmText: 'Type ERASE if you dare',
+        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';animation:textCorrupt 0.5s infinite'; },
+        get titleStyle() { return `font-size:20px;color:${dangerColor};margin-bottom:16px`; },
+        messageStyle: 'font-size:13px;margin-bottom:16px;text-align:left'
+    },
+    corrupted: {
+        title: '⚠️ ER̴͍̈́R̸͚̈́O̴̼͝R̸͚̈́ ̵̧̛E̴̼͝R̸͚̈́R̸͚̈́O̴̼͝R̸͚̈́ ̵̧̛E̴̼͝R̸͚̈́R̸͚̈́O̴̼͝R̸͚̈́',
+        message: '01000100 01100001 01110100 01100001 00100000 01100011 01101111 01110010 01110010 01110101 01110000 01110100 01100101 01100100 00101110 00100000 01010011 01111001 01110011 01110100 01100101 01101101 00100000 01100011 01101111 01101101 01110000 01110010 01101111 01101101 01101001 01110011 01100101 01100100 00101110',
+        confirmText: "T̷y̷p̷e̷ ̷E̷R̷A̷S̷E̷ ̷o̷r̷ ̷d̷o̷n̷'̷t̷",
+        get innerStyle() { return getDangerStyle(ERASE_BASE_INNER_TEMPLATE) + ';filter:invert(1) hue-rotate(180deg)'; },
+        get titleStyle() { return `font-size:20px;color:${dangerColor};margin-bottom:16px`; },
+        messageStyle: 'font-size:13px;margin-bottom:16px;text-align:left'
     }
-    ipElement.textContent = 'N/A';
+};
+
+function applyEraseVariant(variant) {
+    const modal = document.getElementById('eraseModal');
+    const innerDiv = document.getElementById('eraseInnerDiv');
+    const titleDiv = document.getElementById('eraseTitle');
+    const messageDiv = document.getElementById('eraseMessage');
+    const confirmTextDiv = document.getElementById('eraseConfirmText');
+    if (!innerDiv || !titleDiv || !messageDiv || !confirmTextDiv) return;
+
+    modal.style.background = 'rgba(0,0,0,.85)';
+
+    if (variant === 'normal') {
+        innerDiv.setAttribute('style', getDangerStyle(ERASE_BASE_INNER_TEMPLATE));
+        innerDiv.classList.remove('erase-modal-corrupted');
+        titleDiv.setAttribute('style', `font-size:20px;color:${dangerColor};margin-bottom:16px`);
+        titleDiv.textContent = '⚠️ NUCLEAR DATA ERASURE';
+        titleDiv.style.display = '';
+        messageDiv.setAttribute('style', 'font-size:13px;margin-bottom:16px;text-align:left');
+        messageDiv.style.display = '';
+        messageDiv.innerHTML = `<strong style="color:${dangerColor}">⚛️ COMPLETE SYSTEM WIPE</strong> — This will:<ul style="margin:8px 0;text-align:left;color:#e0e0e0"><li>Permanently delete all settings</li><li>Erase all saved themes</li><li>Clear all notes content</li><li>Remove all custom links</li><li>Wipe localStorage completely</li><li>Clear browser cache for this page</li><li>Destroy all stored data</li></ul><strong style="color:${dangerColor}">⚠️ THIS CANNOT BE UNDONE</strong>`;
+        confirmTextDiv.setAttribute('style', 'font-size:12px;margin-bottom:12px;color:#aaa');
+        confirmTextDiv.innerHTML = `Type <code style="background:#333;padding:2px 6px;border-radius:2px;color:#fff">ERASE</code> to confirm:`;
+        return;
+    }
+
+    const config = eraseVariants[variant];
+    if (!config) return;
+
+    if (config.backdropStyle) modal.style.cssText = `display:flex;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;font-family:system-ui,sans-serif;${config.backdropStyle}`;
+
+    innerDiv.setAttribute('style', config.innerStyle);
+    innerDiv.classList.add('erase-modal-corrupted');
+    titleDiv.setAttribute('style', config.titleStyle);
+    titleDiv.textContent = config.title;
+    messageDiv.setAttribute('style', config.messageStyle);
+    messageDiv.textContent = config.message;
+    confirmTextDiv.setAttribute('style', 'font-size:12px;margin-bottom:12px;color:#aaa');
+    confirmTextDiv.textContent = config.confirmText;
+}
+
+// ═══ ALTERNATIVE ALARM SOUNDS ═══
+let alternativeAlarmNodes = [];
+
+function playAlternativeAlarm(type) {
+    const alarmSiren = document.getElementById('alarmSiren');
+    alarmSiren.pause();
+    stopAlternativeAlarm();
+    if (type === 'normal') { alarmSiren.play().catch(() => {}); return; }
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (type === 'distorted') {
+            const osc = ctx.createOscillator(), gain = ctx.createGain(), dist = ctx.createWaveShaper();
+            const curve = new Float32Array(256);
+            for (let i = 0; i < 128; i++) curve[i] = -1 + (i / 64);
+            for (let i = 128; i < 256; i++) curve[i] = 1 - ((i - 128) / 64);
+            dist.curve = curve;
+            osc.type = 'square'; osc.frequency.value = 440; gain.gain.value = 0.5;
+            osc.connect(dist); dist.connect(gain); gain.connect(ctx.destination); osc.start();
+            alternativeAlarmNodes.push(osc);
+        } else if (type === 'reverse') {
+            const osc1 = ctx.createOscillator(), osc2 = ctx.createOscillator(), gain = ctx.createGain();
+            osc1.type = osc2.type = 'sine';
+            osc1.frequency.setValueAtTime(800, ctx.currentTime); osc1.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 2);
+            osc2.frequency.setValueAtTime(600, ctx.currentTime); osc2.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 2);
+            gain.gain.value = 0.3;
+            osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+            osc1.start(); osc2.start();
+            alternativeAlarmNodes.push(osc1, osc2);
+            window._reverseInterval = setInterval(() => { stopAlternativeAlarm(); playAlternativeAlarm('reverse'); }, 2000);
+        } else if (type === 'whisper') {
+            const bufferSize = ctx.sampleRate * 2;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.1 * Math.sin(i / 100);
+            const src = ctx.createBufferSource(); src.buffer = buffer; src.loop = true;
+            const filter = ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1000;
+            src.connect(filter); filter.connect(ctx.destination); src.start();
+            alternativeAlarmNodes.push(src);
+        } else if (type === 'static') {
+            const bufferSize = ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const src = ctx.createBufferSource(); src.buffer = buffer; src.loop = true;
+            const gain = ctx.createGain(); gain.gain.value = 0.2;
+            src.connect(gain); gain.connect(ctx.destination); src.start();
+            alternativeAlarmNodes.push(src);
+        } else if (type === 'heartbeat') {
+            const osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = 'sine'; osc.frequency.value = 60; gain.gain.setValueAtTime(0, ctx.currentTime);
+            const pulse = () => {
+                const now = ctx.currentTime;
+                gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                gain.gain.setValueAtTime(0.3, now + 0.15); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            };
+            window._heartbeatInterval = setInterval(pulse, 800); pulse();
+            osc.connect(gain); gain.connect(ctx.destination); osc.start();
+            alternativeAlarmNodes.push(osc);
+        } else if (type === 'breathing') {
+            const osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.type = 'sine'; osc.frequency.value = 200; gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            const breathe = () => { const now = ctx.currentTime; gain.gain.linearRampToValueAtTime(0.3, now + 2); gain.gain.linearRampToValueAtTime(0.1, now + 4); };
+            window._breathingInterval = setInterval(breathe, 4000); breathe();
+            osc.connect(gain); gain.connect(ctx.destination); osc.start();
+            alternativeAlarmNodes.push(osc);
+        }
+    } catch(e) { console.error('Alarm error:', e); }
+}
+
+function stopAlternativeAlarm() {
+    alternativeAlarmNodes.forEach(node => { try { node.stop(); node.disconnect(); } catch(e) {} });
+    alternativeAlarmNodes = [];
+    ['_reverseInterval','_heartbeatInterval','_breathingInterval'].forEach(k => {
+        if (window[k]) { clearInterval(window[k]); window[k] = null; }
+    });
+}
+
+// ═══ PING ═══
+async function singlePingProbe(url) {
+    const t0 = performance.now();
+    try { await fetch(url + '?_=' + t0, { method:'HEAD', cache:'no-store', mode:'no-cors', keepalive:false }); } catch(_) {}
+    return performance.now() - t0;
 }
 
 async function updatePing() {
-    const pingElement = document.getElementById('ping');
-    const startTime = performance.now();
-    try {
-        // Ping Google's favicon specifically for consistency
-        await fetch('https://www.google.com/favicon.ico', { 
-            method: 'HEAD', 
-            cache: 'no-cache',
-            mode: 'no-cors'
-        });
-        const endTime = performance.now();
-        const pingTime = Math.round(endTime - startTime);
-        pingElement.textContent = `${pingTime}ms`;
-    } catch (e) {
-        console.log('Ping failed:', e);
-        pingElement.textContent = 'N/A';
+    const serverMap = { google:'https://dns.google/favicon.ico', cloudflare:'https://one.one.one.one/favicon.ico', quad9:'https://quad9.net/favicon.ico', opendns:'https://opendns.com/favicon.ico' };
+    const url = serverMap[pingServer.value] || serverMap.google;
+    const times = [];
+    for (let i = 0; i < PING_PROBES; i++) {
+        times.push(await singlePingProbe(url));
+        if (i < PING_PROBES - 1) await new Promise(r => setTimeout(r, 20));
     }
+    document.getElementById('ping').textContent = Math.max(1, Math.round(Math.min(...times) - 5)) + 'ms';
 }
 
+// ═══ STATUS UPDATES ═══
+function updateClock() {
+    const use24 = clockFormat && clockFormat.value === '24';
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: !use24
+    });
+}
+function updateBattery() {
+    if (!navigator.getBattery) { document.getElementById('battery').textContent = 'N/A'; return; }
+    navigator.getBattery().then(b => { document.getElementById('battery').textContent = Math.round(b.level * 100) + '%'; });
+}
+function updateNetwork() { document.getElementById('network').textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE'; }
+function updateDownlink() { document.getElementById('downlink').textContent = navigator.connection?.downlink ? navigator.connection.downlink + ' Mb/s' : 'N/A'; }
+async function updateIP() {
+    const el = document.getElementById('ip');
+    const services = ['https://api.ipify.org?format=json','https://api64.ipify.org?format=json','https://ipapi.co/json/'];
+    for (const service of services) {
+        try { const d = await (await fetch(service)).json(); const ip = d.ip||d.IPv4||d.query; if (ip) { el.textContent = ip; return; } } catch(e) {}
+    }
+    el.textContent = 'N/A';
+}
 async function updateWeather() {
     const apiKey = weatherApiKey.value.trim();
     let loc = weatherLocation.value.trim();
-    const weatherElement = document.getElementById('weather');
-    
-    if (!apiKey || !loc) {
-        weatherElement.textContent = 'N/A';
-        return;
-    }
-    
-    // Auto-append ",US" for 5-digit ZIP codes
-    if (/^\d{5}$/.test(loc)) {
-        loc = loc + ',US';
-    }
-    
+    const el = document.getElementById('weather');
+    if (!apiKey || !loc) { el.textContent = 'N/A'; return; }
+    if (/^\d{5}$/.test(loc)) loc += ',US';
     try {
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(loc)}&appid=${apiKey}&units=imperial`;
-        console.log('Fetching weather from:', url);
-        
-        const res = await fetch(url);
-        console.log('Weather response status:', res.status);
-        
-        if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            console.error('Weather API error:', errorData);
-            
-            if (res.status === 401) {
-                weatherElement.textContent = 'Bad API Key';
-            } else if (res.status === 404) {
-                weatherElement.textContent = 'Location Not Found';
-            } else {
-                weatherElement.textContent = `Error ${res.status}`;
-            }
-            return;
-        }
-        
-        const data = await res.json();
-        console.log('Weather data:', data);
-        weatherElement.textContent = `${Math.round(data.main.temp)}°F ${data.weather[0].main}`;
-    } catch (e) {
-        console.error('Weather fetch exception:', e);
-        weatherElement.textContent = 'Fetch Failed';
-    }
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(loc)}&appid=${apiKey}&units=imperial`);
+        if (!res.ok) { el.textContent = res.status === 401 ? 'Bad API Key' : res.status === 404 ? 'Location Not Found' : `Error ${res.status}`; return; }
+        const d = await res.json();
+        el.textContent = `${Math.round(d.main.temp)}°F ${d.weather[0].main}`;
+    } catch(e) { el.textContent = 'Fetch Failed'; }
 }
 
-// Settings menu
-const settingsBtn = document.getElementById('settingsBtn');
+// ═══ SETTINGS MENU SETUP ═══
 const settingsMenu = document.getElementById('settingsMenu');
-settingsBtn.onclick = e => {
-    e.stopPropagation();
-    settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
-};
-window.onclick = () => { settingsMenu.style.display = 'none'; };
-settingsMenu.onclick = e => e.stopPropagation();
+const debugMenu = document.getElementById('debugMenu');
 
-// Tab switching
+window.addEventListener('click', (e) => {
+    if (settingsMenu.contains(e.target)) return;
+    if (document.getElementById('resetModal').contains(e.target)) return;
+    if (document.getElementById('eraseModal').contains(e.target)) return;
+    settingsMenu.style.display = 'none';
+});
+settingsMenu.onclick = e => e.stopPropagation();
+document.getElementById('resetModal').addEventListener('click', e => e.stopPropagation());
+document.getElementById('eraseModal').addEventListener('click', e => e.stopPropagation());
+debugMenu.addEventListener('click', e => e.stopPropagation());
+
 document.querySelectorAll('.settings-tab').forEach(tab => {
     tab.onclick = () => {
-        const targetPage = tab.dataset.tab;
         document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.settings-page').forEach(p => p.classList.remove('active'));
         tab.classList.add('active');
-        document.querySelector(`[data-page="${targetPage}"]`).classList.add('active');
+        document.querySelector(`[data-page="${tab.dataset.tab}"]`).classList.add('active');
     };
 });
 
-// Elements
+// ═══ ELEMENT REFERENCES ═══
 const headerTitle = document.getElementById('headerTitle');
 const statusMessage = document.getElementById('statusMessage');
 const pagetitle = document.getElementById('pagetitle');
 const deviceNameInput = document.getElementById('deviceName');
 const pageTitleInput = document.getElementById('pageTitleInput');
 const statusMessageText = document.getElementById('statusMessageText');
+const statusPosition = document.getElementById('statusPosition');
 const weatherApiKey = document.getElementById('weatherApiKey');
 const weatherLocation = document.getElementById('weatherLocation');
+const pingServer = document.getElementById('pingServer');
+const startTitleInput = document.getElementById('startTitleInput');
+const startPromptInput = document.getElementById('startPromptInput');
+const startSubtitleInput = document.getElementById('startSubtitleInput');
 const bgImageUrl = document.getElementById('bgImageUrl');
+const bgImageFit = document.getElementById('bgImageFit');
 const linksPerRowInput = document.getElementById('linksPerRowInput');
 const showStats = document.getElementById('showStats');
 const showSearch = document.getElementById('showSearch');
@@ -1183,63 +977,79 @@ const addEffectBtn = document.getElementById('addEffectBtn');
 const activeEffectsList = document.getElementById('activeEffectsList');
 const effectIntensity = document.getElementById('effectIntensity');
 const effectIntensityValue = document.getElementById('effectIntensityValue');
-
-// Audio elements
 const ambienceType = document.getElementById('ambienceType');
 const ambienceVolume = document.getElementById('ambienceVolume');
 const statToggles = {
-    time: document.getElementById('statTime'),
-    battery: document.getElementById('statBattery'),
-    network: document.getElementById('statNetwork'),
-    ip: document.getElementById('statIP'),
-    dl: document.getElementById('statDL'),
-    weather: document.getElementById('statWeather'),
+    time: document.getElementById('statTime'), battery: document.getElementById('statBattery'),
+    network: document.getElementById('statNetwork'), ip: document.getElementById('statIP'),
+    dl: document.getElementById('statDL'), weather: document.getElementById('statWeather'),
     ping: document.getElementById('statPing')
 };
 const linksList = document.getElementById('linksList');
-const addLinkBtn = document.getElementById('addLinkBtn');
-const resetSettingsBtn = document.getElementById('resetSettings');
 const linksMenu = document.getElementById('linksMenu');
 const mainContainer = document.getElementById('mainContainer');
-const weatherTestBtn = document.getElementById('weatherTestBtn');
 const searchEngine = document.getElementById('searchEngine');
 const currentSearchEngine = document.getElementById('currentSearchEngine');
 const searchForm = document.querySelector('.search-bar form');
 const searchInput = document.querySelector('.search-bar input');
-
-// Color picker elements
-const colorDarkBg = document.getElementById('colorDarkBg');
-const colorDarkBgText = document.getElementById('colorDarkBgText');
-const colorDarkFg = document.getElementById('colorDarkFg');
-const colorDarkFgText = document.getElementById('colorDarkFgText');
-const colorDarkAccent = document.getElementById('colorDarkAccent');
-const colorDarkAccentText = document.getElementById('colorDarkAccentText');
-const colorDarkDim = document.getElementById('colorDarkDim');
-const colorDarkDimText = document.getElementById('colorDarkDimText');
-const colorLightBg = document.getElementById('colorLightBg');
-const colorLightBgText = document.getElementById('colorLightBgText');
-const colorLightFg = document.getElementById('colorLightFg');
-const colorLightFgText = document.getElementById('colorLightFgText');
-const colorLightAccent = document.getElementById('colorLightAccent');
-const colorLightAccentText = document.getElementById('colorLightAccentText');
-const colorLightDim = document.getElementById('colorLightDim');
-const colorLightDimText = document.getElementById('colorLightDimText');
-const resetColorsBtn = document.getElementById('resetColors');
-
-// Refresh interval elements
-const refreshClock = document.getElementById('refreshClock');
-const refreshBattery = document.getElementById('refreshBattery');
-const refreshNetwork = document.getElementById('refreshNetwork');
-const refreshIP = document.getElementById('refreshIP');
-const refreshDownlink = document.getElementById('refreshDownlink');
-const refreshPing = document.getElementById('refreshPing');
+const colorDarkBg = document.getElementById('colorDarkBg'), colorDarkBgText = document.getElementById('colorDarkBgText');
+const colorDarkFg = document.getElementById('colorDarkFg'), colorDarkFgText = document.getElementById('colorDarkFgText');
+const colorDarkAccent = document.getElementById('colorDarkAccent'), colorDarkAccentText = document.getElementById('colorDarkAccentText');
+const colorDarkDim = document.getElementById('colorDarkDim'), colorDarkDimText = document.getElementById('colorDarkDimText');
+const colorLightBg = document.getElementById('colorLightBg'), colorLightBgText = document.getElementById('colorLightBgText');
+const colorLightFg = document.getElementById('colorLightFg'), colorLightFgText = document.getElementById('colorLightFgText');
+const colorLightAccent = document.getElementById('colorLightAccent'), colorLightAccentText = document.getElementById('colorLightAccentText');
+const colorLightDim = document.getElementById('colorLightDim'), colorLightDimText = document.getElementById('colorLightDimText');
+const refreshClock = document.getElementById('refreshClock'), refreshBattery = document.getElementById('refreshBattery');
+const refreshNetwork = document.getElementById('refreshNetwork'), refreshIP = document.getElementById('refreshIP');
+const refreshDownlink = document.getElementById('refreshDownlink'), refreshPing = document.getElementById('refreshPing');
 const refreshWeather = document.getElementById('refreshWeather');
-
-// Notes elements
-const notesSection = document.getElementById('notesSection');
+const clockFormat = document.getElementById('clockFormat');
+const faviconMode = document.getElementById('faviconMode');
 const notesHeader = document.getElementById('notesHeader');
 const notesContent = document.getElementById('notesContent');
 const notesTextarea = document.getElementById('notesTextarea');
+
+// ═══ TRIPLE-TAP TO OPEN SETTINGS ═══
+// Strategy: count touchend events on mobile, click events on desktop.
+// - touchend fires immediately without the 300ms synthetic-click delay.
+// - click fires only when mousedown AND mouseup both occur on the same target,
+//   making it reliable even if the cursor drifts slightly between press and release.
+//   (mouseup was previously used but would miss if the cursor left the element.)
+// - lastTapWasTouch suppresses the synthetic click mobile browsers fire ~300ms
+//   after touchend, preventing each touch from counting twice.
+let tapCount = 0, tapTimer = null, lastTapWasTouch = false, holdCompleted = false;
+
+function handleStatusTap() {
+    if (holdCompleted) { holdCompleted = false; return; }
+    tapCount++;
+    if (tapTimer) clearTimeout(tapTimer);
+    if (tapCount >= 3) {
+        tapCount = 0;
+        if (tapTimer) { clearTimeout(tapTimer); tapTimer = null; }
+        settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
+    } else {
+        tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+    }
+}
+
+// Mobile: touchend fires immediately, no 300ms delay
+statusMessage.addEventListener('touchend', (e) => {
+    if (holdCompleted) { holdCompleted = false; return; }
+    lastTapWasTouch = true;
+    setTimeout(() => { lastTapWasTouch = false; }, 600);
+    handleStatusTap();
+}, { passive: true });
+
+// Desktop: use click — fires only after a full press+release on the same element.
+// mouseup was unreliable: if the cursor drifted even slightly between mousedown and
+// mouseup, the event could land outside the element and handleStatusTap() would never
+// be called. click only fires when both mousedown AND mouseup occur on the same target.
+// lastTapWasTouch guards against the synthetic click mobile browsers fire after touchend.
+statusMessage.addEventListener('click', (e) => {
+    if (lastTapWasTouch) return; // touch device — already handled by touchend
+    handleStatusTap();
+});
 
 // Ping refresh button
 const pingRefreshBtn = document.getElementById('pingRefreshBtn');
@@ -1248,312 +1058,185 @@ if (pingRefreshBtn) {
     pingRefreshBtn.onclick = (e) => {
         e.stopPropagation();
         const now = Date.now();
-        if (now - lastPingTime < 5000) {
-            console.log('Ping cooldown active, wait 5 seconds');
-            return;
-        }
+        if (now - lastPingTime < 5000) return;
         lastPingTime = now;
         updatePing();
     };
 }
 
-// Weather test button
-weatherTestBtn.onclick = () => {
-    console.log('Testing weather with API Key:', weatherApiKey.value.substring(0, 8) + '...', 'Location:', weatherLocation.value);
-    updateWeather();
-};
+document.getElementById('weatherTestBtn').onclick = () => updateWeather();
 
-// Effect intensity handler
+// ═══ EFFECT INTENSITY ═══
 function applyEffectIntensity() {
-    const intensity = parseInt(effectIntensity.value) / 100;
-    document.documentElement.style.setProperty('--effect-intensity', intensity);
+    document.documentElement.style.setProperty('--effect-intensity', parseInt(effectIntensity.value) / 100);
     effectIntensityValue.textContent = effectIntensity.value + '%';
     saveSetting('effectIntensity', effectIntensity.value);
 }
-
 effectIntensity.oninput = applyEffectIntensity;
 
-// Multi-effect system
+// ═══ MULTI-EFFECT SYSTEM ═══
 let activeEffects = loadSetting('activeEffects', []);
 
 function applyEffects() {
-    // Build a combined data-effect attribute
-    const effectString = activeEffects.join(' ');
-    document.body.dataset.effect = effectString;
+    document.body.dataset.effect = activeEffects.join(' ');
     saveSetting('activeEffects', activeEffects);
 }
 
 function renderActiveEffects() {
     activeEffectsList.innerHTML = '';
-    
-    if (activeEffects.length === 0) {
-        const emptyMsg = document.createElement('div');
-        emptyMsg.style.fontSize = '12px';
-        emptyMsg.style.opacity = '0.6';
-        emptyMsg.textContent = 'No effects active';
-        activeEffectsList.appendChild(emptyMsg);
-        return;
+    if (!activeEffects.length) {
+        const el = document.createElement('div');
+        el.style.cssText = 'font-size:12px;opacity:.6'; el.textContent = 'No effects active';
+        activeEffectsList.appendChild(el); return;
     }
-    
-    activeEffects.forEach((effect, index) => {
+    const effectNames = { crt:'CRT Monitor', arcade:'Arcade CRT', scanlines:'Scanlines', vhs:'VHS Tape', gameboy:'Game Boy LCD', phosphor:'Phosphor Glow' };
+    activeEffects.forEach((effect, i) => {
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.alignItems = 'center';
-        row.style.padding = '4px 8px';
-        row.style.background = 'rgba(255,255,255,0.05)';
-        row.style.borderRadius = '3px';
-        
-        const effectNames = {
-            'crt': 'CRT Monitor',
-            'arcade': 'Arcade CRT',
-            'scanlines': 'Scanlines',
-            'vhs': 'VHS Tape',
-            'gameboy': 'Game Boy LCD',
-            'phosphor': 'Phosphor Glow'
-        };
-        
+        row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:rgba(255,255,255,.05);border-radius:3px';
         const label = document.createElement('span');
-        label.textContent = effectNames[effect] || effect;
-        label.style.fontSize = '13px';
-        
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '−';
-        removeBtn.style.padding = '2px 8px';
-        removeBtn.style.fontSize = '16px';
-        removeBtn.style.background = '#933';
-        removeBtn.style.border = 'none';
-        removeBtn.style.color = '#fff';
-        removeBtn.style.cursor = 'pointer';
-        removeBtn.style.borderRadius = '3px';
-        removeBtn.onclick = () => {
-            activeEffects.splice(index, 1);
-            applyEffects();
-            renderActiveEffects();
-        };
-        
-        row.appendChild(label);
-        row.appendChild(removeBtn);
-        activeEffectsList.appendChild(row);
+        label.textContent = effectNames[effect] || effect; label.style.fontSize = '13px';
+        const btn = document.createElement('button');
+        btn.textContent = '−'; btn.style.cssText = 'padding:2px 8px;font-size:16px;background:#933;border:none;color:#fff;cursor:pointer;border-radius:3px';
+        btn.onclick = () => { activeEffects.splice(i, 1); applyEffects(); renderActiveEffects(); };
+        row.appendChild(label); row.appendChild(btn); activeEffectsList.appendChild(row);
     });
 }
 
 addEffectBtn.onclick = () => {
     const effect = effectToAdd.value;
-    if (!effect) {
-        alert('Please select an effect to add');
-        return;
-    }
-    
-    if (activeEffects.includes(effect)) {
-        alert('This effect is already active');
-        return;
-    }
-    
-    activeEffects.push(effect);
-    applyEffects();
-    renderActiveEffects();
-    effectToAdd.value = '';
+    if (!effect) { alert('Please select an effect to add'); return; }
+    if (activeEffects.includes(effect)) { alert('This effect is already active'); return; }
+    activeEffects.push(effect); applyEffects(); renderActiveEffects(); effectToAdd.value = '';
 };
 
-// Font style handler
-function applyFontStyle() {
-    document.body.dataset.font = fontStyle.value;
-    saveSetting('fontStyle', fontStyle.value);
+// ═══ FONT SYSTEM ═══
+const FONTS = {
+    'system':       { family: 'system-ui,sans-serif',                    url: null },
+    'terminal':     { family: "'Courier New','Consolas','Monaco',monospace", url: null },
+    'press-start':  { family: "'Press Start 2P',monospace",              url: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' },
+    'vt323':        { family: "'VT323',monospace",                        url: 'https://fonts.googleapis.com/css2?family=VT323&display=swap' },
+    'silkscreen':   { family: "'Silkscreen',monospace",                   url: 'https://fonts.googleapis.com/css2?family=Silkscreen&display=swap' },
+    'dotgothic':    { family: "'DotGothic16',monospace",                  url: 'https://fonts.googleapis.com/css2?family=DotGothic16&display=swap' },
+    'orbitron':     { family: "'Orbitron',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap' },
+    'exo2':         { family: "'Exo 2',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap' },
+    'rajdhani':     { family: "'Rajdhani',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap' },
+    'audiowide':    { family: "'Audiowide',sans-serif",                   url: 'https://fonts.googleapis.com/css2?family=Audiowide&display=swap' },
+    'michroma':     { family: "'Michroma',sans-serif",                    url: 'https://fonts.googleapis.com/css2?family=Michroma&display=swap' },
+    'inter':        { family: "'Inter',sans-serif",                       url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap' },
+    'ibm-plex-mono':{ family: "'IBM Plex Mono',monospace",               url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap' },
+    'space-mono':   { family: "'Space Mono',monospace",                   url: 'https://fonts.googleapis.com/css2?family=Space+Mono&display=swap' },
+    'share-tech':   { family: "'Share Tech Mono',monospace",              url: 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap' },
+};
+
+const customFontLink = document.getElementById('customFontLink');
+const loadedFontUrls = new Set();
+
+function applyFontStyle(val) {
+    const font = FONTS[val] || FONTS['system'];
+    if (font.url && !loadedFontUrls.has(font.url)) {
+        customFontLink.href = font.url;
+        loadedFontUrls.add(font.url);
+    }
+    document.documentElement.style.setProperty('--font-family', font.family);
+    document.body.dataset.font = val;
+    saveSetting('fontStyle', val);
+}
+fontStyle.onchange = () => applyFontStyle(fontStyle.value);
+
+// ═══ FAVICON SYSTEM ═══
+const GFAVICON = 'https://www.google.com/s2/favicons?sz=32&domain=';
+
+function getDomain(url) {
+    try { return new URL(url).hostname; } catch { return url; }
 }
 
-fontStyle.onchange = applyFontStyle;
+function faviconImg(url, cls) {
+    const img = document.createElement('img');
+    img.src = GFAVICON + getDomain(url);
+    img.className = cls;
+    img.loading = 'lazy';
+    img.onerror = () => { img.style.display = 'none'; };
+    return img;
+}
 
-// Themes System (renamed from Presets)
-const builtinThemes = {
-    'Silent Dark': {
-        theme: 'dark',
-        fontStyle: 'standard',
-        bgImageUrl: '',
-        toggleLinkBorders: false,
-        toggleTransparentFields: false,
-        showStartScreen: false,
-        activeEffects: [],
-        effectIntensity: 100,
-        showStats: true,
-        showSearch: true,
-        showLinks: true,
-        showNotes: true,
-        statTime: true,
-        statBattery: true,
-        statNetwork: true,
-        statIP: true,
-        statDL: true,
-        statWeather: false,
-        statPing: true,
-        colorDarkBg: '#070707',
-        colorDarkFg: '#cfcfcf',
-        colorDarkAccent: '#7a7a7a',
-        colorDarkDim: '#444444',
-        colorLightBg: '#f5f5f5',
-        colorLightFg: '#111111',
-        colorLightAccent: '#666666',
-        colorLightDim: '#bbbbbb'
-    },
-    'CRT Terminal': {
-        theme: 'dark',
-        fontStyle: 'terminal',
-        bgImageUrl: '',
-        toggleLinkBorders: true,
-        toggleTransparentFields: false,
-        showStartScreen: true,
-        activeEffects: ['scanlines'],
-        effectIntensity: 150,
-        showStats: true,
-        showSearch: true,
-        showLinks: true,
-        showNotes: true,
-        statTime: true,
-        statBattery: true,
-        statNetwork: true,
-        statIP: true,
-        statDL: true,
-        statWeather: false,
-        statPing: true,
-        colorDarkBg: '#0a0a0a',
-        colorDarkFg: '#00ff00',
-        colorDarkAccent: '#00aa00',
-        colorDarkDim: '#003300',
-        colorLightBg: '#f5f5f5',
-        colorLightFg: '#111111',
-        colorLightAccent: '#666666',
-        colorLightDim: '#bbbbbb'
-    },
-    'VHS Lounge': {
-        theme: 'dark',
-        fontStyle: 'standard',
-        bgImageUrl: '',
-        toggleLinkBorders: false,
-        toggleTransparentFields: true,
-        showStartScreen: true,
-        activeEffects: ['vhs'],
-        effectIntensity: 120,
-        showStats: true,
-        showSearch: true,
-        showLinks: true,
-        showNotes: true,
-        statTime: true,
-        statBattery: true,
-        statNetwork: true,
-        statIP: true,
-        statDL: true,
-        statWeather: false,
-        statPing: true,
-        colorDarkBg: '#070707',
-        colorDarkFg: '#cfcfcf',
-        colorDarkAccent: '#7a7a7a',
-        colorDarkDim: '#444444',
-        colorLightBg: '#f5f5f5',
-        colorLightFg: '#111111',
-        colorLightAccent: '#666666',
-        colorLightDim: '#bbbbbb'
-    },
-    'Arcade Night': {
-        theme: 'dark',
-        fontStyle: 'standard',
-        bgImageUrl: '',
-        toggleLinkBorders: true,
-        toggleTransparentFields: false,
-        showStartScreen: true,
-        activeEffects: ['arcade'],
-        effectIntensity: 130,
-        showStats: true,
-        showSearch: true,
-        showLinks: true,
-        showNotes: true,
-        statTime: true,
-        statBattery: true,
-        statNetwork: true,
-        statIP: true,
-        statDL: true,
-        statWeather: false,
-        statPing: true,
-        colorDarkBg: '#0f0520',
-        colorDarkFg: '#ff00ff',
-        colorDarkAccent: '#00ffff',
-        colorDarkDim: '#4a0f5f',
-        colorLightBg: '#f5f5f5',
-        colorLightFg: '#111111',
-        colorLightAccent: '#666666',
-        colorLightDim: '#bbbbbb'
-    },
-    'Clean Light': {
-        theme: 'light',
-        fontStyle: 'standard',
-        bgImageUrl: '',
-        toggleLinkBorders: false,
-        toggleTransparentFields: false,
-        showStartScreen: false,
-        activeEffects: [],
-        effectIntensity: 100,
-        showStats: true,
-        showSearch: true,
-        showLinks: true,
-        showNotes: true,
-        statTime: true,
-        statBattery: true,
-        statNetwork: true,
-        statIP: true,
-        statDL: true,
-        statWeather: false,
-        statPing: true,
-        colorDarkBg: '#070707',
-        colorDarkFg: '#cfcfcf',
-        colorDarkAccent: '#7a7a7a',
-        colorDarkDim: '#444444',
-        colorLightBg: '#f5f5f5',
-        colorLightFg: '#111111',
-        colorLightAccent: '#666666',
-        colorLightDim: '#bbbbbb'
+function applyLinkFavicons() {
+    const mode = faviconMode ? faviconMode.value : 'none';
+    const showLinks = mode === 'links' || mode === 'both';
+    document.querySelectorAll('#linksMenu a').forEach(a => {
+        const existing = a.querySelector('.favicon');
+        if (existing) existing.remove();
+        if (showLinks && a.href) {
+            a.insertBefore(faviconImg(a.href, 'favicon'), a.firstChild);
+        }
+    });
+}
+
+const searchFaviconEl = document.createElement('img');
+searchFaviconEl.className = 'search-engine-favicon';
+searchFaviconEl.style.display = 'none';
+searchFaviconEl.loading = 'lazy';
+searchFaviconEl.onerror = () => { searchFaviconEl.style.display = 'none'; };
+const searchEngineSelector = document.getElementById('currentSearchEngine');
+searchEngineSelector.parentNode.insertBefore(searchFaviconEl, searchEngineSelector);
+
+const SEARCH_DOMAINS = {
+    google:'google.com', duckduckgo:'duckduckgo.com', bing:'bing.com',
+    brave:'search.brave.com', yandex:'yandex.com', startpage:'startpage.com'
+};
+
+function applySearchFavicon() {
+    const mode = faviconMode ? faviconMode.value : 'none';
+    const showSearch = mode === 'search' || mode === 'both';
+    if (showSearch) {
+        const engine = searchEngineSelector.value;
+        const domain = SEARCH_DOMAINS[engine] || engine;
+        searchFaviconEl.src = GFAVICON + domain;
+        searchFaviconEl.style.display = 'inline-block';
+    } else {
+        searchFaviconEl.style.display = 'none';
     }
+}
+
+function applyFavicons() {
+    applyLinkFavicons();
+    applySearchFavicon();
+    if (faviconMode) saveSetting('faviconMode', faviconMode.value);
+}
+
+if (faviconMode) faviconMode.onchange = applyFavicons;
+searchEngineSelector.addEventListener('change', applySearchFavicon);
+
+// ═══ THEMES SYSTEM ═══
+const builtinThemes = {
+    'Silent Dark': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:false,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'CRT Terminal': {theme:'dark',fontStyle:'terminal',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:true,toggleTransparentFields:false,showStartScreen:true,activeEffects:['scanlines'],effectIntensity:150,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#0a0a0a',colorDarkFg:'#00ff00',colorDarkAccent:'#00aa00',colorDarkDim:'#003300',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'VHS Lounge': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:true,showStartScreen:true,activeEffects:['vhs'],effectIntensity:120,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'Arcade Night': {theme:'dark',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:true,toggleTransparentFields:false,showStartScreen:true,activeEffects:['arcade'],effectIntensity:130,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#0f0520',colorDarkFg:'#ff00ff',colorDarkAccent:'#00ffff',colorDarkDim:'#4a0f5f',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'},
+    'Clean Light': {theme:'light',fontStyle:'standard',bgImageUrl:'',bgImageFit:'cover',toggleLinkBorders:false,toggleTransparentFields:false,showStartScreen:false,activeEffects:[],effectIntensity:100,showStats:true,showSearch:true,showLinks:true,showNotes:true,statTime:true,statBattery:true,statNetwork:true,statIP:true,statDL:true,statWeather:false,statPing:true,colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'}
 };
 
 function getDisplaySettings() {
     return {
-        theme: themeToggle.checked ? 'light' : 'dark',
-        fontStyle: fontStyle.value,
-        bgImageUrl: bgImageUrl.value,
-        toggleLinkBorders: toggleLinkBorders.checked,
-        toggleTransparentFields: toggleTransparentFields.checked,
-        showStartScreen: showStartScreen.checked,
-        activeEffects: activeEffects,
-        effectIntensity: effectIntensity.value,
-        showStats: showStats.checked,
-        showSearch: showSearch.checked,
-        showLinks: showLinks.checked,
-        showNotes: showNotes.checked,
-        statTime: statToggles.time.checked,
-        statBattery: statToggles.battery.checked,
-        statNetwork: statToggles.network.checked,
-        statIP: statToggles.ip.checked,
-        statDL: statToggles.dl.checked,
-        statWeather: statToggles.weather.checked,
-        statPing: statToggles.ping.checked,
-        colorDarkBg: colorDarkBg.value,
-        colorDarkFg: colorDarkFg.value,
-        colorDarkAccent: colorDarkAccent.value,
-        colorDarkDim: colorDarkDim.value,
-        colorLightBg: colorLightBg.value,
-        colorLightFg: colorLightFg.value,
-        colorLightAccent: colorLightAccent.value,
-        colorLightDim: colorLightDim.value
+        theme:themeToggle.checked?'light':'dark', fontStyle:fontStyle.value, bgImageUrl:bgImageUrl.value, bgImageFit:bgImageFit.value,
+        toggleLinkBorders:toggleLinkBorders.checked, toggleTransparentFields:toggleTransparentFields.checked, showStartScreen:showStartScreen.checked,
+        activeEffects:[...activeEffects], effectIntensity:effectIntensity.value,
+        showStats:showStats.checked, showSearch:showSearch.checked, showLinks:showLinks.checked, showNotes:showNotes.checked,
+        statTime:statToggles.time.checked, statBattery:statToggles.battery.checked, statNetwork:statToggles.network.checked,
+        statIP:statToggles.ip.checked, statDL:statToggles.dl.checked, statWeather:statToggles.weather.checked, statPing:statToggles.ping.checked,
+        colorDarkBg:colorDarkBg.value, colorDarkFg:colorDarkFg.value, colorDarkAccent:colorDarkAccent.value, colorDarkDim:colorDarkDim.value,
+        colorLightBg:colorLightBg.value, colorLightFg:colorLightFg.value, colorLightAccent:colorLightAccent.value, colorLightDim:colorLightDim.value
     };
 }
 
 function applyTheme(theme) {
-    // Apply all display settings from theme
+    if (theme.activeEffects !== undefined) activeEffects = [...theme.activeEffects];
     if (theme.theme !== undefined) themeToggle.checked = theme.theme === 'light';
     if (theme.fontStyle !== undefined) fontStyle.value = theme.fontStyle;
     if (theme.bgImageUrl !== undefined) bgImageUrl.value = theme.bgImageUrl;
+    if (theme.bgImageFit !== undefined) bgImageFit.value = theme.bgImageFit;
     if (theme.toggleLinkBorders !== undefined) toggleLinkBorders.checked = theme.toggleLinkBorders;
     if (theme.toggleTransparentFields !== undefined) toggleTransparentFields.checked = theme.toggleTransparentFields;
     if (theme.showStartScreen !== undefined) showStartScreen.checked = theme.showStartScreen;
-    if (theme.activeEffects !== undefined) activeEffects = theme.activeEffects;
     if (theme.effectIntensity !== undefined) effectIntensity.value = theme.effectIntensity;
     if (theme.showStats !== undefined) showStats.checked = theme.showStats;
     if (theme.showSearch !== undefined) showSearch.checked = theme.showSearch;
@@ -1566,190 +1249,133 @@ function applyTheme(theme) {
     if (theme.statDL !== undefined) statToggles.dl.checked = theme.statDL;
     if (theme.statWeather !== undefined) statToggles.weather.checked = theme.statWeather;
     if (theme.statPing !== undefined) statToggles.ping.checked = theme.statPing;
-    if (theme.colorDarkBg !== undefined) {
-        colorDarkBg.value = theme.colorDarkBg;
-        colorDarkBgText.value = theme.colorDarkBg;
-    }
-    if (theme.colorDarkFg !== undefined) {
-        colorDarkFg.value = theme.colorDarkFg;
-        colorDarkFgText.value = theme.colorDarkFg;
-    }
-    if (theme.colorDarkAccent !== undefined) {
-        colorDarkAccent.value = theme.colorDarkAccent;
-        colorDarkAccentText.value = theme.colorDarkAccent;
-    }
-    if (theme.colorDarkDim !== undefined) {
-        colorDarkDim.value = theme.colorDarkDim;
-        colorDarkDimText.value = theme.colorDarkDim;
-    }
-    if (theme.colorLightBg !== undefined) {
-        colorLightBg.value = theme.colorLightBg;
-        colorLightBgText.value = theme.colorLightBg;
-    }
-    if (theme.colorLightFg !== undefined) {
-        colorLightFg.value = theme.colorLightFg;
-        colorLightFgText.value = theme.colorLightFg;
-    }
-    if (theme.colorLightAccent !== undefined) {
-        colorLightAccent.value = theme.colorLightAccent;
-        colorLightAccentText.value = theme.colorLightAccent;
-    }
-    if (theme.colorLightDim !== undefined) {
-        colorLightDim.value = theme.colorLightDim;
-        colorLightDimText.value = theme.colorLightDim;
-    }
-    
-    // Apply effects and settings
-    applyEffects();
-    renderActiveEffects();
-    applyEffectIntensity();
-    applySettings();
-    document.body.dataset.font = fontStyle.value;
+    const setColor = (p, t, v) => { if (v !== undefined) { p.value = v; t.value = v; } };
+    setColor(colorDarkBg,colorDarkBgText,theme.colorDarkBg); setColor(colorDarkFg,colorDarkFgText,theme.colorDarkFg);
+    setColor(colorDarkAccent,colorDarkAccentText,theme.colorDarkAccent); setColor(colorDarkDim,colorDarkDimText,theme.colorDarkDim);
+    setColor(colorLightBg,colorLightBgText,theme.colorLightBg); setColor(colorLightFg,colorLightFgText,theme.colorLightFg);
+    setColor(colorLightAccent,colorLightAccentText,theme.colorLightAccent); setColor(colorLightDim,colorLightDimText,theme.colorLightDim);
+    applyEffects(); renderActiveEffects(); applyEffectIntensity(); applySettings();
+    applyFontStyle(fontStyle.value);
 }
 
 function renderThemes() {
     const container = document.getElementById('themesList');
     const userThemes = loadSetting('userThemes', {});
     container.innerHTML = '';
-    
-    // Built-in themes
     Object.keys(builtinThemes).forEach(name => {
         const btn = document.createElement('button');
         btn.textContent = name;
-        btn.style.padding = '8px 12px';
-        btn.style.background = 'var(--dim)';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '4px';
-        btn.style.cursor = 'pointer';
-        btn.style.color = 'var(--fg)';
-        btn.style.fontSize = '13px';
-        btn.onclick = () => applyTheme(builtinThemes[name]);
+        btn.style.cssText = 'padding:8px 12px;background:var(--dim);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px';
+        btn.onclick = () => applyTheme(JSON.parse(JSON.stringify(builtinThemes[name])));
         container.appendChild(btn);
     });
-    
-    // User themes
     Object.keys(userThemes).forEach(name => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.gap = '8px';
-        
+        const row = document.createElement('div'); row.style.display = 'flex'; row.style.gap = '8px';
         const btn = document.createElement('button');
         btn.textContent = name;
-        btn.style.flex = '1';
-        btn.style.padding = '8px 12px';
-        btn.style.background = 'var(--accent)';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '4px';
-        btn.style.cursor = 'pointer';
-        btn.style.color = 'var(--fg)';
-        btn.style.fontSize = '13px';
-        btn.onclick = () => applyTheme(userThemes[name]);
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '🗑️';
-        deleteBtn.style.padding = '8px 12px';
-        deleteBtn.style.background = '#933';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.borderRadius = '4px';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.fontSize = '13px';
-        deleteBtn.onclick = () => {
-            delete userThemes[name];
-            saveSetting('userThemes', userThemes);
-            renderThemes();
-        };
-        
-        row.appendChild(btn);
-        row.appendChild(deleteBtn);
-        container.appendChild(row);
+        btn.style.cssText = 'flex:1;padding:8px 12px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;color:var(--fg);font-size:13px';
+        btn.onclick = () => applyTheme(JSON.parse(JSON.stringify(userThemes[name])));
+        const del = document.createElement('button');
+        del.textContent = '🗑️'; del.style.cssText = 'padding:8px 12px;background:#933;border:none;border-radius:4px;cursor:pointer;font-size:13px';
+        del.onclick = () => { delete userThemes[name]; saveSetting('userThemes', userThemes); renderThemes(); };
+        row.appendChild(btn); row.appendChild(del); container.appendChild(row);
     });
 }
 
 document.getElementById('saveThemeBtn').onclick = () => {
     const name = prompt('Enter theme name:');
     if (!name || !name.trim()) return;
-    
     const userThemes = loadSetting('userThemes', {});
     userThemes[name.trim()] = getDisplaySettings();
-    saveSetting('userThemes', userThemes);
-    renderThemes();
+    saveSetting('userThemes', userThemes); renderThemes();
 };
 
-// Erase Data System with alarm
+// ═══ ERASE DATA SYSTEM ═══
 const eraseModal = document.getElementById('eraseModal');
 const eraseConfirmInput = document.getElementById('eraseConfirmInput');
 const eraseConfirmBtn = document.getElementById('eraseConfirmBtn');
 const eraseCancelBtn = document.getElementById('eraseCancelBtn');
-const eraseDataBtn = document.getElementById('eraseDataBtn');
 const alarmSiren = document.getElementById('alarmSiren');
 
-eraseConfirmInput.oninput = () => {
-    eraseConfirmBtn.disabled = eraseConfirmInput.value !== 'ERASE';
-};
+eraseConfirmInput.oninput = () => { eraseConfirmBtn.disabled = eraseConfirmInput.value !== 'ERASE'; };
 
-eraseCancelBtn.onclick = () => {
-    eraseModal.style.display = 'none';
-    eraseConfirmInput.value = '';
-    eraseConfirmBtn.disabled = true;
-    alarmSiren.pause();
-    alarmSiren.currentTime = 0;
-};
-
-eraseConfirmBtn.onclick = () => {
-    alarmSiren.pause();
-    localStorage.clear();
-    window.location.replace(window.location.href.split('?')[0]);
-};
-
-// Erase button with Ctrl+Shift+Click bypass for sandbox
-eraseDataBtn.addEventListener('click', (e) => {
+eraseCancelBtn.onclick = (e) => {
     e.stopPropagation();
-    
-    // Ctrl+Shift+Click bypasses modal (for sandbox)
+    eraseModal.style.display = 'none';
+    eraseConfirmInput.value = ''; eraseConfirmBtn.disabled = true;
+    alarmSiren.pause(); alarmSiren.currentTime = 0;
+    stopAlternativeAlarm();
+};
+
+eraseConfirmBtn.onclick = (e) => {
+    e.stopPropagation();
+    alarmSiren.pause(); stopAlternativeAlarm();
+    localStorage.clear(); sessionStorage.clear();
+    if ('caches' in window) caches.keys().then(names => names.forEach(n => caches.delete(n)));
+    document.cookie.split(";").forEach(c => {
+        document.cookie = c.replace(/^ +/,"").replace(/=.*/,"=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
+};
+
+document.getElementById('eraseDataBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
     if (e.ctrlKey && e.shiftKey) {
-        localStorage.clear();
-        window.location.replace(window.location.href.split('?')[0]);
+        localStorage.clear(); sessionStorage.clear();
+        if ('caches' in window) caches.keys().then(names => names.forEach(n => caches.delete(n)));
+        window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
         return;
     }
-    
-    // Show modal and play alarm
+    eraseConfirmInput.value = ''; eraseConfirmBtn.disabled = true;
+    applyEraseVariant(loadSetting('debugEraseStyle', 'normal'));
     eraseModal.style.display = 'flex';
-    eraseConfirmInput.value = '';
-    eraseConfirmBtn.disabled = true;
-    alarmSiren.play().catch(() => {});
-    setTimeout(() => eraseConfirmInput.focus(), 100);
+    const alarmType = loadSetting('debugAlarmType', 'normal');
+    if (alarmType === 'normal') alarmSiren.play().catch(() => {});
+    else playAlternativeAlarm(alarmType);
+    if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        setTimeout(() => eraseConfirmInput.focus(), 100);
+    }
 });
 
-// Close modal on outside click
-eraseModal.onclick = (e) => {
-    if (e.target === eraseModal) {
-        eraseCancelBtn.click();
-    }
-};
-let audioContext = null;
-let ambienceNode = null;
-let ambienceGain = null;
+document.getElementById('eraseInnerDiv').addEventListener('click', e => e.stopPropagation());
 
-function initAudio() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        if (ambienceGain) ambienceGain.gain.value = 0;
+        if (!alarmSiren.paused) alarmSiren.pause();
+        stopAlternativeAlarm();
+    } else {
+        if (ambienceGain) ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100;
+        if (eraseModal.style.display === 'flex') {
+            const t = loadSetting('debugAlarmType','normal');
+            if (t === 'normal') alarmSiren.play().catch(() => {}); else playAlternativeAlarm(t);
         }
     }
+});
+
+// ═══ AUDIO ═══
+let audioContext = null, ambienceNode = null, ambienceGain = null, audioUnlocked = false;
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        gain.gain.value = 0; osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.01); audioUnlocked = true;
+    } catch(e) {}
+    if (ambienceType.value && ambienceType.value !== 'none') setTimeout(() => startAmbience(ambienceType.value), 100);
+}
+['click','touchstart','keydown'].forEach(evt => document.addEventListener(evt, unlockAudio, { once:true, passive:true }));
+
+function initAudio() {
+    if (!audioContext) { audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') audioContext.resume(); }
     return audioContext;
 }
 
 function stopAmbience() {
     if (ambienceNode) {
-        try {
-            if (ambienceNode.osc1) {
-                ambienceNode.osc1.stop();
-                ambienceNode.osc2.stop();
-            } else if (ambienceNode.stop) {
-                ambienceNode.stop();
-            }
-        } catch (e) {}
+        try { if (ambienceNode.osc1) { ambienceNode.osc1.stop(); ambienceNode.osc2.stop(); } else if (ambienceNode.stop) ambienceNode.stop(); } catch(e) {}
         ambienceNode = null;
     }
 }
@@ -1757,452 +1383,216 @@ function stopAmbience() {
 function startAmbience(type) {
     stopAmbience();
     if (type === 'none' || !type) return;
-    
     const ctx = initAudio();
-    
-    if (!ambienceGain) {
-        ambienceGain = ctx.createGain();
-        ambienceGain.connect(ctx.destination);
-    }
-    
-    const volume = parseFloat(ambienceVolume.value) / 100;
-    ambienceGain.gain.value = volume;
-    
+    if (!ambienceGain) { ambienceGain = ctx.createGain(); ambienceGain.connect(ctx.destination); }
+    ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100;
     if (type === 'crt') {
-        const osc = ctx.createOscillator();
-        const filter = ctx.createBiquadFilter();
-        osc.type = 'sine';
-        osc.frequency.value = 60;
-        filter.type = 'lowpass';
-        filter.frequency.value = 200;
-        osc.connect(filter);
-        filter.connect(ambienceGain);
-        osc.start();
-        ambienceNode = osc;
-        
+        const osc = ctx.createOscillator(), filter = ctx.createBiquadFilter();
+        osc.type = 'sine'; osc.frequency.value = 60; filter.type = 'lowpass'; filter.frequency.value = 200;
+        osc.connect(filter); filter.connect(ambienceGain); osc.start(); ambienceNode = osc;
     } else if (type === 'tape') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1;
-        }
-        const whiteNoise = ctx.createBufferSource();
-        whiteNoise.buffer = noiseBuffer;
-        whiteNoise.loop = true;
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.value = 3000;
-        whiteNoise.connect(filter);
-        filter.connect(ambienceGain);
-        whiteNoise.start();
-        ambienceNode = whiteNoise;
-        
+        const bufferSize = 2 * ctx.sampleRate, buf = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const out = buf.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) out[i] = Math.random() * 2 - 1;
+        const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+        const filter = ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 3000;
+        src.connect(filter); filter.connect(ambienceGain); src.start(); ambienceNode = src;
     } else if (type === 'arcade') {
-        const osc1 = ctx.createOscillator();
-        const osc2 = ctx.createOscillator();
-        osc1.type = 'sine';
-        osc2.type = 'square';
-        osc1.frequency.value = 120;
-        osc2.frequency.value = 240;
-        const gain1 = ctx.createGain();
-        const gain2 = ctx.createGain();
-        gain1.gain.value = 0.3;
-        gain2.gain.value = 0.1;
-        osc1.connect(gain1);
-        osc2.connect(gain2);
-        gain1.connect(ambienceGain);
-        gain2.connect(ambienceGain);
-        osc1.start();
-        osc2.start();
-        ambienceNode = { osc1, osc2 };
-        
+        const osc1 = ctx.createOscillator(), osc2 = ctx.createOscillator();
+        osc1.type = 'sine'; osc2.type = 'square'; osc1.frequency.value = 120; osc2.frequency.value = 240;
+        const g1 = ctx.createGain(), g2 = ctx.createGain(); g1.gain.value = 0.3; g2.gain.value = 0.1;
+        osc1.connect(g1); osc2.connect(g2); g1.connect(ambienceGain); g2.connect(ambienceGain);
+        osc1.start(); osc2.start(); ambienceNode = { osc1, osc2 };
     } else if (type === 'rain') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        const bufferSize = 2 * ctx.sampleRate, buf = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const out = buf.getChannelData(0); let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
         for (let i = 0; i < bufferSize; i++) {
-            const white = Math.random() * 2 - 1;
-            b0 = 0.99886 * b0 + white * 0.0555179;
-            b1 = 0.99332 * b1 + white * 0.0750759;
-            b2 = 0.96900 * b2 + white * 0.1538520;
-            b3 = 0.86650 * b3 + white * 0.3104856;
-            b4 = 0.55000 * b4 + white * 0.5329522;
-            b5 = -0.7616 * b5 - white * 0.0168980;
-            output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-            output[i] *= 0.11;
-            b6 = white * 0.115926;
+            const w = Math.random() * 2 - 1;
+            b0=.99886*b0+w*.0555179; b1=.99332*b1+w*.0750759; b2=.96900*b2+w*.1538520;
+            b3=.86650*b3+w*.3104856; b4=.55000*b4+w*.5329522; b5=-.7616*b5-w*.0168980;
+            out[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11; b6=w*.115926;
         }
-        const pinkNoise = ctx.createBufferSource();
-        pinkNoise.buffer = noiseBuffer;
-        pinkNoise.loop = true;
-        pinkNoise.connect(ambienceGain);
-        pinkNoise.start();
-        ambienceNode = pinkNoise;
+        const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+        src.connect(ambienceGain); src.start(); ambienceNode = src;
     }
 }
 
-function updateAmbience() {
-    startAmbience(ambienceType.value);
-    saveSetting('ambienceType', ambienceType.value);
-    saveSetting('ambienceVolume', ambienceVolume.value);
-}
+ambienceType.onchange = () => { startAmbience(ambienceType.value); saveSetting('ambienceType', ambienceType.value); saveSetting('ambienceVolume', ambienceVolume.value); };
+ambienceVolume.oninput = () => { if (ambienceGain) ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100; saveSetting('ambienceVolume', ambienceVolume.value); };
 
-function updateAmbienceVolume() {
-    if (ambienceGain) {
-        ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100;
-    }
-    saveSetting('ambienceVolume', ambienceVolume.value);
-}
-
-ambienceType.onchange = updateAmbience;
-ambienceVolume.oninput = updateAmbienceVolume;
-
-// Pause audio when tab becomes inactive
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        if (ambienceGain) ambienceGain.gain.value = 0;
-    } else {
-        if (ambienceGain) {
-            ambienceGain.gain.value = parseFloat(ambienceVolume.value) / 100;
-        }
-    }
-});
-
-// Search engine configuration
+// ═══ SEARCH ENGINE ═══
 const searchEngines = {
-    google: { url: 'https://www.google.com/search', param: 'q', placeholder: 'Search...' },
-    duckduckgo: { url: 'https://duckduckgo.com/', param: 'q', placeholder: 'Search...' },
-    bing: { url: 'https://www.bing.com/search', param: 'q', placeholder: 'Search...' },
-    brave: { url: 'https://search.brave.com/search', param: 'q', placeholder: 'Search...' },
-    yandex: { url: 'https://yandex.com/search/', param: 'text', placeholder: 'Search...' },
-    startpage: { url: 'https://www.startpage.com/do/search', param: 'query', placeholder: 'Search...' }
+    google:    {url:'https://www.google.com/search',       param:'q',     placeholder:'Google Search...'},
+    duckduckgo:{url:'https://duckduckgo.com/',             param:'q',     placeholder:'DuckDuckGo Search...'},
+    bing:      {url:'https://www.bing.com/search',         param:'q',     placeholder:'Bing Search...'},
+    brave:     {url:'https://search.brave.com/search',     param:'q',     placeholder:'Brave Search...'},
+    yandex:    {url:'https://yandex.com/search/',          param:'text',  placeholder:'Yandex Search...'},
+    startpage: {url:'https://www.startpage.com/do/search', param:'query', placeholder:'Startpage Search...'}
 };
 
-function updateSearchEngine(engineKey) {
-    const engine = searchEngines[engineKey] || searchEngines.google;
-    searchForm.action = engine.url;
-    searchInput.name = engine.param;
-    searchInput.placeholder = engine.placeholder;
+function updateSearchEngine(key) {
+    const e = searchEngines[key] || searchEngines.google;
+    searchForm.action = e.url; searchInput.name = e.param; searchInput.placeholder = e.placeholder;
 }
 
-// Default search engine setting - saves to localStorage
-searchEngine.onchange = () => {
-    saveSetting('searchEngine', searchEngine.value);
-    currentSearchEngine.value = searchEngine.value;
-    updateSearchEngine(searchEngine.value);
-};
+searchEngine.onchange = () => { saveSetting('searchEngine', searchEngine.value); currentSearchEngine.value = searchEngine.value; updateSearchEngine(searchEngine.value); };
+pingServer.onchange = () => { saveSetting('pingServer', pingServer.value); updatePing(); };
+currentSearchEngine.onchange = () => updateSearchEngine(currentSearchEngine.value);
 
-// Current search engine selector - session only, doesn't save
-currentSearchEngine.onchange = () => {
-    updateSearchEngine(currentSearchEngine.value);
-};
-
-// Color picker handlers
+// ═══ COLOR PICKERS ═══
 function updateColors() {
     const isDark = document.body.dataset.theme === 'dark';
     const root = document.documentElement;
-    
-    if (isDark) {
-        root.style.setProperty('--bg', colorDarkBg.value);
-        root.style.setProperty('--fg', colorDarkFg.value);
-        root.style.setProperty('--accent', colorDarkAccent.value);
-        root.style.setProperty('--dim', colorDarkDim.value);
-    } else {
-        root.style.setProperty('--bg', colorLightBg.value);
-        root.style.setProperty('--fg', colorLightFg.value);
-        root.style.setProperty('--accent', colorLightAccent.value);
-        root.style.setProperty('--dim', colorLightDim.value);
-    }
-    
-    // Save all colors
-    saveSetting('colorDarkBg', colorDarkBg.value);
-    saveSetting('colorDarkFg', colorDarkFg.value);
-    saveSetting('colorDarkAccent', colorDarkAccent.value);
-    saveSetting('colorDarkDim', colorDarkDim.value);
-    saveSetting('colorLightBg', colorLightBg.value);
-    saveSetting('colorLightFg', colorLightFg.value);
-    saveSetting('colorLightAccent', colorLightAccent.value);
-    saveSetting('colorLightDim', colorLightDim.value);
+    const colors = isDark
+        ? [['--bg',colorDarkBg.value],['--fg',colorDarkFg.value],['--accent',colorDarkAccent.value],['--dim',colorDarkDim.value]]
+        : [['--bg',colorLightBg.value],['--fg',colorLightFg.value],['--accent',colorLightAccent.value],['--dim',colorLightDim.value]];
+    colors.forEach(([k,v]) => root.style.setProperty(k, v));
+    ['colorDarkBg','colorDarkFg','colorDarkAccent','colorDarkDim','colorLightBg','colorLightFg','colorLightAccent','colorLightDim'].forEach(k => {
+        saveSetting(k, document.getElementById(k).value);
+    });
 }
 
-// Sync color picker with text input
-function syncColorInputs(colorPicker, textInput) {
-    colorPicker.oninput = () => {
-        textInput.value = colorPicker.value;
-        updateColors();
-    };
-    
-    textInput.oninput = () => {
-        const value = textInput.value.trim();
-        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-            colorPicker.value = value;
-            updateColors();
-        }
-    };
+function syncColorInputs(picker, text) {
+    picker.oninput = () => { text.value = picker.value; updateColors(); };
+    text.oninput = () => { if (/^#[0-9A-Fa-f]{6}$/.test(text.value.trim())) { picker.value = text.value.trim(); updateColors(); } };
 }
 
-syncColorInputs(colorDarkBg, colorDarkBgText);
-syncColorInputs(colorDarkFg, colorDarkFgText);
-syncColorInputs(colorDarkAccent, colorDarkAccentText);
-syncColorInputs(colorDarkDim, colorDarkDimText);
-syncColorInputs(colorLightBg, colorLightBgText);
-syncColorInputs(colorLightFg, colorLightFgText);
-syncColorInputs(colorLightAccent, colorLightAccentText);
-syncColorInputs(colorLightDim, colorLightDimText);
+syncColorInputs(colorDarkBg,colorDarkBgText); syncColorInputs(colorDarkFg,colorDarkFgText);
+syncColorInputs(colorDarkAccent,colorDarkAccentText); syncColorInputs(colorDarkDim,colorDarkDimText);
+syncColorInputs(colorLightBg,colorLightBgText); syncColorInputs(colorLightFg,colorLightFgText);
+syncColorInputs(colorLightAccent,colorLightAccentText); syncColorInputs(colorLightDim,colorLightDimText);
 
-// Reset colors to default
-resetColorsBtn.onclick = () => {
-    colorDarkBg.value = '#070707';
-    colorDarkBgText.value = '#070707';
-    colorDarkFg.value = '#cfcfcf';
-    colorDarkFgText.value = '#cfcfcf';
-    colorDarkAccent.value = '#7a7a7a';
-    colorDarkAccentText.value = '#7a7a7a';
-    colorDarkDim.value = '#444444';
-    colorDarkDimText.value = '#444444';
-    colorLightBg.value = '#f5f5f5';
-    colorLightBgText.value = '#f5f5f5';
-    colorLightFg.value = '#111111';
-    colorLightFgText.value = '#111111';
-    colorLightAccent.value = '#666666';
-    colorLightAccentText.value = '#666666';
-    colorLightDim.value = '#bbbbbb';
-    colorLightDimText.value = '#bbbbbb';
+document.getElementById('resetColors').onclick = () => {
+    const d = {colorDarkBg:'#070707',colorDarkFg:'#cfcfcf',colorDarkAccent:'#7a7a7a',colorDarkDim:'#444444',colorLightBg:'#f5f5f5',colorLightFg:'#111111',colorLightAccent:'#666666',colorLightDim:'#bbbbbb'};
+    Object.entries(d).forEach(([k,v]) => { document.getElementById(k).value = v; document.getElementById(k+'Text').value = v; });
     updateColors();
 };
 
-// Notes collapse/expand
+// ═══ NOTES ═══
 notesHeader.onclick = () => {
-    notesHeader.classList.toggle('collapsed');
-    notesContent.classList.toggle('collapsed');
+    notesHeader.classList.toggle('collapsed'); notesContent.classList.toggle('collapsed');
     saveSetting('notesCollapsed', notesHeader.classList.contains('collapsed'));
 };
-
-// Notes auto-save
 notesTextarea.oninput = () => {
     saveSetting('notesContent', notesTextarea.value);
-    // Auto-grow textarea
     notesTextarea.style.height = 'auto';
     notesTextarea.style.height = Math.max(80, notesTextarea.scrollHeight) + 'px';
 };
-const defaultLinks = [
-    { name: 'YouTube', url: 'https://youtube.com', category: 'Media' },
-    { name: 'Reddit', url: 'https://reddit.com', category: 'Media' },
-    { name: 'Google News', url: 'https://news.google.com', category: 'News' },
-    { name: 'Emulation Wiki', url: 'https://emulation.gametechwiki.com', category: 'Gaming' },
-    { name: 'Retro Achievements', url: 'https://retroachievements.org', category: 'Gaming' }
-];
 
+// ═══ NUMBER SPINNERS ═══
+const numberDefaults = { linksPerRowInput:2, refreshClock:1, refreshBattery:60, refreshNetwork:3, refreshIP:300, refreshDownlink:3, refreshPing:30, refreshWeather:600 };
+
+function stepNumberInput(input, dir) {
+    const min = parseInt(input.min) || 1, max = parseInt(input.max) || 9999;
+    const def = numberDefaults[input.id] !== undefined ? numberDefaults[input.id] : min;
+    let val = input.value === '' ? def : parseInt(input.value);
+    if (isNaN(val)) val = def;
+    input.value = Math.min(max, Math.max(min, val + dir));
+    input.dispatchEvent(new Event('input')); input.dispatchEvent(new Event('change'));
+}
+
+document.querySelectorAll('.number-spinner-btn[data-target]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const target = document.getElementById(btn.dataset.target);
+        if (target) stepNumberInput(target, parseInt(btn.dataset.dir));
+    });
+});
+document.getElementById('linksPerRowDown').addEventListener('click', (e) => { e.stopPropagation(); stepNumberInput(linksPerRowInput, -1); });
+document.getElementById('linksPerRowUp').addEventListener('click', (e) => { e.stopPropagation(); stepNumberInput(linksPerRowInput, 1); });
+
+// ═══ LINKS ═══
+const defaultLinks = [
+    {name:'YouTube',url:'https://youtube.com',category:'Media'},
+    {name:'Reddit',url:'https://reddit.com',category:'Media'},
+    {name:'Google News',url:'https://news.google.com',category:'News'},
+    {name:'Emulation Wiki',url:'https://emulation.gametechwiki.com',category:'Gaming'},
+    {name:'Retro Achievements',url:'https://retroachievements.org',category:'Gaming'}
+];
 let links = loadSetting('links', defaultLinks);
 
 function renderLinksDisplay() {
     linksMenu.innerHTML = '';
-    const perRow = parseInt(linksPerRowInput.value) || 5;
-    
-    // Group links by category
-    const categorized = {};
-    const uncategorized = [];
-    
+    const perRow = parseInt(linksPerRowInput.value) || numberDefaults.linksPerRowInput;
+    const categorized = {}, uncategorized = [];
     links.forEach(link => {
         const cat = (link.category || '').trim();
-        if (cat) {
-            if (!categorized[cat]) categorized[cat] = [];
-            categorized[cat].push(link);
-        } else {
-            uncategorized.push(link);
-        }
+        if (cat) { if (!categorized[cat]) categorized[cat] = []; categorized[cat].push(link); }
+        else uncategorized.push(link);
     });
-    
-    const hasCategories = Object.keys(categorized).length > 0;
-    
-    // Render categorized links
-    Object.keys(categorized).sort().forEach(category => {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'link-category';
-        
-        const header = document.createElement('div');
-        header.className = 'category-header';
-        const isCollapsed = loadSetting(`category_${category}_collapsed`, false);
-        if (isCollapsed) header.classList.add('collapsed');
-        
-        const arrow = document.createElement('span');
-        arrow.className = 'category-arrow';
-        arrow.textContent = '▼';
-        
-        const title = document.createElement('span');
-        title.className = 'category-title';
-        title.textContent = category;
-        
-        header.appendChild(arrow);
-        header.appendChild(title);
-        
-        const linksContainer = document.createElement('div');
-        linksContainer.className = 'category-links';
-        linksContainer.style.gridTemplateColumns = `repeat(${perRow}, 1fr)`;
-        if (isCollapsed) linksContainer.classList.add('collapsed');
-        
-        categorized[category].forEach(link => {
-            const a = document.createElement('a');
-            a.href = link.url;
-            a.textContent = link.name;
-            a.target = '_blank';
-            linksContainer.appendChild(a);
-        });
-        
-        header.onclick = () => {
-            header.classList.toggle('collapsed');
-            linksContainer.classList.toggle('collapsed');
-            saveSetting(`category_${category}_collapsed`, header.classList.contains('collapsed'));
-        };
-        
-        categoryDiv.appendChild(header);
-        categoryDiv.appendChild(linksContainer);
-        linksMenu.appendChild(categoryDiv);
-    });
-    
-    // Render uncategorized links
-    if (uncategorized.length > 0) {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'link-category';
-        
-        // Only show header if there are also categorized links
-        if (hasCategories) {
-            const header = document.createElement('div');
-            header.className = 'category-header';
-            const isCollapsed = loadSetting('category_Uncategorized_collapsed', false);
-            if (isCollapsed) header.classList.add('collapsed');
-            
-            const arrow = document.createElement('span');
-            arrow.className = 'category-arrow';
-            arrow.textContent = '▼';
-            
-            const title = document.createElement('span');
-            title.className = 'category-title';
-            title.textContent = 'Uncategorized';
-            
-            header.appendChild(arrow);
-            header.appendChild(title);
-            
-            const linksContainer = document.createElement('div');
-            linksContainer.className = 'category-links';
-            linksContainer.style.gridTemplateColumns = `repeat(${perRow}, 1fr)`;
-            if (isCollapsed) linksContainer.classList.add('collapsed');
-            
-            uncategorized.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url;
-                a.textContent = link.name;
-                a.target = '_blank';
-                linksContainer.appendChild(a);
-            });
-            
-            header.onclick = () => {
-                header.classList.toggle('collapsed');
-                linksContainer.classList.toggle('collapsed');
-                saveSetting('category_Uncategorized_collapsed', header.classList.contains('collapsed'));
-            };
-            
-            categoryDiv.appendChild(header);
-            categoryDiv.appendChild(linksContainer);
-        } else {
-            // No categories at all - just show flat grid like original
-            const linksContainer = document.createElement('div');
-            linksContainer.className = 'category-links';
-            linksContainer.style.gridTemplateColumns = `repeat(${perRow}, 1fr)`;
-            
-            uncategorized.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url;
-                a.textContent = link.name;
-                a.target = '_blank';
-                linksContainer.appendChild(a);
-            });
-            
-            categoryDiv.appendChild(linksContainer);
-        }
-        
-        linksMenu.appendChild(categoryDiv);
+    const hasCats = Object.keys(categorized).length > 0;
+
+    function makeLinksGrid(items) {
+        const grid = document.createElement('div');
+        grid.className = 'category-links'; grid.style.gridTemplateColumns = `repeat(${perRow},1fr)`;
+        items.forEach(link => { const a = document.createElement('a'); a.href=link.url; a.textContent=link.name; a.target='_blank'; grid.appendChild(a); });
+        return grid;
     }
+
+    function makeCategoryHeader(label, collapseKey) {
+        const header = document.createElement('div'); header.className = 'category-header';
+        const isCollapsed = loadSetting(collapseKey, false);
+        if (isCollapsed) header.classList.add('collapsed');
+        const arrow = document.createElement('span'); arrow.className = 'category-arrow'; arrow.textContent = '▼';
+        const title = document.createElement('span'); title.className = 'category-title'; title.textContent = label;
+        header.appendChild(arrow); header.appendChild(title);
+        return { header, isCollapsed };
+    }
+
+    Object.keys(categorized).sort().forEach(cat => {
+        const div = document.createElement('div'); div.className = 'link-category';
+        const { header, isCollapsed } = makeCategoryHeader(cat, `category_${cat}_collapsed`);
+        const grid = makeLinksGrid(categorized[cat]);
+        if (isCollapsed) grid.classList.add('collapsed');
+        header.onclick = () => { header.classList.toggle('collapsed'); grid.classList.toggle('collapsed'); saveSetting(`category_${cat}_collapsed`, header.classList.contains('collapsed')); };
+        div.appendChild(header); div.appendChild(grid); linksMenu.appendChild(div);
+    });
+
+    if (uncategorized.length > 0) {
+        const div = document.createElement('div'); div.className = 'link-category';
+        const grid = makeLinksGrid(uncategorized);
+        if (hasCats) {
+            const { header, isCollapsed } = makeCategoryHeader('Uncategorized', 'category_Uncategorized_collapsed');
+            if (isCollapsed) grid.classList.add('collapsed');
+            header.onclick = () => { header.classList.toggle('collapsed'); grid.classList.toggle('collapsed'); saveSetting('category_Uncategorized_collapsed', header.classList.contains('collapsed')); };
+            div.appendChild(header);
+        }
+        div.appendChild(grid); linksMenu.appendChild(div);
+    }
+    requestAnimationFrame(applyLinkFavicons);
 }
 
 function renderLinksEditor() {
-    // Render link editor in settings
     linksList.innerHTML = '';
     links.forEach((link, i) => {
-        const row = document.createElement('div');
-        row.className = 'link-editor-row';
-        
-        const fields = document.createElement('div');
-        fields.className = 'link-editor-fields';
-        
-        const nameInput = document.createElement('input');
-        nameInput.type = 'text';
-        nameInput.value = link.name;
-        nameInput.placeholder = 'Link Name';
-        
-        const urlInput = document.createElement('input');
-        urlInput.type = 'text';
-        urlInput.value = link.url;
-        urlInput.placeholder = 'URL';
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'X';
-        deleteBtn.onclick = () => {
-            links.splice(i, 1);
-            saveAndRenderLinks();
-        };
-        
-        const categoryInput = document.createElement('input');
-        categoryInput.type = 'text';
-        categoryInput.className = 'category-input';
-        categoryInput.value = link.category || '';
-        categoryInput.placeholder = 'Category (optional)';
-        
-        nameInput.oninput = () => {
-            link.name = nameInput.value;
-            saveSetting('links', links);
-            renderLinksDisplay(); // Only re-render display, not editor
-        };
-        
-        urlInput.oninput = () => {
-            link.url = urlInput.value;
-            saveSetting('links', links);
-            renderLinksDisplay(); // Only re-render display, not editor
-        };
-        
-        categoryInput.oninput = () => {
-            link.category = categoryInput.value;
-            saveSetting('links', links);
-            renderLinksDisplay(); // Only re-render display, not editor
-        };
-        
-        fields.append(nameInput, urlInput, deleteBtn);
-        row.append(fields, categoryInput);
-        linksList.appendChild(row);
+        const row = document.createElement('div'); row.className = 'link-editor-row';
+        const fields = document.createElement('div'); fields.className = 'link-editor-fields';
+        const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.value=link.name; nameInput.placeholder='Link Name';
+        const urlInput = document.createElement('input'); urlInput.type='text'; urlInput.value=link.url; urlInput.placeholder='URL';
+        const delBtn = document.createElement('button'); delBtn.textContent='X';
+        delBtn.onclick = () => { links.splice(i,1); saveAndRenderLinks(); };
+        const catInput = document.createElement('input'); catInput.type='text'; catInput.className='category-input'; catInput.value=link.category||''; catInput.placeholder='Category (optional)';
+        nameInput.oninput = () => { link.name=nameInput.value; saveSetting('links',links); renderLinksDisplay(); };
+        urlInput.oninput = () => { link.url=urlInput.value; saveSetting('links',links); renderLinksDisplay(); };
+        catInput.oninput = () => { link.category=catInput.value; saveSetting('links',links); renderLinksDisplay(); };
+        fields.append(nameInput,urlInput,delBtn); row.append(fields,catInput); linksList.appendChild(row);
     });
 }
 
-function renderLinks() {
+function saveAndRenderLinks() { saveSetting('links',links); renderLinksDisplay(); renderLinksEditor(); }
+document.getElementById('addLinkBtn').onclick = () => { links.push({name:'New Link',url:'https://',category:''}); saveAndRenderLinks(); };
+
+linksPerRowInput.addEventListener('input', () => {
+    saveSetting('linksPerRow', parseInt(linksPerRowInput.value) || numberDefaults.linksPerRowInput);
     renderLinksDisplay();
-    renderLinksEditor();
+});
+
+// ═══ APPLY / LOAD SETTINGS ═══
+
+function debounce(fn, ms) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
 }
-
-function saveAndRenderLinks() {
-    saveSetting('links', links);
-    renderLinks();
-}
-
-addLinkBtn.onclick = () => {
-    links.push({ name: 'New Link', url: 'https://', category: '' });
-    saveAndRenderLinks();
-};
-
-linksPerRowInput.oninput = () => {
-    saveSetting('linksPerRow', parseInt(linksPerRowInput.value));
-    renderLinksDisplay();
-};
 
 function applySettings() {
     const deviceName = deviceNameInput.value || 'Game Console';
@@ -2212,258 +1602,245 @@ function applySettings() {
 
     headerTitle.textContent = `${pageTitle} :: ${deviceName}`;
     statusMessage.textContent = statusMsg;
+    statusMessage.dataset.position = statusPosition.value;
     pagetitle.textContent = pageTitle;
-
+    document.getElementById('startTitle').textContent = startTitleInput.value || 'STANDBY';
+    document.getElementById('startPrompt').textContent = startPromptInput.value || '▶ ENGAGE';
+    document.getElementById('startSubtitle').textContent = startSubtitleInput.value || 'System check in progress...';
     document.querySelector('.stats').style.display = showStats.checked ? 'grid' : 'none';
     document.querySelector('.search-bar').style.display = showSearch.checked ? 'flex' : 'none';
     linksMenu.style.display = showLinks.checked ? 'flex' : 'none';
-    
-    // Handle notes column visibility
-    const notesColumn = document.querySelector('.notes-column');
-    if (notesColumn) {
-        notesColumn.style.display = showNotes.checked ? 'block' : 'none';
-    }
-
-    Object.entries(statToggles).forEach(([k, el]) => {
-        const statElement = document.querySelector(`[data-stat="${k}"]`);
-        if (statElement) {
-            statElement.style.display = el.checked ? 'block' : 'none';
-        }
+    const notesCol = document.querySelector('.notes-column');
+    if (notesCol) notesCol.style.display = showNotes.checked ? 'block' : 'none';
+    Object.entries(statToggles).forEach(([k,el]) => {
+        const s = document.querySelector(`[data-stat="${k}"]`);
+        if (s) s.style.display = el.checked ? 'block' : 'none';
     });
-    
     linksMenu.classList.toggle('bordered', toggleLinkBorders.checked);
     document.body.dataset.theme = themeToggle.checked ? 'light' : 'dark';
     document.body.dataset.transparentFields = toggleTransparentFields.checked ? 'true' : 'false';
-    mainContainer.style.backgroundImage = bgUrl ? `url('${bgUrl}')` : '';
-
-    // Update colors when theme changes
+    if (bgUrl) {
+        mainContainer.style.backgroundImage = `url('${bgUrl}')`;
+        if (bgImageFit.value === 'auto auto') { mainContainer.style.backgroundSize='auto'; mainContainer.style.backgroundRepeat='repeat'; }
+        else { mainContainer.style.backgroundSize=bgImageFit.value; mainContainer.style.backgroundRepeat='no-repeat'; }
+    } else {
+        mainContainer.style.backgroundImage = mainContainer.style.backgroundSize = mainContainer.style.backgroundRepeat = '';
+    }
     updateColors();
 
-    // Save all settings
-    saveSetting('deviceName', deviceName);
-    saveSetting('pageTitle', pageTitle);
-    saveSetting('statusMessage', statusMsg);
-    saveSetting('weatherApiKey', weatherApiKey.value);
-    saveSetting('weatherLocation', weatherLocation.value);
-    saveSetting('theme', document.body.dataset.theme);
-    saveSetting('toggleLinkBorders', toggleLinkBorders.checked);
-    saveSetting('toggleTransparentFields', toggleTransparentFields.checked);
-    saveSetting('showStartScreen', showStartScreen.checked);
-    saveSetting('bgImageUrl', bgUrl);
-    saveSetting('linksPerRow', parseInt(linksPerRowInput.value));
-    saveSetting('showStats', showStats.checked);
-    saveSetting('showSearch', showSearch.checked);
-    saveSetting('showLinks', showLinks.checked);
-    saveSetting('showNotes', showNotes.checked);
-    
-    Object.entries(statToggles).forEach(([k, el]) => {
-        saveSetting(`stat_${k}`, el.checked);
-    });
-    
-    // Save refresh intervals
-    saveSetting('refreshClock', parseInt(refreshClock.value));
-    saveSetting('refreshBattery', parseInt(refreshBattery.value));
-    saveSetting('refreshNetwork', parseInt(refreshNetwork.value));
-    saveSetting('refreshIP', parseInt(refreshIP.value));
-    saveSetting('refreshDownlink', parseInt(refreshDownlink.value));
-    saveSetting('refreshPing', parseInt(refreshPing.value));
-    saveSetting('refreshWeather', parseInt(refreshWeather.value));
+    saveSettingsDebounced(deviceName, pageTitle, statusMsg, bgUrl);
 }
+
+const saveSettingsDebounced = debounce((deviceName, pageTitle, statusMsg, bgUrl) => {
+    const saves = {
+        deviceName, pageTitle, statusMessage:statusMsg, statusPosition:statusPosition.value,
+        startTitle:startTitleInput.value, startPrompt:startPromptInput.value, startSubtitle:startSubtitleInput.value,
+        weatherApiKey:weatherApiKey.value, weatherLocation:weatherLocation.value, pingServer:pingServer.value,
+        theme:document.body.dataset.theme, toggleLinkBorders:toggleLinkBorders.checked,
+        toggleTransparentFields:toggleTransparentFields.checked, showStartScreen:showStartScreen.checked,
+        bgImageUrl:bgUrl, bgImageFit:bgImageFit.value,
+        linksPerRow:parseInt(linksPerRowInput.value)||numberDefaults.linksPerRowInput,
+        faviconMode:faviconMode ? faviconMode.value : 'none',
+        showStats:showStats.checked, showSearch:showSearch.checked, showLinks:showLinks.checked, showNotes:showNotes.checked,
+        clockFormat:clockFormat.value,
+        refreshClock:parseInt(refreshClock.value)||numberDefaults.refreshClock,
+        refreshBattery:parseInt(refreshBattery.value)||numberDefaults.refreshBattery,
+        refreshNetwork:parseInt(refreshNetwork.value)||numberDefaults.refreshNetwork,
+        refreshIP:parseInt(refreshIP.value)||numberDefaults.refreshIP,
+        refreshDownlink:parseInt(refreshDownlink.value)||numberDefaults.refreshDownlink,
+        refreshPing:parseInt(refreshPing.value)||numberDefaults.refreshPing,
+        refreshWeather:parseInt(refreshWeather.value)||numberDefaults.refreshWeather
+    };
+    Object.entries(saves).forEach(([k,v]) => saveSetting(k,v));
+    Object.entries(statToggles).forEach(([k,el]) => saveSetting(`stat_${k}`,el.checked));
+}, 300);
 
 function loadSettings() {
-    deviceNameInput.value = loadSetting('deviceName', '');
-	pageTitleInput.value = loadSetting('pageTitle', '');
-	statusMessageText.value = loadSetting('statusMessage', '');
-    weatherApiKey.value = loadSetting('weatherApiKey', '');
-    weatherLocation.value = loadSetting('weatherLocation', '');
-    bgImageUrl.value = loadSetting('bgImageUrl', '');
-    linksPerRowInput.value = loadSetting('linksPerRow', 2);
-    showStats.checked = loadSetting('showStats', true);
-    showSearch.checked = loadSetting('showSearch', true);
-    showLinks.checked = loadSetting('showLinks', true);
-    showNotes.checked = loadSetting('showNotes', true);
-    themeToggle.checked = loadSetting('theme', 'dark') === 'light';
-    toggleLinkBorders.checked = loadSetting('toggleLinkBorders', false);
-    toggleTransparentFields.checked = loadSetting('toggleTransparentFields', false);
-    showStartScreen.checked = loadSetting('showStartScreen', true);
-    
-    // Load font style
-    fontStyle.value = loadSetting('fontStyle', 'standard');
-    document.body.dataset.font = fontStyle.value;
-    
-    // Load active effects
-    activeEffects = loadSetting('activeEffects', []);
-    applyEffects();
-    renderActiveEffects();
-    
-    // Load effect intensity
-    effectIntensity.value = loadSetting('effectIntensity', 100);
-    applyEffectIntensity();
-    
-    // Load audio settings
-    ambienceType.value = loadSetting('ambienceType', 'none');
-    ambienceVolume.value = loadSetting('ambienceVolume', 30);
-    
-    // Load notes
-    notesTextarea.value = loadSetting('notesContent', '');
-    const notesCollapsed = loadSetting('notesCollapsed', false);
-    if (notesCollapsed) {
-        notesHeader.classList.add('collapsed');
-        notesContent.classList.add('collapsed');
-    }
-    
-    // Set initial height for textarea based on content
-    if (notesTextarea.value) {
-        notesTextarea.style.height = 'auto';
-        notesTextarea.style.height = Math.max(80, notesTextarea.scrollHeight) + 'px';
-    }
-    
-    // Load search engine
-    searchEngine.value = loadSetting('searchEngine', 'google');
-    
-    // Load colors
-    colorDarkBg.value = loadSetting('colorDarkBg', '#070707');
-    colorDarkBgText.value = colorDarkBg.value;
-    colorDarkFg.value = loadSetting('colorDarkFg', '#cfcfcf');
-    colorDarkFgText.value = colorDarkFg.value;
-    colorDarkAccent.value = loadSetting('colorDarkAccent', '#7a7a7a');
-    colorDarkAccentText.value = colorDarkAccent.value;
-    colorDarkDim.value = loadSetting('colorDarkDim', '#444444');
-    colorDarkDimText.value = colorDarkDim.value;
-    colorLightBg.value = loadSetting('colorLightBg', '#f5f5f5');
-    colorLightBgText.value = colorLightBg.value;
-    colorLightFg.value = loadSetting('colorLightFg', '#111111');
-    colorLightFgText.value = colorLightFg.value;
-    colorLightAccent.value = loadSetting('colorLightAccent', '#666666');
-    colorLightAccentText.value = colorLightAccent.value;
-    colorLightDim.value = loadSetting('colorLightDim', '#bbbbbb');
-    colorLightDimText.value = colorLightDim.value;
-    
-    // Load refresh intervals
-    refreshClock.value = loadSetting('refreshClock', 1);
-    refreshBattery.value = loadSetting('refreshBattery', 60);
-    refreshNetwork.value = loadSetting('refreshNetwork', 3);
-    refreshIP.value = loadSetting('refreshIP', 300);
-    refreshDownlink.value = loadSetting('refreshDownlink', 3);
-    refreshPing.value = loadSetting('refreshPing', 30);
-    refreshWeather.value = loadSetting('refreshWeather', 600);
-    
-    Object.entries(statToggles).forEach(([k, el]) => {
-        const defaultValue = (k === 'weather') ? false : true;
-        el.checked = loadSetting(`stat_${k}`, defaultValue);
-    });
+    const g = (k,d) => loadSetting(k,d);
+    deviceNameInput.value = g('deviceName','');
+    pageTitleInput.value = g('pageTitle','');
+    statusMessageText.value = g('statusMessage','');
+    statusPosition.value = g('statusPosition','bottom-left');
+    startTitleInput.value = g('startTitle','');
+    startPromptInput.value = g('startPrompt','');
+    startSubtitleInput.value = g('startSubtitle','');
+    weatherApiKey.value = g('weatherApiKey','');
+    weatherLocation.value = g('weatherLocation','');
+    pingServer.value = g('pingServer','google');
+    bgImageUrl.value = g('bgImageUrl','');
+    bgImageFit.value = g('bgImageFit','cover');
+    const savedPerRow = g('linksPerRow',null);
+    if (savedPerRow !== null) linksPerRowInput.value = savedPerRow;
+    showStats.checked = g('showStats',true); showSearch.checked = g('showSearch',true);
+    showLinks.checked = g('showLinks',true); showNotes.checked = g('showNotes',true);
+    themeToggle.checked = g('theme','dark') === 'light';
+    toggleLinkBorders.checked = g('toggleLinkBorders',false);
+    toggleTransparentFields.checked = g('toggleTransparentFields',false);
+    showStartScreen.checked = g('showStartScreen',false);
+    fontStyle.value = g('fontStyle','system');
+    applyFontStyle(fontStyle.value);
+    if (faviconMode) faviconMode.value = g('faviconMode','none');
+    activeEffects = g('activeEffects',[]); applyEffects(); renderActiveEffects();
+    effectIntensity.value = g('effectIntensity',100); applyEffectIntensity();
+    ambienceType.value = g('ambienceType','none');
+    ambienceVolume.value = g('ambienceVolume',30);
+    notesTextarea.value = g('notesContent','');
+    if (g('notesCollapsed',false)) { notesHeader.classList.add('collapsed'); notesContent.classList.add('collapsed'); }
+    if (notesTextarea.value) { notesTextarea.style.height='auto'; notesTextarea.style.height=Math.max(80,notesTextarea.scrollHeight)+'px'; }
+    searchEngine.value = g('searchEngine','google');
+    if (clockFormat) clockFormat.value = g('clockFormat','12');
+
+    const lc = (p,t,k,d) => { const v=g(k,d); p.value=v; t.value=v; };
+    lc(colorDarkBg,colorDarkBgText,'colorDarkBg','#070707'); lc(colorDarkFg,colorDarkFgText,'colorDarkFg','#cfcfcf');
+    lc(colorDarkAccent,colorDarkAccentText,'colorDarkAccent','#7a7a7a'); lc(colorDarkDim,colorDarkDimText,'colorDarkDim','#444444');
+    lc(colorLightBg,colorLightBgText,'colorLightBg','#f5f5f5'); lc(colorLightFg,colorLightFgText,'colorLightFg','#111111');
+    lc(colorLightAccent,colorLightAccentText,'colorLightAccent','#666666'); lc(colorLightDim,colorLightDimText,'colorLightDim','#bbbbbb');
+
+    [['refreshClock','refreshClock'],['refreshBattery','refreshBattery'],['refreshNetwork','refreshNetwork'],
+     ['refreshIP','refreshIP'],['refreshDownlink','refreshDownlink'],['refreshPing','refreshPing'],['refreshWeather','refreshWeather']
+    ].forEach(([el,k]) => { const v=g(k,null); if(v!==null) document.getElementById(el).value=v; });
+    Object.entries(statToggles).forEach(([k,el]) => { el.checked = g(`stat_${k}`, k !== 'weather'); });
 }
 
-// Attach event listeners
-[deviceNameInput, pageTitleInput, statusMessageText, weatherApiKey, weatherLocation, 
- bgImageUrl, linksPerRowInput, showStats, showSearch, showLinks, showNotes, themeToggle, 
- toggleLinkBorders, toggleTransparentFields, showStartScreen, ...Object.values(statToggles),
- refreshClock, refreshBattery, refreshNetwork, refreshIP, refreshDownlink, refreshPing, refreshWeather].forEach(el => {
-    el.oninput = applySettings;
-    if (el.type === 'checkbox') {
-        el.onchange = applySettings;
-    }
+// Event listeners for settings
+[deviceNameInput,pageTitleInput,statusMessageText,statusPosition,startTitleInput,startPromptInput,startSubtitleInput,
+ weatherApiKey,weatherLocation,pingServer,bgImageUrl,bgImageFit,showStats,showSearch,showLinks,showNotes,themeToggle,
+ toggleLinkBorders,toggleTransparentFields,showStartScreen,...Object.values(statToggles),
+ clockFormat,faviconMode,refreshClock,refreshBattery,refreshNetwork,refreshIP,refreshDownlink,refreshPing,refreshWeather
+].forEach(el => {
+    if (!el) return;
+    el.addEventListener('input', applySettings);
+    if (el.type === 'checkbox' || el.tagName === 'SELECT') el.addEventListener('change', applySettings);
 });
 
-// Reset button handler (with shift+click bypass for sandbox)
-if (resetSettingsBtn) {
-    resetSettingsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        
-        // Shift+click bypasses confirmation (for sandbox/testing)
-        if (e.shiftKey) {
-            localStorage.clear();
-            window.location.replace(window.location.href.split('?')[0]);
-            return;
-        }
-        
-        // Normal confirmation
-        const confirmReset = confirm('⚠️ This will reset ALL settings to default and reload the page. Continue?');
-        if (confirmReset) {
-            try {
-                localStorage.clear();
-                window.location.replace(window.location.href.split('?')[0]);
-            } catch (err) {
-                alert('Failed to reset settings. Please try again.');
-            }
+// ═══ RESET SETTINGS MODAL ═══
+const RESET_KEYS = {
+    general: ['deviceName','pageTitle','statusMessage','statusPosition','clockFormat',
+              'searchEngine','ambienceType','ambienceVolume',
+              'startTitle','startPrompt','startSubtitle'],
+    display:  ['fontStyle','faviconMode','bgImageUrl','bgImageFit','theme','toggleLinkBorders','toggleTransparentFields',
+               'showStartScreen','activeEffects','effectIntensity',
+               'showStats','showSearch','showLinks','showNotes',
+               'stat_time','stat_battery','stat_network','stat_ip','stat_dl','stat_weather','stat_ping',
+               'colorDarkBg','colorDarkFg','colorDarkAccent','colorDarkDim',
+               'colorLightBg','colorLightFg','colorLightAccent','colorLightDim'],
+    links:    ['links','linksPerRow'],
+    advanced: ['weatherApiKey','weatherLocation','pingServer',
+               'refreshClock','refreshBattery','refreshNetwork','refreshIP',
+               'refreshDownlink','refreshPing','refreshWeather'],
+    notes:    ['notesContent','notesCollapsed'],
+    themes:   ['userThemes']
+};
+
+const resetModal = document.getElementById('resetModal');
+const resetCancelBtn = document.getElementById('resetCancelBtn');
+const resetConfirmBtn = document.getElementById('resetConfirmBtn');
+
+resetCancelBtn.onclick = (e) => {
+    e.stopPropagation(); resetModal.style.display = 'none';
+    ['resetGeneral','resetDisplay','resetLinks','resetAdvanced','resetNotes','resetThemes'].forEach(id => { document.getElementById(id).checked = false; });
+};
+
+resetConfirmBtn.onclick = (e) => {
+    e.stopPropagation();
+    const map = { resetGeneral:'general', resetDisplay:'display', resetLinks:'links', resetAdvanced:'advanced', resetNotes:'notes', resetThemes:'themes' };
+    Object.entries(map).forEach(([checkId, category]) => {
+        if (document.getElementById(checkId).checked) {
+            RESET_KEYS[category].forEach(k => localStorage.removeItem(k));
         }
     });
-}
+    window.location.reload();
+};
 
-// Initialize
+document.getElementById('resetModal').querySelector('div').addEventListener('click', e => e.stopPropagation());
+document.getElementById('resetSettings').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (e.shiftKey) { localStorage.clear(); window.location.replace(window.location.href.split('?')[0]); return; }
+    resetModal.style.display = 'flex';
+});
+resetModal.addEventListener('click', (e) => { if (e.target === resetModal) resetCancelBtn.click(); });
+eraseModal.addEventListener('click', (e) => { if (e.target === eraseModal) eraseCancelBtn.click(); });
+
+// ═══ INITIALISE ═══
 loadSettings();
-renderLinks();
+renderLinksDisplay();
+renderLinksEditor();
 applySettings();
+applyFavicons();
 renderThemes();
-
-// Set current search engine to default on load
 currentSearchEngine.value = searchEngine.value;
 updateSearchEngine(searchEngine.value);
+initDebugUnlock();
 
-// Start Screen Handler
+// Debug → open settings shortcut
+document.getElementById('debugOpenSettings').addEventListener('click', (e) => {
+    e.stopPropagation();
+    debugMenu.classList.remove('active');
+    document.body.dataset.debugActive = 'false';
+    const statusMsg = document.getElementById('statusMessage');
+    statusMsg.style.color = '';
+    statusMsg.style.textShadow = '';
+    statusMsg.textContent = statusMessageText.value || 'Ready';
+    settingsMenu.style.display = 'flex';
+});
+
+const debugEraseStyle = document.getElementById('debugEraseStyle');
+const debugAlarmType = document.getElementById('debugAlarmType');
+if (debugEraseStyle) { debugEraseStyle.value = loadSetting('debugEraseStyle','normal'); debugEraseStyle.onchange = () => saveSetting('debugEraseStyle', debugEraseStyle.value); }
+if (debugAlarmType) { debugAlarmType.value = loadSetting('debugAlarmType','normal'); debugAlarmType.onchange = () => saveSetting('debugAlarmType', debugAlarmType.value); }
+
+// Danger color picker
+const debugDangerColorPicker = document.getElementById('debugDangerColor');
+const debugDangerColorText = document.getElementById('debugDangerColorText');
+const debugDangerColorReset = document.getElementById('debugDangerColorReset');
+if (debugDangerColorPicker) {
+    const savedDanger = loadSetting('debugDangerColor', '#d32f2f');
+    debugDangerColorPicker.value = savedDanger;
+    debugDangerColorText.value = savedDanger;
+    applyDangerColor(savedDanger);
+
+    debugDangerColorPicker.oninput = () => {
+        debugDangerColorText.value = debugDangerColorPicker.value;
+        applyDangerColor(debugDangerColorPicker.value);
+    };
+    debugDangerColorText.oninput = () => {
+        if (/^#[0-9A-Fa-f]{6}$/.test(debugDangerColorText.value)) {
+            debugDangerColorPicker.value = debugDangerColorText.value;
+            applyDangerColor(debugDangerColorText.value);
+        }
+    };
+    debugDangerColorReset.onclick = (e) => {
+        e.stopPropagation();
+        debugDangerColorPicker.value = '#d32f2f';
+        debugDangerColorText.value = '#d32f2f';
+        applyDangerColor('#d32f2f');
+    };
+}
+
+// ═══ START SCREEN ═══
 const startScreen = document.getElementById('startScreen');
-
-function enterSystem() {
-    // Start ambience if configured
-    if (ambienceType.value && ambienceType.value !== 'none') {
-        startAmbience(ambienceType.value);
-    }
-    
-    // Hide start screen
-    startScreen.classList.add('hidden');
-}
-
-// Listen for any interaction on start screen
+function enterSystem() { unlockAudio(); startScreen.classList.add('hidden'); }
 startScreen.addEventListener('click', enterSystem);
-startScreen.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') {
-        enterSystem();
-    }
-});
 startScreen.addEventListener('touchstart', enterSystem);
+if (!showStartScreen.checked) startScreen.classList.add('hidden');
 
-// Check if start screen should be shown based on setting
-if (!showStartScreen.checked) {
-    startScreen.classList.add('hidden');
-    // Still start ambience if configured
-    if (ambienceType.value && ambienceType.value !== 'none') {
-        setTimeout(() => {
-            startAmbience(ambienceType.value);
-        }, 300);
-    }
-}
+// ═══ STATUS UPDATES & INTERVALS ═══
+updateClock(); updateBattery(); updateNetwork(); updateDownlink(); updateIP(); updatePing(); updateWeather();
 
-// Start status updates
-updateClock();
-updateBattery();
-updateNetwork();
-updateDownlink();
-updateIP();
-updatePing();
-updateWeather();
-
-// Setup intervals with configurable refresh rates
 let intervals = {};
-
 function setupIntervals() {
-    // Clear existing intervals
     Object.values(intervals).forEach(id => clearInterval(id));
-    
-    // Setup new intervals with current settings
-    intervals.clock = setInterval(updateClock, parseInt(refreshClock.value) * 1000);
-    intervals.battery = setInterval(updateBattery, parseInt(refreshBattery.value) * 1000);
-    intervals.network = setInterval(updateNetwork, parseInt(refreshNetwork.value) * 1000);
-    intervals.ip = setInterval(updateIP, parseInt(refreshIP.value) * 1000);
-    intervals.downlink = setInterval(updateDownlink, parseInt(refreshDownlink.value) * 1000);
-    intervals.ping = setInterval(updatePing, parseInt(refreshPing.value) * 1000);
-    intervals.weather = setInterval(updateWeather, parseInt(refreshWeather.value) * 1000);
+    const gi = (el, d) => { const v = parseInt(el.value); return (isNaN(v)||v===0?d:v)*1000; };
+    intervals.clock    = setInterval(updateClock,    gi(refreshClock,    numberDefaults.refreshClock));
+    intervals.battery  = setInterval(updateBattery,  gi(refreshBattery,  numberDefaults.refreshBattery));
+    intervals.network  = setInterval(updateNetwork,  gi(refreshNetwork,  numberDefaults.refreshNetwork));
+    intervals.ip       = setInterval(updateIP,       gi(refreshIP,       numberDefaults.refreshIP));
+    intervals.downlink = setInterval(updateDownlink, gi(refreshDownlink, numberDefaults.refreshDownlink));
+    intervals.ping     = setInterval(updatePing,     gi(refreshPing,     numberDefaults.refreshPing));
+    intervals.weather  = setInterval(updateWeather,  gi(refreshWeather,  numberDefaults.refreshWeather));
 }
 
-// Add listeners to refresh interval inputs to restart intervals when changed
-[refreshClock, refreshBattery, refreshNetwork, refreshIP, refreshDownlink, refreshPing, refreshWeather].forEach(el => {
-    el.addEventListener('change', setupIntervals);
-});
-
+[refreshClock,refreshBattery,refreshNetwork,refreshIP,refreshDownlink,refreshPing,refreshWeather].forEach(el => el.addEventListener('change', setupIntervals));
 setupIntervals();
 </script>
 </body>
