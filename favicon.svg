@@ -1,20 +1,8 @@
 <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <style>
-      @keyframes pulse-danger { 0%, 100% { fill: #cc2222; } 50% { fill: #ff4444; } }
-      @keyframes pulse-power { 0%, 100% { fill: #c8a84b; } 50% { fill: #ffd966; } }
-      @keyframes flicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 24%, 55% { opacity: 0.3; } }
-      .danger { animation: pulse-danger 1.5s ease-in-out infinite; }
-      .power { animation: pulse-power 2s ease-in-out infinite; }
-      .flicker { animation: flicker 3s ease-in-out infinite; }
-    </style>
     <linearGradient id="steel" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="glow-amber" x1="50%" y1="0%" x2="50%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffd966;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#c8a84b;stop-opacity:0.3" />
     </linearGradient>
   </defs>
 
@@ -29,25 +17,25 @@
   <rect x="48" y="48" width="160" height="12" rx="6" fill="none" stroke="#cc2222" stroke-width="2" opacity="0.7"/>
   <line x1="48" y1="60" x2="208" y2="60" stroke="#cc2222" stroke-width="1" opacity="0.4"/>
   
-  <!-- Core symbol: POWER CORE (hazard-ish) -->
+  <!-- Core symbol: POWER CORE -->
   <!-- Outer power ring -->
-  <circle cx="128" cy="128" r="52" fill="none" stroke="url(#glow-amber)" stroke-width="2" class="power" opacity="0.8"/>
+  <circle cx="128" cy="128" r="52" fill="none" stroke="#c8a84b" stroke-width="2" opacity="0.7"/>
   
   <!-- Inner technical cross (sysadmin/power symbol) -->
-  <g stroke="#c8a84b" stroke-width="3" stroke-linecap="round">
-    <line x1="128" y1="90" x2="128" y2="110" class="power"/>
-    <line x1="128" y1="146" x2="128" y2="166" class="power"/>
-    <line x1="90" y1="128" x2="110" y2="128" class="power"/>
-    <line x1="146" y1="128" x2="166" y2="128" class="power"/>
+  <g stroke="#c8a84b" stroke-width="3" stroke-linecap="round" opacity="0.8">
+    <line x1="128" y1="90" x2="128" y2="110"/>
+    <line x1="128" y1="146" x2="128" y2="166"/>
+    <line x1="90" y1="128" x2="110" y2="128"/>
+    <line x1="146" y1="128" x2="166" y2="128"/>
   </g>
   
   <!-- Center danger node -->
-  <circle cx="128" cy="128" r="18" fill="#cc2222" class="danger" opacity="0.8"/>
+  <circle cx="128" cy="128" r="18" fill="#cc2222" opacity="0.9"/>
   <circle cx="128" cy="128" r="14" fill="#ff4444" opacity="0.5"/>
   <circle cx="128" cy="128" r="10" fill="#080808"/>
   
   <!-- Inner status LED (warning) -->
-  <circle cx="128" cy="128" r="6" fill="#c8a84b" class="power"/>
+  <circle cx="128" cy="128" r="6" fill="#c8a84b"/>
   
   <!-- Corner threat indicators: sharp tech markers -->
   <!-- Top-left: System hazard -->
@@ -57,7 +45,7 @@
   </g>
   
   <!-- Top-right: Debug active -->
-  <g opacity="0.6" class="flicker">
+  <g opacity="0.8">
     <circle cx="190" cy="64" r="4" fill="#39ff14"/>
     <circle cx="190" cy="64" r="6" fill="none" stroke="#39ff14" stroke-width="1"/>
   </g>
