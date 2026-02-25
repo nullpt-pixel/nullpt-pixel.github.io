@@ -1,89 +1,43 @@
-<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="steel" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
-    </linearGradient>
+    <radialGradient id="amber-glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#ffd966;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#c8a84b;stop-opacity:0.2" />
+    </radialGradient>
   </defs>
 
-  <!-- Background: dark industrial -->
-  <rect width="256" height="256" fill="url(#steel)"/>
+  <!-- Monitor frame -->
+  <rect x="8" y="8" width="48" height="38" rx="3" fill="#1a1a1a" stroke="#3a3530" stroke-width="2"/>
   
-  <!-- Center panel: power chamber -->
-  <rect x="48" y="48" width="160" height="160" rx="8" fill="#0f0f0f" stroke="#3a3530" stroke-width="3"/>
-  <rect x="52" y="52" width="152" height="152" rx="6" fill="#1a1a1a" stroke="#2a2820" stroke-width="1" opacity="0.6"/>
+  <!-- Screen bezel -->
+  <rect x="12" y="12" width="40" height="30" rx="2" fill="#080808" stroke="#2a2820" stroke-width="1"/>
   
-  <!-- Top danger stripe -->
-  <rect x="48" y="48" width="160" height="12" rx="6" fill="none" stroke="#cc2222" stroke-width="2" opacity="0.7"/>
-  <line x1="48" y1="60" x2="208" y2="60" stroke="#cc2222" stroke-width="1" opacity="0.4"/>
+  <!-- Screen glow (amber) -->
+  <rect x="14" y="14" width="36" height="26" rx="1" fill="url(#amber-glow)"/>
   
-  <!-- Core symbol: POWER CORE -->
-  <!-- Outer power ring -->
-  <circle cx="128" cy="128" r="52" fill="none" stroke="#c8a84b" stroke-width="2" opacity="0.7"/>
-  
-  <!-- Inner technical cross (sysadmin/power symbol) -->
-  <g stroke="#c8a84b" stroke-width="3" stroke-linecap="round" opacity="0.8">
-    <line x1="128" y1="90" x2="128" y2="110"/>
-    <line x1="128" y1="146" x2="128" y2="166"/>
-    <line x1="90" y1="128" x2="110" y2="128"/>
-    <line x1="146" y1="128" x2="166" y2="128"/>
+  <!-- Scanlines -->
+  <g opacity="0.25">
+    <line x1="14" y1="16" x2="50" y2="16" stroke="#c8a84b" stroke-width="0.5"/>
+    <line x1="14" y1="20" x2="50" y2="20" stroke="#c8a84b" stroke-width="0.5"/>
+    <line x1="14" y1="24" x2="50" y2="24" stroke="#c8a84b" stroke-width="0.5"/>
+    <line x1="14" y1="28" x2="50" y2="28" stroke="#c8a84b" stroke-width="0.5"/>
+    <line x1="14" y1="32" x2="50" y2="32" stroke="#c8a84b" stroke-width="0.5"/>
+    <line x1="14" y1="36" x2="50" y2="36" stroke="#c8a84b" stroke-width="0.5"/>
   </g>
   
-  <!-- Center danger node -->
-  <circle cx="128" cy="128" r="18" fill="#cc2222" opacity="0.9"/>
-  <circle cx="128" cy="128" r="14" fill="#ff4444" opacity="0.5"/>
-  <circle cx="128" cy="128" r="10" fill="#080808"/>
-  
-  <!-- Inner status LED (warning) -->
-  <circle cx="128" cy="128" r="6" fill="#c8a84b"/>
-  
-  <!-- Corner threat indicators: sharp tech markers -->
-  <!-- Top-left: System hazard -->
-  <g opacity="0.6">
-    <rect x="58" y="58" width="12" height="12" fill="none" stroke="#cc2222" stroke-width="1.5"/>
-    <line x1="62" y1="62" x2="66" y2="66" stroke="#cc2222" stroke-width="1"/>
+  <!-- Center power cross (sysadmin) -->
+  <g stroke="#c8a84b" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+    <line x1="32" y1="18" x2="32" y2="24"/>
+    <line x1="32" y1="32" x2="32" y2="38"/>
+    <line x1="26" y1="28" x2="32" y2="28"/>
+    <line x1="32" y1="28" x2="38" y2="28"/>
   </g>
   
-  <!-- Top-right: Debug active -->
-  <g opacity="0.8">
-    <circle cx="190" cy="64" r="4" fill="#39ff14"/>
-    <circle cx="190" cy="64" r="6" fill="none" stroke="#39ff14" stroke-width="1"/>
-  </g>
+  <!-- Monitor stand -->
+  <rect x="24" y="46" width="16" height="3" rx="1" fill="#2a2820"/>
+  <rect x="18" y="49" width="28" height="5" rx="2" fill="#1a1a1a" stroke="#3a3530" stroke-width="1"/>
   
-  <!-- Bottom-left: Temperature -->
-  <g opacity="0.6">
-    <line x1="58" y1="192" x2="58" y2="198" stroke="#ff8c00" stroke-width="2"/>
-    <line x1="62" y1="192" x2="62" y2="198" stroke="#ff8c00" stroke-width="2"/>
-    <line x1="66" y1="192" x2="66" y2="200" stroke="#ff8c00" stroke-width="2"/>
-  </g>
-  
-  <!-- Bottom-right: Network (disconnected) -->
-  <g opacity="0.6">
-    <circle cx="193" cy="194" r="3" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
-    <line x1="186" y1="187" x2="190" y2="191" stroke="#00e5ff" stroke-width="1"/>
-    <line x1="200" y1="187" x2="196" y2="191" stroke="#00e5ff" stroke-width="1"/>
-    <line x1="193" y1="203" x2="193" y2="207" stroke="#00e5ff" stroke-width="1"/>
-  </g>
-
-  <!-- Bottom stripe: power status -->
-  <rect x="48" y="200" width="160" height="8" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.5"/>
-  <rect x="52" y="202" width="152" height="4" fill="#0a0a0a"/>
-  <!-- Power bar segments (retro indicator) -->
-  <rect x="56" y="203" width="8" height="2" fill="#c8a84b"/>
-  <rect x="70" y="203" width="8" height="2" fill="#c8a84b"/>
-  <rect x="84" y="203" width="8" height="2" fill="#c8a84b"/>
-  <rect x="98" y="203" width="8" height="2" fill="#c8a84b"/>
-  <rect x="112" y="203" width="8" height="2" fill="#c8a84b" opacity="0.6"/>
-  <rect x="126" y="203" width="8" height="2" fill="#8b6914" opacity="0.4"/>
-  
-  <!-- Scanline overlay effect -->
-  <defs>
-    <pattern id="scanlines" x="0" y="0" width="256" height="4" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="256" y2="0" stroke="rgba(0,0,0,0.1)" stroke-width="2"/>
-    </pattern>
-  </defs>
-  <rect width="256" height="256" fill="url(#scanlines)" pointer-events="none"/>
-  
-  <!-- Border vignette -->
-  <rect width="256" height="256" fill="none" stroke="#000000" stroke-width="2" opacity="0.4" rx="4"/>
+  <!-- Power LED (amber) -->
+  <circle cx="14" cy="45" r="2" fill="#c8a84b" opacity="0.9"/>
+  <circle cx="14" cy="45" r="3.5" fill="#c8a84b" opacity="0.3"/>
 </svg>
