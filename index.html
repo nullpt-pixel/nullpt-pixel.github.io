@@ -319,7 +319,7 @@ body::after {
   text-shadow: 0 0 6px var(--glow-strong);
 }
 .stat-val.ok { color: var(--ok); text-shadow: 0 0 6px rgba(74,153,68,0.4); }
-.stat-val.warn { color: var(--warn); }
+.stat-val.warn { color: #c8a84b !important; }
 .stat-val.danger { color: var(--danger); text-shadow: 0 0 6px rgba(204,34,34,0.4); }
 .stat-refresh {
   position: absolute; top: 2px; right: 3px;
@@ -506,9 +506,13 @@ body::after {
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--danger); box-shadow: 0 0 6px var(--danger);
   animation: rec-blink 1s steps(1) infinite;
+  -webkit-animation: rec-blink 1s steps(1) infinite;
   flex-shrink: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 @keyframes rec-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+@-webkit-keyframes rec-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 .rec-label {
   font-family: var(--font-display); font-size: 9px;
   letter-spacing: 0.2em; color: var(--danger);
@@ -664,7 +668,39 @@ input[type="number"]:focus, input[type="password"]:focus {
 }
 input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--dim); background: none; cursor: pointer; padding: 1px; }
 input[type="range"] { accent-color: var(--accent); }
-input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  border-radius: 2px;
+  background: var(--bg2);
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: -2px;
+  transition: 0.1s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+}
+input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: var(--bg);
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1;
+}
+input[type="checkbox"]:active {
+  box-shadow: 0 0 8px var(--glow-strong);
+}
 #settings-footer {
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 14px;
@@ -1042,7 +1078,6 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
     <div class="stat-cell" id="stat-net-cell">
       <span class="stat-label">NET</span>
       <span class="stat-val" id="stat-net">--</span>
-      <button class="stat-refresh" onclick="refreshStat('net',this)" title="Refresh">↻</button>
     </div>
     <div class="stat-cell" id="stat-dl-cell">
       <span class="stat-label">DL</span>
@@ -1148,7 +1183,6 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
       <div class="stab active" data-tab="display" onclick="switchSettingsTab('display')" role="tab">DISPLAY</div>
       <div class="stab" data-tab="stats" onclick="switchSettingsTab('stats')" role="tab">STATS</div>
       <div class="stab" data-tab="media" onclick="switchSettingsTab('media')" role="tab">MEDIA</div>
-      <div class="stab" data-tab="weather" onclick="switchSettingsTab('weather')" role="tab">WEATHER</div>
       <div class="stab" data-tab="advanced" onclick="switchSettingsTab('advanced')" role="tab">ADVANCED</div>
     </div>
     <div id="settings-body">
@@ -1288,23 +1322,7 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
         <div class="sform-row"><label class="sform-label">IP Address</label><input type="number" id="s-refresh-ip" min="30" max="600" value="60" style="width:70px"></div>
         <div class="sform-row"><label class="sform-label">Ping</label><input type="number" id="s-refresh-ping" min="5" max="120" value="10" style="width:70px"></div>
         <div class="sform-row"><label class="sform-label">Weather</label><input type="number" id="s-refresh-weather" min="60" max="3600" value="600" style="width:70px"></div>
-      </div>
-
-      <!-- MEDIA TAB -->
-      <div class="tab-pane" id="tab-media">
-        <div class="sform-section-title">BACKGROUND MUSIC</div>
-        <div class="sform-row"><label class="sform-label">Audio URL</label></div>
-        <div style="margin-bottom:8px"><input type="url" id="s-music-url" style="width:100%" placeholder="https://archive.org/...mp3"></div>
-        <div class="sform-row"><label class="sform-label">Autoplay</label><input type="checkbox" id="s-music-autoplay"></div>
-        <div class="sform-row"><label class="sform-label">Loop</label><input type="checkbox" id="s-music-loop" checked></div>
-        <div class="sform-row">
-          <label class="sform-label">Volume <span class="sform-sublabel" id="s-music-vol-val">70%</span></label>
-          <input type="range" id="s-music-vol" min="0" max="100" step="1" value="70" oninput="document.getElementById('s-music-vol-val').textContent=this.value+'%'" style="width:120px">
-        </div>
-      </div>
-
-      <!-- WEATHER TAB -->
-      <div class="tab-pane" id="tab-weather">
+        <hr class="sform-sep">
         <div class="sform-section-title">OPENWEATHERMAP</div>
         <div style="margin-bottom:8px;font-family:var(--font-mono);font-size:10px;color:var(--dim)">
           Requires free API key from openweathermap.org
@@ -1320,6 +1338,27 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
         </div>
         <div style="margin-top:10px">
           <button class="btn btn-ghost" onclick="refreshStat('weather',document.querySelector('#weather-cell .stat-refresh'))">TEST WEATHER</button>
+        </div>
+      </div>
+
+      <!-- MEDIA TAB -->
+      <div class="tab-pane" id="tab-media">
+        <div class="sform-section-title">BACKGROUND MUSIC</div>
+        <div class="sform-row"><label class="sform-label">Audio URL</label></div>
+        <div style="margin-bottom:8px"><input type="url" id="s-music-url" style="width:100%" placeholder="https://archive.org/...mp3"></div>
+        <div class="sform-row"><label class="sform-label">Autoplay</label><input type="checkbox" id="s-music-autoplay"></div>
+        <div class="sform-row"><label class="sform-label">Loop</label><input type="checkbox" id="s-music-loop" checked></div>
+        <div class="sform-row">
+          <label class="sform-label">Volume <span class="sform-sublabel" id="s-music-vol-val">70%</span></label>
+          <input type="range" id="s-music-vol" min="0" max="100" step="1" value="70" oninput="document.getElementById('s-music-vol-val').textContent=this.value+'%'" style="width:120px">
+        </div>
+        <hr class="sform-sep">
+        <div class="sform-section-title">SEARCH</div>
+        <div class="sform-row"><label class="sform-label">Open Search In</label>
+          <select id="s-search-target" style="width:120px">
+            <option value="new">New Tab</option>
+            <option value="same">Current Tab</option>
+          </select>
         </div>
       </div>
 
@@ -1339,10 +1378,12 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
         <hr class="sform-sep">
         <div class="sform-section-title">RESET DEFAULTS</div>
         <div style="margin-bottom:8px;font-family:var(--font-mono);font-size:10px;color:var(--dim)">Select settings categories to reset:</div>
-        <div class="sform-row"><label class="sform-label">Display/Theme</label><input type="checkbox" id="r-display"></div>
-        <div class="sform-row"><label class="sform-label">Stats/Refresh</label><input type="checkbox" id="r-stats"></div>
-        <div class="sform-row"><label class="sform-label">Media</label><input type="checkbox" id="r-media"></div>
-        <div class="sform-row"><label class="sform-label">Links/Notes</label><input type="checkbox" id="r-data"></div>
+        <div class="sform-row"><label class="sform-label">1. Display</label><input type="checkbox" id="r-display"></div>
+        <div class="sform-row"><label class="sform-label">2. Stats</label><input type="checkbox" id="r-stats"></div>
+        <div class="sform-row"><label class="sform-label">3. Media</label><input type="checkbox" id="r-media"></div>
+        <div class="sform-row"><label class="sform-label">4. Advanced</label><input type="checkbox" id="r-advanced"></div>
+        <div class="sform-row"><label class="sform-label">5. Links</label><input type="checkbox" id="r-links"></div>
+        <div class="sform-row"><label class="sform-label">6. Notes</label><input type="checkbox" id="r-notes"></div>
         <button class="btn btn-ghost" onclick="resetSelected()" style="margin-top:4px">RESET SELECTED</button>
         <hr class="sform-sep">
         <div class="sform-section-title" style="color:var(--danger)">DANGER ZONE</div>
@@ -1456,7 +1497,8 @@ input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px;
       <div id="nuke-preset-desc" style="font-size:10px;color:#664444;line-height:1.8;font-family:var(--font-mono);margin-bottom:16px"></div>
       <div class="debug-section-title">CUSTOM SIREN AUDIO</div>
       <div style="font-size:10px;color:#664444;margin-bottom:6px;font-family:var(--font-mono)">URL override for alarm sound. Leave blank to use synthesized siren.</div>
-      <input type="url" id="s-siren-url" style="width:100%;background:#0a0000;border:1px solid #4a0000;color:#cc4444;font-family:var(--font-mono);font-size:11px;padding:4px 6px;outline:none" placeholder="https://... .mp3" oninput="localStorage.setItem('settings:sirenUrl',this.value)">
+      <input type="url" id="s-siren-url" style="width:100%;background:#0a0000;border:1px solid #4a0000;color:#cc4444;font-family:var(--font-mono);font-size:11px;padding:4px 6px;outline:none;margin-bottom:8px" placeholder="https://... .mp3">
+      <button id="debug-save-btn" class="btn btn-ghost" style="font-size:11px" onclick="saveDebugSettings()">💾 SAVE / APPLY</button>
     </div>
   </div>
 </div>
@@ -1482,15 +1524,21 @@ const RESET_KEYS = {
     'settings:show:dl','settings:show:ping','settings:show:ip','settings:show:weather',
     'settings:24hr','settings:pingServer',
     'settings:refresh:battery','settings:refresh:net',
-    'settings:refresh:ip','settings:refresh:ping','settings:refresh:weather'
+    'settings:refresh:ip','settings:refresh:ping','settings:refresh:weather',
+    'settings:weatherKey','settings:weatherCity','settings:weatherUnits'
   ],
-  behavior: [],
   media: [
     'settings:musicUrl','settings:musicAutoplay',
-    'settings:musicLoop','settings:musicVol','settings:sirenUrl'
+    'settings:musicLoop','settings:musicVol','settings:searchTarget'
   ],
-  data: [
-    'notes:content','settings:links'
+  advanced: [
+    'settings:sirenUrl'
+  ],
+  links: [
+    'settings:links'
+  ],
+  notes: [
+    'notes:content'
   ]
 };
 
@@ -1531,6 +1579,7 @@ const DEFAULTS = {
   'settings:musicAutoplay': 'false',
   'settings:musicLoop': 'true',
   'settings:musicVol': '70',
+  'settings:searchTarget': 'new',
   'settings:weatherKey': '',
   'settings:weatherCity': '',
   'settings:weatherUnits': 'imperial',
@@ -1564,6 +1613,7 @@ let errorLog = [];
 let nukePreset = 'default';
 let debugUnlocked = false;
 let longPressTimer = null;
+let lastPingRefresh = 0;
 let bgAudio = document.getElementById('bg-audio');
 let sirenAudio = document.getElementById('siren-audio');
 let nukeAudioPlaying = false;
@@ -1587,10 +1637,6 @@ function loadSettings() {
   // Theme
   const theme = get('settings:theme');
   applyTheme(theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme);
-
-  // Accent
-  const accent = get('settings:accent');
-  document.documentElement.setAttribute('data-accent', accent || 'amber');
 
   // Device name
   const deviceName = get('settings:deviceName');
@@ -1627,12 +1673,17 @@ function loadSettings() {
   const bgDim = parseFloat(get('settings:bgDim') || '0.85');
   applyBackground(bgUrl, bgFit, bgDim);
 
-  // Custom colors
-  if (get('settings:customColors') === 'true') {
+  // Custom colors - MUST come before preset accent to avoid specificity override
+  const customColorsEnabled = get('settings:customColors') === 'true';
+  if (customColorsEnabled) {
     applyCustomColors(
       get('settings:colorFg'), get('settings:colorBg'),
       get('settings:colorAccent'), get('settings:colorDim')
     );
+  } else {
+    // Only apply preset accent if NOT using custom colors
+    const accent = get('settings:accent');
+    document.documentElement.setAttribute('data-accent', accent || 'amber');
   }
 
   // Stat visibility
@@ -1658,6 +1709,11 @@ function loadSettings() {
     document.getElementById('music-title').textContent = name || musicUrl;
     if (musicAutoplay) bgAudio.play().catch(() => {});
   }
+
+  // Search
+  const searchTarget = get('settings:searchTarget') || 'new';
+  const searchTargetSelect = document.getElementById('s-search-target');
+  if (searchTargetSelect) searchTargetSelect.value = searchTarget;
 
   // Siren
   const sirenUrl = get('settings:sirenUrl') || '';
@@ -1717,6 +1773,7 @@ function saveSettings() {
   set('settings:musicAutoplay', document.getElementById('s-music-autoplay').checked ? 'true' : 'false');
   set('settings:musicLoop', document.getElementById('s-music-loop').checked ? 'true' : 'false');
   set('settings:musicVol', document.getElementById('s-music-vol').value);
+  set('settings:searchTarget', document.getElementById('s-search-target').value);
   set('settings:weatherKey', document.getElementById('s-weather-key').value);
   set('settings:weatherCity', document.getElementById('s-weather-city').value);
   set('settings:weatherUnits', document.getElementById('s-weather-units').value);
@@ -1934,10 +1991,37 @@ function applyBgDim(val) {
 
 function applyCustomColors(fg, bg, accent, dim) {
   const r = document.documentElement;
-  if (fg) r.style.setProperty('--fg', fg);
-  if (bg) { r.style.setProperty('--bg', bg); r.style.setProperty('--bg2', bg); }
-  if (accent) { r.style.setProperty('--accent', accent); }
-  if (dim) r.style.setProperty('--dim', dim);
+  if (fg) r.style.setProperty('--fg', fg, 'important');
+  if (bg) {
+    r.style.setProperty('--bg', bg, 'important');
+    r.style.setProperty('--bg2', bg, 'important');
+  }
+  if (accent) {
+    r.style.setProperty('--accent', accent, 'important');
+    // Derive --accent2 (darker shade, 60% saturation) and glow
+    const rgb = hexToRgb(accent);
+    if (rgb) {
+      const darkened = rgbToHex(Math.floor(rgb.r * 0.55), Math.floor(rgb.g * 0.55), Math.floor(rgb.b * 0.55));
+      r.style.setProperty('--accent2', darkened, 'important');
+      r.style.setProperty('--glow', `rgba(${rgb.r},${rgb.g},${rgb.b},0.12)`, 'important');
+      r.style.setProperty('--glow-strong', `rgba(${rgb.r},${rgb.g},${rgb.b},0.3)`, 'important');
+      r.style.setProperty('--warn', accent, 'important');
+    }
+  }
+  if (dim) r.style.setProperty('--dim', dim, 'important');
+}
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
 
 function setAccent(accent, el) {
@@ -2083,6 +2167,14 @@ function startStatIntervals() {
 }
 
 function refreshStat(type, btn) {
+  if (type === 'ping') {
+    const now = Date.now();
+    if (now - lastPingRefresh < 5000) {
+      showToast('PING: WAIT ' + Math.ceil((5000 - (now - lastPingRefresh)) / 1000) + 'S');
+      return;
+    }
+    lastPingRefresh = now;
+  }
   if (btn) { btn.classList.add('spin'); setTimeout(() => btn.classList.remove('spin'), 400); }
   if (type === 'clock') updateClock();
   else if (type === 'battery') updateBattery();
@@ -2236,7 +2328,9 @@ function selectEngine(el) {
 function doSearch() {
   const q = document.getElementById('search-input').value.trim();
   if (!q) return;
-  window.open(currentSearchEngine.url + encodeURIComponent(q), '_blank', 'noopener');
+  const target = localStorage.getItem('settings:searchTarget') || 'new';
+  const method = target === 'same' ? '_self' : '_blank';
+  window.open(currentSearchEngine.url + encodeURIComponent(q), method, target === 'new' ? 'noopener' : '');
   document.getElementById('search-input').value = '';
 }
 
@@ -2258,8 +2352,18 @@ function openSettings() {
 }
 
 function closeSettings() {
+  // Preserve music playback state
+  const wasPlaying = !bgAudio.paused;
+  const currentTime = bgAudio.currentTime;
+  
   document.getElementById('settings-modal').classList.remove('open');
   loadSettings(); // revert previews
+  
+  // Restore playback
+  if (wasPlaying) {
+    bgAudio.currentTime = currentTime;
+    bgAudio.play().catch(() => {});
+  }
 }
 
 function switchSettingsTab(tab) {
@@ -2268,7 +2372,7 @@ function switchSettingsTab(tab) {
 }
 
 function resetSelected() {
-  const cats = ['display','stats','media','data'];
+  const cats = ['display','stats','media','advanced','links','notes'];
   let count = 0;
   for (const cat of cats) {
     const el = document.getElementById('r-' + cat);
@@ -2502,7 +2606,11 @@ function openNuke() {
     startSynthSiren();
     nukeAudioPlaying = true;
   }
-  bgAudio.pause();
+  // Mute background audio instead of stopping it
+  const bgWasPlaying = !bgAudio.paused;
+  bgAudio.dataset.wasPlaying = bgWasPlaying;
+  bgAudio.dataset.prevVolume = bgAudio.volume;
+  bgAudio.volume = 0;
 }
 
 function closeNuke() {
@@ -2513,6 +2621,8 @@ function closeNuke() {
   sirenAudio.currentTime = 0;
   stopSynthSiren();
   nukeAudioPlaying = false;
+  // Restore background audio volume
+  bgAudio.volume = parseFloat(bgAudio.dataset.prevVolume || '0.7');
 }
 
 function checkNukeConfirm() {
@@ -2602,6 +2712,13 @@ function switchDebugTab(tab) {
     const su = document.getElementById('s-siren-url');
     if (su) su.value = localStorage.getItem('settings:sirenUrl') || '';
   }
+}
+
+function saveDebugSettings() {
+  const sirenUrl = document.getElementById('s-siren-url').value;
+  localStorage.setItem('settings:sirenUrl', sirenUrl);
+  loadSettings();
+  showToast('💾 DEBUG SETTINGS SAVED');
 }
 
 function populateDebugSysinfo() {
@@ -2741,9 +2858,33 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================================
+// ANDROID CHROME REC-BLINK FIX (RAF override for stalled steps animation)
+// ============================================================
+function initAndroidBlinkFix() {
+  const ua = navigator.userAgent;
+  const isAndroidChrome = /Android.*Chrome/.test(ua);
+  if (!isAndroidChrome) return;
+  
+  const dot = document.querySelector('.rec-dot');
+  if (!dot) return;
+  
+  let rafId = null;
+  let state = true;
+  
+  const override = () => {
+    state = !state;
+    dot.style.opacity = state ? '1' : '0';
+    rafId = setTimeout(override, 500);
+  };
+  
+  override();
+}
+
+// ============================================================
 // INIT
 // ============================================================
 loadSettings();
+initAndroidBlinkFix();
 </script>
 </body>
 </html>
