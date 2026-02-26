@@ -1130,6 +1130,42 @@ input[type="checkbox"]:active {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ===== PERMISSION MODAL ===== */
+#permission-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+#permission-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.permission-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 0;
+}
+.permission-modal-content {
+  position: relative;
+  z-index: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
 </style>
 </head>
 <body>
@@ -1218,7 +1254,12 @@ input[type="checkbox"]:active {
     <nav id="links-panel" aria-label="Links">
       <div id="links-panel-header">
         <span class="panel-title">// LINKS</span>
-        <button class="hdr-btn" onclick="openAddCat()" title="Add category" style="font-size:9px;padding:1px 5px">+CAT</button>
+        <button id="links-edit-btn" class="hdr-btn" onclick="toggleLinksEditMode()" title="Edit links, categories, order" style="font-size:9px;padding:1px 5px">EDIT</button>
+      </div>
+      <div id="links-edit-controls" style="display:none;padding:8px;border-bottom:1px solid var(--border);background:var(--bg2);font-size:10px;gap:6px;display:none">
+        <button onclick="openAddLink()" style="padding:4px 8px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:9px">+ ADD LINK</button>
+        <button onclick="openAddCat()" style="padding:4px 8px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:9px">+ CATEGORY</button>
+        <button onclick="exitLinksEditMode()" style="padding:4px 8px;background:var(--accent);border:1px solid var(--border);color:#000;cursor:pointer;font-family:var(--font-family);font-size:9px;font-weight:bold">DONE</button>
       </div>
       <div id="links-scroll"></div>
       <button id="add-link-btn" onclick="openAddLink()">+ ADD LINK</button>
@@ -1264,6 +1305,52 @@ input[type="checkbox"]:active {
       <textarea id="notes-textarea" placeholder="// ENTER NOTES..." aria-label="Notes" spellcheck="false"></textarea>
       <div id="notes-count">0 CHARS</div>
     </aside>
+  </div>
+</div>
+
+<!-- PERMISSION MODAL (FIRST RUN ONLY) -->
+<div id="permission-modal" class="permission-modal">
+  <div class="permission-modal-overlay"></div>
+  <div class="permission-modal-content">
+    <div style="font-size:18px;margin-bottom:16px;font-family:var(--font-display)">⚠ SYSTEM PERMISSIONS</div>
+    <div style="font-size:12px;line-height:1.6;color:var(--fg);margin-bottom:20px">
+      this homepage needs your explicit consent before accessing external services.
+      <br><br>
+      <strong>• geolocation:</strong> fetch weather and show location-based info<br>
+      <strong>• weather API:</strong> display current conditions<br>
+      <strong>• IP lookup:</strong> show your public IP address<br>
+      <strong>• ping server:</strong> measure network latency to external host<br>
+      <br>
+      you can revoke or re-enable these anytime in <strong>SETTINGS > ADVANCED > PERMISSIONS</strong>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <button id="perm-allow-all" onclick="setAllPermissions('granted')" style="padding:8px;background:var(--ok);color:#000;border:1px solid var(--border);cursor:pointer;font-family:var(--font-family);font-size:11px;text-transform:uppercase">ALLOW ALL</button>
+      <button id="perm-deny-all" onclick="setAllPermissions('denied')" style="padding:8px;background:var(--danger);color:#fff;border:1px solid var(--border);cursor:pointer;font-family:var(--font-family);font-size:11px;text-transform:uppercase">DENY ALL</button>
+    </div>
+    <div style="font-size:10px;color:var(--dim);text-align:center">
+      — or customize —
+    </div>
+    <div id="permission-customizer" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+      <div style="border:1px solid var(--border);padding:8px;background:var(--bg2)">
+        <div style="font-size:10px;text-transform:uppercase;margin-bottom:6px;color:var(--accent)">geolocation</div>
+        <button onclick="togglePermission('perm:geolocation')" id="btn-perm-geo" style="width:100%;padding:6px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px">DENY</button>
+      </div>
+      <div style="border:1px solid var(--border);padding:8px;background:var(--bg2)">
+        <div style="font-size:10px;text-transform:uppercase;margin-bottom:6px;color:var(--accent)">weather API</div>
+        <button onclick="togglePermission('perm:weather')" id="btn-perm-weather" style="width:100%;padding:6px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px">DENY</button>
+      </div>
+      <div style="border:1px solid var(--border);padding:8px;background:var(--bg2)">
+        <div style="font-size:10px;text-transform:uppercase;margin-bottom:6px;color:var(--accent)">IP lookup</div>
+        <button onclick="togglePermission('perm:ip')" id="btn-perm-ip" style="width:100%;padding:6px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px">DENY</button>
+      </div>
+      <div style="border:1px solid var(--border);padding:8px;background:var(--bg2)">
+        <div style="font-size:10px;text-transform:uppercase;margin-bottom:6px;color:var(--accent)">ping server</div>
+        <button onclick="togglePermission('perm:ping')" id="btn-perm-ping" style="width:100%;padding:6px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px">DENY</button>
+      </div>
+    </div>
+    <div style="margin-top:20px;text-align:center">
+      <button id="perm-confirm" onclick="confirmPermissions()" style="padding:10px 24px;background:var(--accent);color:#000;border:1px solid var(--border);cursor:pointer;font-family:var(--font-display);font-size:12px;text-transform:uppercase;font-weight:bold">CONFIRM</button>
+    </div>
   </div>
 </div>
 
@@ -1466,6 +1553,25 @@ input[type="checkbox"]:active {
         <button class="btn btn-ghost" onclick="clearSWCache()">CLEAR CACHE</button>
         <button class="btn btn-ghost" onclick="refreshSWCache()">REFRESH CACHE</button>
         <div id="sw-status" style="margin-top:8px;font-family:var(--font-mono);font-size:10px;color:var(--dim)">SW: checking...</div>
+        <hr class="sform-sep">
+        <div class="sform-section-title">PERMISSIONS</div>
+        <div style="margin-bottom:12px;font-family:var(--font-mono);font-size:10px;color:var(--dim)">Grant or deny access to external services:</div>
+        <div class="sform-row" style="display:flex;justify-content:space-between;align-items:center">
+          <label class="sform-label">Geolocation</label>
+          <button id="perm-toggle-geo" onclick="togglePermissionFromSettings('perm:geolocation')" style="padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px;text-transform:uppercase;min-width:80px">--</button>
+        </div>
+        <div class="sform-row" style="display:flex;justify-content:space-between;align-items:center">
+          <label class="sform-label">Weather API</label>
+          <button id="perm-toggle-weather" onclick="togglePermissionFromSettings('perm:weather')" style="padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px;text-transform:uppercase;min-width:80px">--</button>
+        </div>
+        <div class="sform-row" style="display:flex;justify-content:space-between;align-items:center">
+          <label class="sform-label">IP Lookup</label>
+          <button id="perm-toggle-ip" onclick="togglePermissionFromSettings('perm:ip')" style="padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px;text-transform:uppercase;min-width:80px">--</button>
+        </div>
+        <div class="sform-row" style="display:flex;justify-content:space-between;align-items:center">
+          <label class="sform-label">Ping Server</label>
+          <button id="perm-toggle-ping" onclick="togglePermissionFromSettings('perm:ping')" style="padding:4px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--fg);cursor:pointer;font-family:var(--font-family);font-size:10px;text-transform:uppercase;min-width:80px">--</button>
+        </div>
         <hr class="sform-sep">
         <div class="sform-section-title">CUSTOM COLORS</div>
         <div class="sform-row"><label class="sform-label">Foreground</label><input type="color" id="s-color-fg" value="#e8e0c8"></div>
@@ -1696,7 +1802,14 @@ const DEFAULTS = {
       {name:'itch.io',url:'https://itch.io'},
       {name:'GameBanana',url:'https://gamebanana.com'}
     ]
-  })
+  }),
+  'settings:searchOpenIn': 'new-tab',
+  'settings:linksOpenIn': 'new-tab',
+  'settings:nukePreset': 'default',
+  'perm:geolocation': 'unasked',
+  'perm:weather': 'unasked',
+  'perm:ip': 'unasked',
+  'perm:ping': 'unasked'
 };
 
 // ============================================================
@@ -1716,6 +1829,9 @@ let lastPingRefresh = 0;
 let bgAudio = document.getElementById('bg-audio');
 let sirenAudio = document.getElementById('siren-audio');
 let nukeAudioPlaying = false;
+let permissionChecked = false;
+let linksEditMode = false;
+let draggedItem = null;
 
 // Capture errors/warnings
 const origError = console.error.bind(console);
@@ -1723,6 +1839,97 @@ const origWarn = console.warn.bind(console);
 console.error = (...a) => { errorLog.push({type:'error',msg:a.join(' '),t:Date.now()}); origError(...a); };
 console.warn = (...a) => { errorLog.push({type:'warn',msg:a.join(' '),t:Date.now()}); origWarn(...a); };
 window.addEventListener('error', e => { errorLog.push({type:'error',msg:e.message+' '+e.filename+':'+e.lineno,t:Date.now()}); });
+
+// ============================================================
+// PERMISSIONS MANAGEMENT
+// ============================================================
+function getPerm(key) {
+  return localStorage.getItem(key) || DEFAULTS[key] || 'unasked';
+}
+
+function setPerm(key, val) {
+  localStorage.setItem(key, val);
+  updatePermissionButton(key);
+}
+
+function updatePermissionButton(key) {
+  const btnId = {
+    'perm:geolocation': 'btn-perm-geo',
+    'perm:weather': 'btn-perm-weather',
+    'perm:ip': 'btn-perm-ip',
+    'perm:ping': 'btn-perm-ping'
+  }[key];
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  const perm = getPerm(key);
+  btn.textContent = perm === 'granted' ? 'GRANT' : 'DENY';
+  btn.style.background = perm === 'granted' ? 'var(--ok)' : 'var(--danger)';
+}
+
+function togglePermission(key) {
+  const current = getPerm(key);
+  const next = current === 'granted' ? 'denied' : 'granted';
+  setPerm(key, next);
+}
+
+function togglePermissionFromSettings(key) {
+  togglePermission(key);
+  updatePermissionButtonSettings(key);
+}
+
+function updatePermissionButtonSettings(key) {
+  const btnMap = {
+    'perm:geolocation': 'perm-toggle-geo',
+    'perm:weather': 'perm-toggle-weather',
+    'perm:ip': 'perm-toggle-ip',
+    'perm:ping': 'perm-toggle-ping'
+  };
+  const btnId = btnMap[key];
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  const perm = getPerm(key);
+  btn.textContent = perm === 'granted' ? 'GRANTED' : 'DENIED';
+  btn.style.background = perm === 'granted' ? 'var(--ok)' : 'var(--danger)';
+  btn.style.color = perm === 'granted' ? '#000' : '#fff';
+}
+
+function updateAllPermissionButtonsSettings() {
+  ['perm:geolocation', 'perm:weather', 'perm:ip', 'perm:ping'].forEach(k => updatePermissionButtonSettings(k));
+}
+
+function setAllPermissions(val) {
+  ['perm:geolocation', 'perm:weather', 'perm:ip', 'perm:ping'].forEach(k => setPerm(k, val));
+}
+
+function confirmPermissions() {
+  permissionChecked = true;
+  localStorage.setItem('perm:checked', 'true');
+  document.getElementById('permission-modal').classList.remove('open');
+  loadSettings();
+  initServices();
+}
+
+function initServices() {
+  // only init services if user granted permission
+  if (getPerm('perm:ip') === 'granted') fetchIPInfo();
+  if (getPerm('perm:ping') === 'granted') initPingServer();
+  if (getPerm('perm:weather') === 'granted' && getPerm('perm:geolocation') === 'granted') initWeatherAuto();
+  startStatUpdates();
+}
+
+function checkFirstRun() {
+  if (!localStorage.getItem('perm:checked')) {
+    document.getElementById('permission-modal').classList.add('open');
+    updateAllPermissionButtons();
+    return false;
+  }
+  permissionChecked = true;
+  return true;
+}
+
+function updateAllPermissionButtons() {
+  ['perm:geolocation', 'perm:weather', 'perm:ip', 'perm:ping'].forEach(k => updatePermissionButton(k));
+}
 
 // ============================================================
 // SETTINGS: LOAD / SAVE
@@ -1827,6 +2034,12 @@ function loadSettings() {
   // Siren
   const sirenUrl = get('settings:sirenUrl') || '';
   if (sirenUrl) sirenAudio.src = sirenUrl;
+
+  // Nuke Preset
+  const savedNukePreset = get('settings:nukePreset') || 'default';
+  nukePreset = savedNukePreset;
+  const nukeSelect = document.querySelector('#dtab-nuke-config select[onchange*="applyNukePreset"]');
+  if (nukeSelect) nukeSelect.value = savedNukePreset;
 
   // Links
   const links = JSON.parse(get('settings:links') || '{}');
@@ -1961,6 +2174,9 @@ function populateSettingsUI() {
   } else {
     document.getElementById('sw-status').textContent = 'SW: INACTIVE (GitHub Pages / local)';
   }
+
+  // Permissions
+  updateAllPermissionButtonsSettings();
 }
 
 // ============================================================
@@ -2202,7 +2418,15 @@ function updateNetwork() {
 
 async function updatePing() {
   const el = document.getElementById('stat-ping');
+  if (getPerm('perm:ping') !== 'granted') {
+    if (el) el.textContent = 'BLOCKED';
+    return;
+  }
   const server = localStorage.getItem('settings:pingServer') || 'https://dns.google';
+  if (!server || server === 'none') {
+    if (el) el.textContent = '--';
+    return;
+  }
   try {
     const t = performance.now();
     await fetch(server + '/favicon.ico?_=' + Date.now(), {mode:'no-cors', cache:'no-store', signal: AbortSignal.timeout(5000)});
@@ -2217,6 +2441,11 @@ async function updatePing() {
 
 let cachedIP = null, ipCacheTime = 0;
 async function updateIP() {
+  if (getPerm('perm:ip') !== 'granted') {
+    const el = document.getElementById('stat-ip');
+    if (el) el.textContent = 'BLOCKED';
+    return;
+  }
   const el = document.getElementById('stat-ip');
   const now = Date.now();
   const ttl = parseInt(localStorage.getItem('settings:refresh:ip') || '60') * 1000;
@@ -2234,6 +2463,15 @@ async function updateIP() {
 }
 
 async function updateWeather() {
+  if (getPerm('perm:weather') !== 'granted' || getPerm('perm:geolocation') !== 'granted') {
+    const iconEl = document.getElementById('weather-icon');
+    const tempEl = document.getElementById('weather-temp');
+    const descEl = document.getElementById('weather-desc');
+    if (iconEl) iconEl.textContent = '--';
+    if (tempEl) tempEl.textContent = 'BLOCKED';
+    if (descEl) descEl.textContent = 'NO PERM';
+    return;
+  }
   const key = localStorage.getItem('settings:weatherKey') || '';
   const city = localStorage.getItem('settings:weatherCity') || '';
   const units = localStorage.getItem('settings:weatherUnits') || 'imperial';
@@ -2320,7 +2558,7 @@ function renderLinks(links) {
       </div>
       <div class="cat-links${isOpen?' open':''}">
         ${items.map((l,i) => `
-          <a class="link-item" href="${escHTML(l.url)}" target="_blank" rel="noopener" aria-label="${escHTML(l.name)}">
+          <a class="link-item" href="javascript:void(0)" onclick="openLink(event,'${escHTML(l.url)}')" aria-label="${escHTML(l.name)}">
             ${escHTML(l.name)}
             <button class="link-del" onclick="delLink(event,'${escHTML(cat)}',${i})" title="Remove" aria-label="Remove link">×</button>
           </a>
@@ -2329,6 +2567,136 @@ function renderLinks(links) {
     `;
     scroll.appendChild(div);
   }
+}
+
+function openLink(e, url) {
+  if (linksEditMode) return; // prevent opening links in edit mode
+  e.preventDefault();
+  const openIn = localStorage.getItem('settings:linksOpenIn') || 'new-tab';
+  if (openIn === 'new-tab') {
+    window.open(url, '_blank', 'noopener');
+  } else {
+    window.location.href = url;
+  }
+}
+
+function toggleLinksEditMode() {
+  linksEditMode = !linksEditMode;
+  const btn = document.getElementById('links-edit-btn');
+  const controls = document.getElementById('links-edit-controls');
+  if (linksEditMode) {
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#000';
+    controls.style.display = 'grid';
+    renderLinksEditMode(getLinks());
+  } else {
+    exitLinksEditMode();
+  }
+}
+
+function exitLinksEditMode() {
+  linksEditMode = false;
+  const btn = document.getElementById('links-edit-btn');
+  const controls = document.getElementById('links-edit-controls');
+  btn.style.background = '';
+  btn.style.color = '';
+  controls.style.display = 'none';
+  renderLinks(getLinks());
+}
+
+function renderLinksEditMode(links) {
+  const scroll = document.getElementById('links-scroll');
+  scroll.innerHTML = '';
+  for (const [cat, items] of Object.entries(links)) {
+    const div = document.createElement('div');
+    div.className = 'link-category';
+    div.dataset.cat = cat;
+    div.innerHTML = `
+      <div class="cat-header edit-mode" style="position:relative">
+        <span>${escHTML(cat)}</span>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <button onclick="editCategory(event,'${escHTML(cat)}')" style="padding:2px 6px;background:var(--bg3);border:1px solid var(--border);color:var(--accent);cursor:pointer;font-family:var(--font-family);font-size:9px">RENAME</button>
+          <button onclick="deleteCategory(event,'${escHTML(cat)}')" style="padding:2px 6px;background:var(--danger);border:1px solid var(--border);color:#fff;cursor:pointer;font-family:var(--font-family);font-size:9px">DEL</button>
+        </div>
+      </div>
+      <div class="cat-links open">
+        ${items.map((l,i) => `
+          <div style="display:flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border);background:var(--bg3);margin:4px;cursor:move" draggable="true" ondragstart="startDragLink(event,'${escHTML(cat)}',${i})" ondragover="dragOverLink(event)" ondrop="dropLink(event,'${escHTML(cat)}',${i})">
+            <span style="flex:1;color:var(--fg);font-size:10px">${escHTML(l.name)}</span>
+            <button onclick="editLink(event,'${escHTML(cat)}',${i})" style="padding:2px 6px;background:var(--bg3);border:1px solid var(--border);color:var(--accent);cursor:pointer;font-family:var(--font-family);font-size:9px;white-space:nowrap">EDIT</button>
+            <button onclick="delLink(event,'${escHTML(cat)}',${i})" style="padding:2px 6px;background:var(--danger);border:1px solid var(--border);color:#fff;cursor:pointer;font-family:var(--font-family);font-size:9px">×</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    scroll.appendChild(div);
+  }
+}
+
+function startDragLink(e, cat, idx) {
+  draggedItem = {cat, idx};
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function dragOverLink(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function dropLink(e, dropCat, dropIdx) {
+  e.preventDefault();
+  if (!draggedItem) return;
+  const links = getLinks();
+  const {cat: dragCat, idx: dragIdx} = draggedItem;
+  if (dragCat === dropCat && dragIdx === dropIdx) return;
+  
+  const link = links[dragCat][dragIdx];
+  links[dragCat].splice(dragIdx, 1);
+  if (!links[dropCat]) links[dropCat] = [];
+  links[dropCat].splice(dropIdx, 0, link);
+  setLinks(links);
+  draggedItem = null;
+}
+
+function editLink(e, cat, idx) {
+  e.preventDefault(); e.stopPropagation();
+  const links = getLinks();
+  const link = links[cat][idx];
+  dialogMode = 'edit-link';
+  dialogCat = cat;
+  document.getElementById('dialog-title').textContent = 'EDIT LINK';
+  document.getElementById('dialog-fields').innerHTML = `
+    <div class="dialog-field">
+      <label>NAME</label>
+      <input type="text" id="d-name" value="${escHTML(link.name)}" placeholder="My Site">
+    </div>
+    <div class="dialog-field">
+      <label>URL</label>
+      <input type="url" id="d-url" value="${escHTML(link.url)}" placeholder="https://...">
+    </div>
+  `;
+  document.getElementById('dialog-confirm').textContent = 'UPDATE';
+  openDialog();
+}
+
+function editCategory(e, oldCat) {
+  e.preventDefault(); e.stopPropagation();
+  const newCat = prompt('RENAME CATEGORY:', oldCat);
+  if (!newCat || newCat === oldCat) return;
+  const links = getLinks();
+  if (links[newCat]) { showToast('CATEGORY EXISTS'); return; }
+  links[newCat] = links[oldCat];
+  delete links[oldCat];
+  setLinks(links);
+}
+
+function deleteCategory(e, cat) {
+  e.preventDefault(); e.stopPropagation();
+  if (!confirm('DELETE CATEGORY "' + cat + '" AND ALL LINKS?')) return;
+  const links = getLinks();
+  delete links[cat];
+  setLinks(links);
+  renderLinksEditMode(links);
 }
 
 function toggleCat(header, cat) {
@@ -3168,6 +3536,7 @@ function executeNuke() {
 
 function applyNukePreset(val) {
   nukePreset = val;
+  localStorage.setItem('settings:nukePreset', val);
   const presetDescs = {
     default: 'Standard nuclear warning. Clinical and direct.',
     creepypasta: 'Paranoid horror narrative. It watches.',
@@ -3236,7 +3605,11 @@ function switchDebugTab(tab) {
 
 function saveDebugSettings() {
   const sirenUrl = document.getElementById('s-siren-url').value;
+  const nukePresetSelect = document.querySelector('#dtab-nuke-config select[onchange*="applyNukePreset"]');
   localStorage.setItem('settings:sirenUrl', sirenUrl);
+  if (nukePresetSelect) {
+    localStorage.setItem('settings:nukePreset', nukePresetSelect.value);
+  }
   loadSettings();
   showToast('💾 DEBUG SETTINGS SAVED');
 }
@@ -3394,8 +3767,17 @@ function initAndroidBlinkFix() {
 // ============================================================
 // INIT
 // ============================================================
-loadSettings();
-initAndroidBlinkFix();
+document.addEventListener('DOMContentLoaded', () => {
+  if (!checkFirstRun()) {
+    // first run and permissions unchecked—block loadSettings until confirmed
+    updateAllPermissionButtons();
+  } else {
+    // permissions already checked—proceed normally
+    loadSettings();
+    initServices();
+  }
+  initAndroidBlinkFix();
+});
 </script>
 </body>
 </html>
